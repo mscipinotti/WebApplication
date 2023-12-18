@@ -1,0 +1,28 @@
+﻿@model WebAPP.Models.AccountDto
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<form method="post" asp-controller="Home">
+    <label asp-for="Login" ></label>
+    <input type="text" asp-for=Login value="mscipinotti" />
+
+    <label asp-for="Password"></label>
+    <input type="password" asp-for=Password value="password" />
+    
+    <input type="submit" value="Submit" asp-action="Index" />
+
+    @if(Model is not null)
+    {
+        <label asp-for="Cookie">Antiforgery token</label>
+        <input type="text" asp-for=Cookie value="@Model.Cookie" />
+
+        <label asp-for="RequestVerificationToken">Request verification antiforgery token</label>
+        <input type="text" asp-for=RequestVerificationToken value="@Model.RequestVerificationToken" />
+
+        <label asp-for="JwtToken"> Jwt token</label>
+        <input type="text" asp-for=JwtToken value="@Model.JwtToken" />
+    }
+</form>
