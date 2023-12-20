@@ -1,9 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddAntiforgery(options =>
 {
-    // Set Cookie properties using CookieBuilder properties†.
     options.Cookie.Name = "XSRF-TOKEN";
     options.HeaderName = "X-XSRF-TOKEN";
 });

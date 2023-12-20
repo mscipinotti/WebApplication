@@ -60,12 +60,14 @@ namespace WebAPP.Controllers
             // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
             HttpResponseMessage httpResponseMessage = await client.PostAsJsonAsync($"{apiURL}home/Logon", account);
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+            {
                 loggedOnAccount = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
-
-            Uri uri = new Uri(apiURL);
-            CookieContainer cookies = new CookieContainer();
-            foreach (var cookieHeader in httpResponseMessage.Headers.GetValues("Set-Cookie"))       // Lettura del cookie
-                cookies.SetCookies(uri, cookieHeader);
+                var cookies2 = httpResponseMessage.Headers.GetValues("Set-Cookie");
+                loggedOnAccount.Cookie = cookies2.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0]; ;
+                loggedOnAccount.RequestVerificationToken = cookies2.First(c => c.StartsWith("X-XSRF-TOKEN")).
+                                                                    Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1].
+                                                                    Split(new string[] { "; "}, StringSplitOptions.None)[0];
+            }
 
             return View("~/Views/Home/Index.cshtml", loggedOnAccount ?? account);
         }
@@ -88,19 +90,9 @@ namespace WebAPP.Controllers
             using HttpClient httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri(apiURL);
             httpClient.DefaultRequestHeaders.Accept.Clear();
-            //Request.Headers.Cookie.Append()
-
-
-            // Probabile fomra corretta
             httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{account.RequestVerificationToken}");
-            httpClient.DefaultRequestHeaders.Add("XSRF-TOKEN", $"{account.Cookie}");
+            httpClient.DefaultRequestHeaders.Add("Cookie", $"{account.Cookie}");
 
-
-            httpClient.DefaultRequestHeaders.Add("Cookie", $"X-XSRF-TOKEN={account.Cookie}");                                      // Scrittura del cookie
-            httpClient.DefaultRequestHeaders.Add("Cookie", $"XSRF-TOKEN={account.Cookie}");
-            //httpClient.DefaultRequestHeaders.Add("Cookie", $"RequestVerificationToken={account.RequestVerificationToken}");
-            //Request.Headers["Cookie"] = $"XSRF-TOKEN={account.Cookie}";
-            //Request.Headers["Cookie"] = $"X-XSRF-TOKEN={account.Cookie}";
             AccountDto? loggedOnAccount = null;
             // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{apiURL}home/AddSinger", singer);
