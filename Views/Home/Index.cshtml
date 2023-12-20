@@ -12,7 +12,9 @@
     <label asp-for="Password"></label>
     <input type="password" asp-for=Password value="password" />
     
-    <input type="submit" value="Submit" asp-action="Index" />
+    <input type="submit" value="Logon" asp-action="Index" />
+
+    <input type="submit" value="Add Singer" asp-action="AddSinger" />
 
     @if(Model is not null)
     {
