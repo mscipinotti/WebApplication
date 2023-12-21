@@ -1,11 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAntiforgery(options =>
-{
-    options.Cookie.Name = "XSRF-TOKEN";
-    options.HeaderName = "X-XSRF-TOKEN";
-});
-builder.Services.AddControllersWithViews();
+                                    {
+                                        options.Cookie.Name = "XSRF-TOKEN";
+                                        options.HeaderName = "X-XSRF-TOKEN";
+                                    })
+                .AddControllersWithViews();
 
 // Per accedere ai coocky
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

@@ -1,0 +1,21 @@
+﻿<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Marco Scipinotti">
+    <title>Signin Template · Bootstrap v5.3</title>
+
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/signin.css" rel="stylesheet" />
+
+  </head>
+  <body class="d-flex align-items-center py-4 bg-body-tertiary text-center">
+    <main class="form-signin w-100 m-auto">
+        <form method="post" action="LogOn">
+            @RenderBody()
+        </form>
+    </main>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+  </body>
+</html>

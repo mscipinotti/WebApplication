@@ -25,28 +25,25 @@ namespace WebAPP.Controllers
             _antiforgery = antiforgery;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(apiURL);
-                client.DefaultRequestHeaders.Accept.Clear();
+        public IActionResult Index() => View("Views/Home/SignIn.cshtml", new AccountDto());
 
-                HttpResponseMessage httpResponseMessage = await client.GetAsync($"{apiURL}home/GetAntiforgeryToken");
-                var accountDto = JsonConvert.DeserializeObject<AccountDto>(httpResponseMessage.Content.ReadAsStringAsync().Result);
-                return View("Index", accountDto);
-            }
-        }
+        //[HttpGet]
+        //public async Task<IActionResult> Get()
+        //{
+        //    using (HttpClient client = new HttpClient())
+        //    {
+        //        client.BaseAddress = new Uri(apiURL);
+        //        client.DefaultRequestHeaders.Accept.Clear();
 
+        //        HttpResponseMessage httpResponseMessage = await client.GetAsync($"{apiURL}home/GetAntiforgeryToken");
+        //        var accountDto = JsonConvert.DeserializeObject<AccountDto>(httpResponseMessage.Content.ReadAsStringAsync().Result);
+        //        return View("Index", accountDto);
+        //    }
+        //}
 
         [HttpPost]
-        public async Task<IActionResult> Index(AccountDto account)
+        public async Task<IActionResult> LogOn(AccountDto account)
         {
 
             AccountDto? loggedOnAccount = null;
@@ -54,8 +51,6 @@ namespace WebAPP.Controllers
             using HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(apiURL);
             client.DefaultRequestHeaders.Accept.Clear();
-
-            _antiforgery.SetCookieTokenAndHeader(HttpContext);
 
             // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
             HttpResponseMessage httpResponseMessage = await client.PostAsJsonAsync($"{apiURL}home/Logon", account);
@@ -90,8 +85,13 @@ namespace WebAPP.Controllers
             using HttpClient httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri(apiURL);
             httpClient.DefaultRequestHeaders.Accept.Clear();
+
+            // Antiforgery token
             httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{account.RequestVerificationToken}");
             httpClient.DefaultRequestHeaders.Add("Cookie", $"{account.Cookie}");
+
+            // Jwt token
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", account.JwtToken);
 
             AccountDto? loggedOnAccount = null;
             // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync

@@ -20,5 +20,6 @@ namespace WebAPP.Models
         public string Cf { get; set; } = null!;
 
         public string Email { get; set; } = null!;
+        public bool RememeberMe { get; set; }
     }
 }
