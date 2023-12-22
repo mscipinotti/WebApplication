@@ -21,8 +21,8 @@ namespace WebAPP.Controllers
         [HttpGet]
         public IActionResult Index() => View("Views/Home/SignIn.cshtml", new AccountDto());
 
-        [HttpPost]
-        public async Task<IActionResult> Logon(AccountDto? account)
+        [HttpPost("Logon")]
+        public async Task<IActionResult> LogonAsync(AccountDto? account)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace WebAPP.Controllers
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // da sistemare
             }

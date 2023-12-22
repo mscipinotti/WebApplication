@@ -6,7 +6,7 @@ namespace WebAPP.Infrastructure
     {
         public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
         {
-            context.Request.HttpContext.Items.Add("ExpiresUTC", context.Properties.ExpiresUtc);
+            await Task.Run(() => context.Request.HttpContext.Items.Add("ExpiresUTC", context.Properties.ExpiresUtc));
         }
     }
 }
