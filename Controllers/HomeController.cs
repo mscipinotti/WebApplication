@@ -1,15 +1,8 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Principal;
-using System.Text;
 using WebAPP.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebAPP.Controllers
 {
@@ -28,43 +21,38 @@ namespace WebAPP.Controllers
         [HttpGet]
         public IActionResult Index() => View("Views/Home/SignIn.cshtml", new AccountDto());
 
-        //[HttpGet]
-        //public async Task<IActionResult> Get()
-        //{
-        //    using (HttpClient client = new HttpClient())
-        //    {
-        //        client.BaseAddress = new Uri(apiURL);
-        //        client.DefaultRequestHeaders.Accept.Clear();
-
-        //        HttpResponseMessage httpResponseMessage = await client.GetAsync($"{apiURL}home/GetAntiforgeryToken");
-        //        var accountDto = JsonConvert.DeserializeObject<AccountDto>(httpResponseMessage.Content.ReadAsStringAsync().Result);
-        //        return View("Index", accountDto);
-        //    }
-        //}
-
         [HttpPost]
-        public async Task<IActionResult> LogOn(AccountDto account)
+        public async Task<IActionResult> Logon(AccountDto? account)
         {
-
-            AccountDto? loggedOnAccount = null;
-
-            using HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(apiURL);
-            client.DefaultRequestHeaders.Accept.Clear();
-
-            // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-            HttpResponseMessage httpResponseMessage = await client.PostAsJsonAsync($"{apiURL}home/Logon", account);
-            if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+            try
             {
-                loggedOnAccount = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
-                var cookies2 = httpResponseMessage.Headers.GetValues("Set-Cookie");
-                loggedOnAccount.Cookie = cookies2.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0]; ;
-                loggedOnAccount.RequestVerificationToken = cookies2.First(c => c.StartsWith("X-XSRF-TOKEN")).
-                                                                    Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1].
-                                                                    Split(new string[] { "; "}, StringSplitOptions.None)[0];
-            }
+                using HttpClient client = new()
+                {
+                    BaseAddress = new Uri(apiURL)
+                };
+                client.DefaultRequestHeaders.Accept.Clear();
 
-            return View("~/Views/Home/Index.cshtml", loggedOnAccount ?? account);
+                // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
+                HttpResponseMessage httpResponseMessage = await client.PostAsJsonAsync($"{apiURL}home/Logon", account);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    account = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
+                    if (account is not null)
+                    {
+                        var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
+                        account.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                        account.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
+                                                                   .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
+                                                                   .Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                        return View("~/Views/Home/Index.cshtml", account);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // da sistemare
+            }
+            return View("~/Views/Home/SignIn.cshtml");
         }
 
         [HttpPost("AddSinger")]
