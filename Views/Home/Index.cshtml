@@ -5,6 +5,11 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
+@section Login
+{
+    @Model.Login
+}
+
 <form method="post" asp-controller="Home">
     <label asp-for="Login" ></label>
     <input type="text" asp-for=Login value="mscipinotti" />

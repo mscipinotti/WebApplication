@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Headers;
 using WebAPP.Models;
+using WebAPP.Infrastructure;
 
 namespace WebAPP.Controllers
 {
     public class HomeController : Controller
     {
-        string apiURL = "https://localhost:44396/";
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAntiforgery _antiforgery;
 
@@ -28,12 +28,12 @@ namespace WebAPP.Controllers
             {
                 using HttpClient client = new()
                 {
-                    BaseAddress = new Uri(apiURL)
+                    BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!)
                 };
                 client.DefaultRequestHeaders.Accept.Clear();
 
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                HttpResponseMessage httpResponseMessage = await client.PostAsJsonAsync($"{apiURL}home/Logon", account);
+                HttpResponseMessage httpResponseMessage = await client.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", account);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     account = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
@@ -71,7 +71,7 @@ namespace WebAPP.Controllers
                 Cookie = account.Cookie
             };
             using HttpClient httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri(apiURL);
+            httpClient.BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!);
             httpClient.DefaultRequestHeaders.Accept.Clear();
 
             // Antiforgery token
@@ -83,7 +83,7 @@ namespace WebAPP.Controllers
 
             AccountDto? loggedOnAccount = null;
             // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{apiURL}home/AddSinger", singer);
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
             if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 loggedOnAccount = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
             return View("~/Views/Home/Index.cshtml", account);

@@ -33,5 +33,6 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
-  }
+  },
+  "apiURL": "https://localhost:44396/"
 }
