@@ -1,7 +1,7 @@
 ﻿@model WebAPP.Models.AccountDto
 
 @{
-    if(Model.Login is null)
+    if(Model is null)
     {
         Layout = "_SignInLayout";
     }

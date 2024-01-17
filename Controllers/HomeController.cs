@@ -19,10 +19,10 @@ namespace WebAPP.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index() => View("Views/Home/SignIn.cshtml", new AccountDto());
+        public IActionResult Index() => View();
 
-        [HttpPost("Logon")]
-        public async Task<IActionResult> LogonAsync(AccountDto? account)
+        [HttpPost]
+        public async Task<IActionResult> Logon(AccountDto? account)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace WebAPP.Controllers
                         account.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
                                                                    .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
                                                                    .Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        return View("~/Views/Home/Index.cshtml", account);
+                        return View(account);
                     }
                 }
             }
@@ -55,8 +55,8 @@ namespace WebAPP.Controllers
             return View("~/Views/Home/SignIn.cshtml");
         }
 
-        [HttpPost("AddSinger")]
-        public async Task<IActionResult> AddSingerAsync(AccountDto account)
+        [HttpPost]
+        public async Task<IActionResult> AddSinger(AccountDto account)
         {
             SingerDto singer = new()
             {
