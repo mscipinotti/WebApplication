@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Http.Headers;
 using WebAPP.Models;
 using WebAPP.Infrastructure;
+using System.Security.Principal;
+using System.Net.Http.Json;
 
 namespace WebAPP.Controllers
 {
@@ -11,11 +13,18 @@ namespace WebAPP.Controllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAntiforgery _antiforgery;
+        private readonly HttpClient _httpClient;
 
         public HomeController(IHttpContextAccessor httpContextAccessor, IAntiforgery antiforgery)
         {
             _httpContextAccessor = httpContextAccessor;
             _antiforgery = antiforgery;
+            _httpClient = new HttpClient()
+            {
+                BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!)
+
+            };
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
         }
 
         [HttpGet]
@@ -26,14 +35,8 @@ namespace WebAPP.Controllers
         {
             try
             {
-                using HttpClient client = new()
-                {
-                    BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!)
-                };
-                client.DefaultRequestHeaders.Accept.Clear();
-
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                HttpResponseMessage httpResponseMessage = await client.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", account);
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", account);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     account = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
@@ -51,6 +54,23 @@ namespace WebAPP.Controllers
             catch (Exception)
             {
                 // da sistemare
+            }
+            return View("~/Views/Home/SignIn.cshtml");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Singers()
+        {
+            try {
+                //HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/GetSingers", account);
+                //if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                //{
+                //    var singers = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
+                    return View();
+                    //}
+                }
+            catch (Exception) { 
+            // da sistemare
             }
             return View("~/Views/Home/SignIn.cshtml");
         }
