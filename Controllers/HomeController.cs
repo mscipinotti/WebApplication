@@ -55,22 +55,38 @@ namespace WebAPP.Controllers
             {
                 // da sistemare
             }
-            return View("~/Views/Home/SignIn.cshtml");
+            return View("Index");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Singers()
+        public async Task<IActionResult> Singers(AccountDto account)
         {
             try {
-                //HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/GetSingers", account);
-                //if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-                //{
-                //    var singers = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/GetSingers", account);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    var singers = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
                     return View();
-                    //}
                 }
+            }
             catch (Exception) { 
             // da sistemare
+            }
+            return View("~/Views/Home/SignIn.cshtml");
+        }
+
+        [HttpGet]
+        [Route("/Home/Singer/Account")]
+        public async Task<IActionResult> Singer(AccountDto account, int prova)
+        {
+            try
+            {
+                    return View();
+
+            }
+            catch (Exception)
+            {
+                // da sistemare
             }
             return View("~/Views/Home/SignIn.cshtml");
         }

@@ -10,7 +10,8 @@
     @Model.Login
 }
 
-<form method="post" asp-controller="Home">
+<a class="nav-link" asp-area="" asp-action="Singer" asp-route-account=@Model asp-route-prova="12">Singers</a>
+
     <label asp-for="Login"></label>
     <input type="text" asp-for=Login value="mscipinotti" />
 
@@ -30,4 +31,4 @@
         <label asp-for="JwtToken"> Jwt token</label>
         <input type="text" asp-for=JwtToken value="@Model.JwtToken" />
     }
-</form>
+
