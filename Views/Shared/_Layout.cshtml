@@ -43,7 +43,8 @@
                         <a class="nav-link active" href="#">Active</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-action="Singer" asp-route-account="@Model">Singers</a>
+                        @* <a class="nav-link" asp-area="" asp-action="Singer" asp-route-account="@Model">Singers</a> *@
+                        <input type="submit" class="nav-link" asp-action="Singers" value="Singers" />
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Songs</a>
@@ -53,6 +54,7 @@
                     </li>
                 </ul>
                 @RenderBody()
+                <partial name="_Token.cshtml" />
             </form>
         </main>
     </div>

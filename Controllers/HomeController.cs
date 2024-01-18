@@ -6,6 +6,7 @@ using WebAPP.Models;
 using WebAPP.Infrastructure;
 using System.Security.Principal;
 using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace WebAPP.Controllers
 {
@@ -62,7 +63,13 @@ namespace WebAPP.Controllers
         public async Task<IActionResult> Singers(AccountDto account)
         {
             try {
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/GetSingers", account);
+                var content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("__RequestVerificationToken", account.RequestVerificationToken)
+                });
+                content.Headers.Add("Cookie", account.Cookie);
+
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/GetSingers", content);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     var singers = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
@@ -72,7 +79,7 @@ namespace WebAPP.Controllers
             catch (Exception) { 
             // da sistemare
             }
-            return View("~/Views/Home/SignIn.cshtml");
+            return View("Index");
         }
 
         [HttpGet]
