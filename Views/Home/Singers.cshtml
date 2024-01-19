@@ -1,0 +1,35 @@
+﻿@using WebAPP.Models
+@model SingersDto
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">StageName</th>
+            <th scope="col">First name</th>
+            <th scope="col">Surname</th>
+            <th scope="col">Age</th>
+            <th scope="col">Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (SingerDto s in Model.Singers)
+        {
+            <tr>
+                <th scope="row">1</th>
+                <td>@s.StageName</td>
+                <td>@s.Firstname</td>
+                <td>@s.Surname</td>
+                <td>@s.Age</td>
+                <td>@s.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

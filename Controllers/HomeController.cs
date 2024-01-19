@@ -2,11 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Headers;
-using WebAPP.Models;
 using WebAPP.Infrastructure;
-using System.Security.Principal;
-using System.Net.Http.Json;
-using Newtonsoft.Json;
+using WebAPP.Models;
 
 namespace WebAPP.Controllers
 {
@@ -26,10 +23,15 @@ namespace WebAPP.Controllers
 
             };
             _httpClient.DefaultRequestHeaders.Accept.Clear();
+
         }
 
         [HttpGet]
-        public IActionResult Index() => View();
+        public IActionResult Index()
+        {
+            ViewData["Layout"] = "_SignInLayout";
+            return View(); 
+        }
 
         [HttpPost]
         public async Task<IActionResult> Logon(AccountDto? account)
@@ -46,8 +48,9 @@ namespace WebAPP.Controllers
                         var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
                         account.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
                         account.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
-                                                                   .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
-                                                                   .Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                                                                      .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
+                                                                      .Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                        ViewData["Layout"] = "_Layout";
                         return View(account);
                     }
                 }
@@ -56,17 +59,18 @@ namespace WebAPP.Controllers
             {
                 // da sistemare
             }
+            ViewData["Layout"] = "_SignInLayout";
             return View("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> Singers(AccountDto account)
         {
-            // HttpContent per la chiamata client verso il BE. HttpContext per la risposta server verso il client.
+            // HttpContent per la chiamata sul client verso il BE. HttpContext per la risposta sul server verso il client.
             // I due token dell'antiforgery devono comparire in HttpContext.Form quello __RequestVerificationToken, l'altro in HttpContext.Headers.Cookie.
             // Così, in ValidateRequestAsync di DefaultAntiforgery.cs chiamato a sua volta da AntiforgeryTokenMiddleware sul BE la _tokenStore.GetRequestTokensAsync(httpContext) trova correttamente i due token per poterli validare.
-            // I due token devono avere i nomi di __RequestVerificationToken e Cookie rispettivamente come i parametri presenti in tokens.FormFieldName e tokens.HeaderName e devono assumere i valori in tokens.RequestToken e tokens.CookieToken
-            // in tokens di DefaultAntiforgery.cssul BE.
+            // I due token devono avere i nomi di __RequestVerificationToken e Cookie rispettivamente come i parametri presenti in tokens.FormFieldName e tokens.HeaderName e devono assumere i valori in
+            // tokens.RequestToken e tokens.CookieToken in tokens di DefaultAntiforgery.cssul BE.
             try
             {
                 // Antiforgery token
@@ -82,13 +86,21 @@ namespace WebAPP.Controllers
                 HttpResponseMessage httpResponseMessage = await _httpClient.PostAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Singers", content);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
-                    var singers = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
-                    return View();
+                    var singerList = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
+                    ViewData["Layout"] = "_Layout";
+                    return View(new SingersDto()
+                    {
+                        Singers = singerList,
+                        JwtToken = account.JwtToken,
+                        Cookie = account.Cookie,
+                        RequestVerificationToken = account.RequestVerificationToken
+                    });
                 }
             }
             catch (Exception) { 
             // da sistemare
             }
+            ViewData["Layout"] = "_SignInLayout";
             return View("Index");
         }
 

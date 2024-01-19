@@ -1,12 +1,4 @@
-﻿@model WebAPP.Models.AccountDto
-
-@{
-    if(Model is null)
-    {
-        Layout = "_SignInLayout";
-    }
-    else
-    {
-        Layout = "_Layout";
-    }
+﻿@{
+    Layout = ViewData["Layout"].ToString();
 }
+
