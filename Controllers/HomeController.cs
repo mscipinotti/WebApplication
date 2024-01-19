@@ -62,14 +62,24 @@ namespace WebAPP.Controllers
         [HttpPost]
         public async Task<IActionResult> Singers(AccountDto account)
         {
-            try {
+            // HttpContent per la chiamata client verso il BE. HttpContext per la risposta server verso il client.
+            // I due token dell'antiforgery devono comparire in HttpContext.Form quello __RequestVerificationToken, l'altro in HttpContext.Headers.Cookie.
+            // Così, in ValidateRequestAsync di DefaultAntiforgery.cs chiamato a sua volta da AntiforgeryTokenMiddleware sul BE la _tokenStore.GetRequestTokensAsync(httpContext) trova correttamente i due token per poterli validare.
+            // I due token devono avere i nomi di __RequestVerificationToken e Cookie rispettivamente come i parametri presenti in tokens.FormFieldName e tokens.HeaderName e devono assumere i valori in tokens.RequestToken e tokens.CookieToken
+            // in tokens di DefaultAntiforgery.cssul BE.
+            try
+            {
+                // Antiforgery token
                 var content = new FormUrlEncodedContent(new[]
                 {
                     new KeyValuePair<string, string>("__RequestVerificationToken", account.RequestVerificationToken)
                 });
                 content.Headers.Add("Cookie", account.Cookie);
 
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/GetSingers", content);
+                // Jwt token
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {account.JwtToken}");
+
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Singers", content);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     var singers = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
