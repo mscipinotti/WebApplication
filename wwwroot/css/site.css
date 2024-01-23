@@ -20,3 +20,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+tr:nth-child(odd) {
+    background-color: rgba(0,0,0,0.075);
+}
+
+tr:nth-child(even) {
+    background-color: rgba(0,0,0,0.01);
+}
