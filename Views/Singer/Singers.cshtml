@@ -13,7 +13,7 @@
 
 <div style="display: flex">
     <nav class="nav flex-column">
-        <a class="nav-link active" href="#">Add</a>
+        <a class="nav-link active" href="#" onclick="addRow()">Add</a>
         <a class="nav-link disabled" href="#">Modify</a>
         <a class="nav-link disabled" href="#">Delete</a>
     </nav>
@@ -49,13 +49,75 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("table tbody tr").on('click', function () {
-            var cell = $(this).find(':first');
-            var index = cell.text();
-            var bColor = index % 2 === 0 ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.01)';
-            var t = $(this).closest("table");
-            var activeColor = $(this).css("background-color") == bColor ? 'rgb(240, 248, 255)' : bColor;
+            let cell = $(this).find(':first');
+            let index = cell.text();
+            let bColor = Number(index) % 2 === 0 ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.01)';
+            let t = $(this).closest("table");
+            let activeColor = $(this).css("background-color") == bColor ? 'rgb(240, 248, 255)' : bColor;
             $(this).css("background-color", activeColor);
         });
+
+        $("table tbody").on('keypress', function (e) {
+            e.preventDefault();
+            if (e.which == 13) {
+                validateSinger();
+            }
+        });
     });
+
+    function addRow() {
+        let index = Number($('table > tbody:last-child > tr:last-child > th'). text()) + 1;
+        let stageName = '<input value="stagename" />';
+        let name = '<input value="name" />';
+        let surname = '<input value="surname" />';
+        let age = '<input value="5555" />';
+        let email = '<input value="email" />';
+        $('table > tbody:last-child').append('<tr>                                  \
+                                                <th scope="row">' + index + '</th>  \
+                                                <td>' + stageName + '</td>               \
+                                                <td>' + name + '</td>                           \
+                                                <td>' + surname + '</td>                           \
+                                                <td>' + age + '</td>                           \
+                                                <td>' + email + '</td>                           \
+                                              </tr>');
+    }
+
+    function validateSinger() {
+        let singer = {
+            StageName: "",
+            Firstname: "",
+            Surname: "",
+            Age: "",
+            Email: "",
+            Account: "@Model.Login"
+        }
+        $('table > tbody:last-child > tr:last-child > td input').each(function (index) {
+            console.log(index + ": " + $(this).val());
+
+            if (index == '0') singer.StageName = $(this).val();
+            if (index == '1') singer.Firstname = $(this).val();
+            if (index == '2') singer.Surname = $(this).val();
+            if (index == '3') singer.Age = $(this).val();
+            if (index == '4') singer.Email = $(this).val();
+        });
+        let account = {
+            Login: "@Model.Login",
+            RequestVerificationToken: "@Model.RequestVerificationToken",
+            Cookie: "@Model.Cookie",
+            JwtToken: "@Model.JwtToken"
+        };
+        $.ajax({
+            data: { account, singer },
+            url: "AddSinger",
+            type: 'post',
+            // datatype: 'json'
+            success: function (response) {
+                return true;
+            },
+            error: function (error) {
+                return false;
+            }
+        });
+    }
 </script>
 

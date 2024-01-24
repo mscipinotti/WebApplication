@@ -15,7 +15,6 @@ namespace WebAPP.Models
         [Required]
         public string Surname { get; set; } = null!;
 
-        [Required]
         public int Age { get; set; }
 
         public string? Email { get; set; }

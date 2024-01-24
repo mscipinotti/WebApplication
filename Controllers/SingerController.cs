@@ -80,20 +80,20 @@ namespace WebAPP.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddSinger(AccountDto account)
+        public async Task<IActionResult> AddSinger(AccountDto account, SingerDto singer)
         {
-            SingerDto singer = new()
-            {
-                Id = 10,
-                Age = 44,
-                Firstname = "Mario",
-                StageName = "Capanna",
-                Surname = "boh",
-                Account = "pippo",
-                Email = "prova@gmail.com",
-                RequestVerificationToken = account.RequestVerificationToken,
-                Cookie = account.Cookie
-            };
+            //SingerDto singer = new()
+            //{
+            //    Id = 10,
+            //    Age = 44,
+            //    Firstname = "Mario",
+            //    StageName = "Capanna",
+            //    Surname = "boh",
+            //    Account = "pippo",
+            //    Email = "prova@gmail.com",
+            //    RequestVerificationToken = account.RequestVerificationToken,
+            //    Cookie = account.Cookie
+            //};
             using HttpClient httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!);
             httpClient.DefaultRequestHeaders.Accept.Clear();
