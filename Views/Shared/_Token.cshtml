@@ -1,12 +1,3 @@
 ﻿@model WebAPP.Models.Tokens
 
-@{
-    <label asp-for="Cookie">Antiforgery token</label>
-    <input type="text" asp-for=Cookie value="@Model.Cookie" />
-
-    <label asp-for="RequestVerificationToken">Request verification antiforgery token</label>
-    <input type="text" asp-for=RequestVerificationToken value="@Model.RequestVerificationToken" />
-
-    <label asp-for="JwtToken"> Jwt token</label>
-    <input type="text" asp-for=JwtToken value="@Model.JwtToken" />
-}
+<input type="text" class="userLogin" readonly asp-for=Login value="@Model.Login" />

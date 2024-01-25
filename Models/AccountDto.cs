@@ -4,9 +4,6 @@ namespace WebAPP.Models
 {
     public class AccountDto : Tokens
     {
-        [Required]
-        public string Password { get; set; } = null!;
-
         public string? Name { get; set; }
 
         public string? Surname { get; set; }

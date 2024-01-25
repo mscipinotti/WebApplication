@@ -2,7 +2,7 @@
 
 namespace WebAPP.Models
 {
-    public class SingerDto : Tokens
+    public class SingerDto 
     {
         public long Id { get; set; }
 

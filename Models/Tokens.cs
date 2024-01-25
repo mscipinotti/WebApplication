@@ -6,6 +6,8 @@ namespace WebAPP.Models
     {
         [Required]
         public string Login { get; set; } = null!;
+        [Required]
+        public string Password { get; set; } = null!;
 
         // Antiforgery token
         public string? RequestVerificationToken { get; set; }

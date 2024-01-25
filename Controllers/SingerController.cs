@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Antiforgery;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Headers;
@@ -11,7 +12,9 @@ namespace WebAPP.Controllers
     {
         private readonly IAntiforgery _antiforgery;
         private readonly HttpClient _httpClient;
-        public SingerController(IAntiforgery antiforgery) {
+        private readonly IMapper _mapper;
+        public SingerController(IAntiforgery antiforgery, IMapper mapper)
+        {
             _antiforgery = antiforgery;
             _httpClient = new HttpClient()
             {
@@ -19,6 +22,7 @@ namespace WebAPP.Controllers
 
             };
             _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -45,72 +49,48 @@ namespace WebAPP.Controllers
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     var singerList = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
-                    ViewData["Layout"] = "_Layout";
-                    return View(new SingersDto()
-                    {
-                        Singers = singerList,
-                        JwtToken = account.JwtToken,
-                        Cookie = account.Cookie,
-                        RequestVerificationToken = account.RequestVerificationToken
-                    });
+                    var singers = _mapper.Map<SingersDto>(account);
+                    singers.Singers = singerList ?? new List<SingerDto>();
+                    return View(singers);
                 }
             }
             catch (Exception)
             {
                 // da sistemare
             }
-            ViewData["Layout"] = "_SignInLayout";
             return View("Index");
         }
 
-        [HttpGet]
-        [Route("/Home/Singer/Account")]
-        public async Task<IActionResult> Singer(AccountDto account, int prova)
+        [HttpPost]
+        public async Task<IActionResult> AddSinger(Tokens token, SingerDto singer)
         {
             try
             {
-                return View();
+                using HttpClient httpClient = new()
+                {
+                    BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!)
+                };
+                httpClient.DefaultRequestHeaders.Accept.Clear();
 
+                // Antiforgery token
+                httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
+                httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
+
+                // Jwt token
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
+
+                AccountDto? loggedOnAccount = null;
+                // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                    loggedOnAccount = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
+                return View("~/Views/Singer/Singers.cshtml", token);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // da sistemare
             }
-            return View("~/Views/Home/SignIn.cshtml");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddSinger(AccountDto account, SingerDto singer)
-        {
-            //SingerDto singer = new()
-            //{
-            //    Id = 10,
-            //    Age = 44,
-            //    Firstname = "Mario",
-            //    StageName = "Capanna",
-            //    Surname = "boh",
-            //    Account = "pippo",
-            //    Email = "prova@gmail.com",
-            //    RequestVerificationToken = account.RequestVerificationToken,
-            //    Cookie = account.Cookie
-            //};
-            using HttpClient httpClient = new HttpClient();
-            httpClient.BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!);
-            httpClient.DefaultRequestHeaders.Accept.Clear();
-
-            // Antiforgery token
-            httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{account.RequestVerificationToken}");
-            httpClient.DefaultRequestHeaders.Add("Cookie", $"{account.Cookie}");
-
-            // Jwt token
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", account.JwtToken);
-
-            AccountDto? loggedOnAccount = null;
-            // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
-            if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-                loggedOnAccount = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
-            return View("~/Views/Home/Index.cshtml", account);
+            return View("~/Views/Home/Index.cshtml");
         }
     }
 }

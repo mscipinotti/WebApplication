@@ -1,19 +1,12 @@
-﻿@model WebAPP.Models.AccountDto
+﻿@model WebAPP.Models.Tokens
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-@section Login
-{
-    @Model.Login
-}
-
-<label asp-for="Login"></label>
-<input type="text" asp-for=Login value="mscipinotti" />
-
-<label asp-for="Password"></label>
-<input type="password" asp-for=Password value="password" />
-
-<input type="submit" value="Logon" asp-action="Index" />
+<input type="hidden" asp-for=Login value="@Model.Login" />
+<input type="hidden" asp-for=Password value="@Model.Password" />
+<input type="hidden" asp-for=Cookie value="@Model.Cookie" />
+<input type="hidden" asp-for=RequestVerificationToken value="@Model.RequestVerificationToken" />
+<input type="hidden" asp-for=JwtToken value="@Model.JwtToken" />

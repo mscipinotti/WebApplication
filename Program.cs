@@ -8,7 +8,8 @@ builder.Services.AddAntiforgery(options =>
                 .AddControllersWithViews();
 
 // Per accedere ai coocky
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>()
+                .AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

@@ -6,11 +6,6 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-@section Login
-{
-    @Model.Login
-}
-
 <div style="display: flex">
     <nav class="nav flex-column">
         <a class="nav-link active" href="#" onclick="addRow()">Add</a>
@@ -93,21 +88,28 @@
         }
         $('table > tbody:last-child > tr:last-child > td input').each(function (index) {
             console.log(index + ": " + $(this).val());
-
-            if (index == '0') singer.StageName = $(this).val();
-            if (index == '1') singer.Firstname = $(this).val();
-            if (index == '2') singer.Surname = $(this).val();
-            if (index == '3') singer.Age = $(this).val();
-            if (index == '4') singer.Email = $(this).val();
+            switch (index) { 
+                case 0: singer.StageName = $(this).val();
+                    break;
+                case 1: singer.Firstname = $(this).val();
+                    break;
+                case 2: singer.Surname = $(this).val(); alert(index);
+                    break;
+                case 3: singer.Age = $(this).val();
+                    break;
+                case 4: singer.Email = $(this).val();
+                    break;
+            }
         });
-        let account = {
+        let token = {
             Login: "@Model.Login",
+            Password: "@Model.Password",
             RequestVerificationToken: "@Model.RequestVerificationToken",
             Cookie: "@Model.Cookie",
             JwtToken: "@Model.JwtToken"
         };
         $.ajax({
-            data: { account, singer },
+            data: { token, singer },
             url: "AddSinger",
             type: 'post',
             // datatype: 'json'

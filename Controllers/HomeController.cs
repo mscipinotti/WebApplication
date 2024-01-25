@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Antiforgery;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Headers;
@@ -12,8 +13,9 @@ namespace WebAPP.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAntiforgery _antiforgery;
         private readonly HttpClient _httpClient;
+        private readonly IMapper _mapper;
 
-        public HomeController(IHttpContextAccessor httpContextAccessor, IAntiforgery antiforgery)
+        public HomeController(IHttpContextAccessor httpContextAccessor, IAntiforgery antiforgery, IMapper mapper)
         {
             _httpContextAccessor = httpContextAccessor;
             _antiforgery = antiforgery;
@@ -23,13 +25,12 @@ namespace WebAPP.Controllers
 
             };
             _httpClient.DefaultRequestHeaders.Accept.Clear();
-
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            ViewData["Layout"] = "_SignInLayout";
             return View(); 
         }
 
@@ -50,7 +51,6 @@ namespace WebAPP.Controllers
                         account.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
                                                                       .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
                                                                       .Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        ViewData["Layout"] = "_Layout";
                         return View("Views/Dashboard/Dashboard.cshtml", account);
                     }
                 }
@@ -59,7 +59,6 @@ namespace WebAPP.Controllers
             {
                 // da sistemare
             }
-            ViewData["Layout"] = "_SignInLayout";
             return View("Index");
         }
 
@@ -80,7 +79,6 @@ namespace WebAPP.Controllers
                         account.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
                                                                       .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
                                                                       .Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        ViewData["Layout"] = "_Layout";
                         return View("Views/Dashboard/Dashboard.cshtml", account);
                     }
                 }
@@ -89,7 +87,6 @@ namespace WebAPP.Controllers
             {
                 // da sistemare
             }
-            ViewData["Layout"] = "_SignInLayout";
             return View("Index");
         }
     }

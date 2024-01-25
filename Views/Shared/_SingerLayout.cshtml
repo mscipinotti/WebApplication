@@ -26,7 +26,7 @@
                         </li>
                     </ul>
                     <span class="navbar-text">
-                        @RenderSection("Login")
+                        <partial name="_Token.cshtml" />
                     </span>
                     <span class="navbar-text">
                     prova
@@ -58,7 +58,6 @@
                     </li>
                 </ul>
                 @RenderBody()
-                <partial name="_Token.cshtml" />
             </form>
         </main>
     </div>
