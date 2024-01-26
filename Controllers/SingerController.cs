@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using WebAPP.Infrastructure;
 using WebAPP.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebAPP.Controllers
 {
@@ -82,15 +83,15 @@ namespace WebAPP.Controllers
                 AccountDto? loggedOnAccount = null;
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
                 HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-                    loggedOnAccount = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
-                return View("~/Views/Singer/Singers.cshtml", token);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return RedirectToAction("Singers");
+                var errors = await httpResponseMessage.Content.ReadFromJsonAsync<Errors>();
+                return BadRequest(errors);
             }
             catch (Exception ex)
             {
                 // da sistemare
             }
-            return View("~/Views/Home/Index.cshtml");
+            return View("Views/Home/Index.cshtml");
         }
     }
 }

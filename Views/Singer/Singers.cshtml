@@ -38,6 +38,7 @@
                 }
             </tbody>
         </table>
+        <textarea class="warningMessage" readonly></textarea>
     </article>
 </div>
 
@@ -53,7 +54,6 @@
         });
 
         $("table tbody").on('keypress', function (e) {
-            e.preventDefault();
             if (e.which == 13) {
                 validateSinger();
             }
@@ -62,18 +62,18 @@
 
     function addRow() {
         let index = Number($('table > tbody:last-child > tr:last-child > th'). text()) + 1;
-        let stageName = '<input value="stagename" />';
-        let name = '<input value="name" />';
-        let surname = '<input value="surname" />';
-        let age = '<input value="5555" />';
-        let email = '<input value="email" />';
+        let stageName = '<input type="text" class="inputText" contenteditable="true" value="stagename" />';
+        let name = '<input type="text" class="inputText" value="name" />';
+        let surname = '<input type="text" class="inputText" value="surname" />';
+        let age = '<input type="number" class="inputText" value="5555" />';
+        let email = '<input type="text" class="inputText" value="email" />';
         $('table > tbody:last-child').append('<tr>                                  \
                                                 <th scope="row">' + index + '</th>  \
-                                                <td>' + stageName + '</td>               \
-                                                <td>' + name + '</td>                           \
-                                                <td>' + surname + '</td>                           \
-                                                <td>' + age + '</td>                           \
-                                                <td>' + email + '</td>                           \
+                                                <td>' + stageName + '</td>          \
+                                                <td>' + name + '</td>               \
+                                                <td>' + surname + '</td>            \
+                                                <td>' + age + '</td>                \
+                                                <td>' + email + '</td>              \
                                               </tr>');
     }
 
@@ -87,13 +87,12 @@
             Account: "@Model.Login"
         }
         $('table > tbody:last-child > tr:last-child > td input').each(function (index) {
-            console.log(index + ": " + $(this).val());
             switch (index) { 
                 case 0: singer.StageName = $(this).val();
                     break;
                 case 1: singer.Firstname = $(this).val();
                     break;
-                case 2: singer.Surname = $(this).val(); alert(index);
+                case 2: singer.Surname = $(this).val();
                     break;
                 case 3: singer.Age = $(this).val();
                     break;
@@ -112,11 +111,16 @@
             data: { token, singer },
             url: "AddSinger",
             type: 'post',
-            // datatype: 'json'
             success: function (response) {
                 return true;
             },
-            error: function (error) {
+            error: function (response) {
+                let message = $.parseJSON(response.responseText);
+                let e = "";
+                jQuery.each(message.errors, function (i, val) {
+                    e = e + val.errorCode + ". " + val.errorMessage + "\n";
+                });
+                $(".warningMessage").val(e);
                 return false;
             }
         });
