@@ -125,14 +125,29 @@
     }
 
     function deleteSinger() {
-        $('table > tbody:last-child > tr > td:last-child').each(function (index) {
+        $('table > tbody:last-child > tr > td:last-child').each(function () {
             var rowSelected = $(this).closest('tr').hasClass('rowSelected');
 
             if (rowSelected) {
-                var id = $(this).text();
+                let singer = {
+                    Id: Number($(this).text()),
+                    StageName: "",
+                    Firstname: "",
+                    Surname: "",
+                    Age: "",
+                    Email: "",
+                    Account: "@Model.Login"
+                }
+                let token = {
+                    Login: "@Model.Login",
+                    Password: "@Model.Password",
+                    RequestVerificationToken: "@Model.RequestVerificationToken",
+                    Cookie: "@Model.Cookie",
+                    JwtToken: "@Model.JwtToken"
+                };
 
                 $.ajax({
-                    data: { token, id },
+                    data: { token, singer },
                     url: "DeleteSinger",
                     type: 'post',
                     success: function (response) {

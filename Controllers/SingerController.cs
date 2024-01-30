@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text;
 using WebAPP.Infrastructure;
 using WebAPP.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -104,6 +106,11 @@ namespace WebAPP.Controllers
                 };
                 httpClient.DefaultRequestHeaders.Accept.Clear();
 
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/DeleteSinger")
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(singer), Encoding.UTF8, "application/json")
+                };
+
                 // Antiforgery token
                 httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
                 httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
@@ -111,8 +118,7 @@ namespace WebAPP.Controllers
                 // Jwt token
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
 
-                // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/DeleteSinger", singer);
+                HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(request);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return RedirectToAction("Singers");
                 var errors = await httpResponseMessage.Content.ReadFromJsonAsync<Errors>();
                 return BadRequest(errors);
