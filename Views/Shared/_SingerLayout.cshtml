@@ -6,8 +6,6 @@
     <title>@ViewData["Title"] - WebAPP</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WebAPP.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/signin.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -67,7 +65,7 @@
         </div>
     </footer>
     <partial name="/Views/Shared/_Modal.cshtml"></partial>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

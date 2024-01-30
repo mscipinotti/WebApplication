@@ -11,6 +11,7 @@
         <a class="nav-link active" href="#" onclick="addRow()">Add</a>
         <a class="nav-link disabled" href="#">Modify</a>
         <a class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest">Delete</a>
+        <a class="nav-link" href="#" onclick="deleteSinger(); return false;">Delete 2</a>
     </nav>
     <article>
         <table class="table table-striped">
@@ -47,11 +48,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("table tbody tr").on('click', function () {
-            let cell = $(this).find(':first');
-            let index = cell.text();
-            let bColor = Number(index) % 2 === 0 ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.01)';
-            let activeColor = $(this).css("background-color") == bColor ? 'yellowgreen' : bColor;
-            $(this).css("background-color", activeColor);
+            $(this).toggleClass('rowSelected');
         });
 
         $("table tbody").on('keypress', function (e) {
@@ -128,12 +125,30 @@
     }
 
     function deleteSinger() {
-
         $('table > tbody:last-child > tr > td:last-child').each(function (index) {
+            var rowSelected = $(this).closest('tr').hasClass('rowSelected');
 
+            if (rowSelected) {
+                var id = $(this).text();
 
-
-
+                $.ajax({
+                    data: { token, id },
+                    url: "DeleteSinger",
+                    type: 'post',
+                    success: function (response) {
+                        return true;
+                    },
+                    error: function (response) {
+                        let message = $.parseJSON(response.responseText);
+                        let e = "";
+                        jQuery.each(message.errors, function (i, val) {
+                            e = e + val.errorCode + ". " + val.errorMessage + "<br>";
+                        });
+                        $(".warningMessage").html(e);
+                        return false;
+                    }
+                });
+            }
         });
 
 

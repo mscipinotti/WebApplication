@@ -80,9 +80,39 @@ namespace WebAPP.Controllers
                 // Jwt token
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
 
-                AccountDto? loggedOnAccount = null;
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
                 HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return RedirectToAction("Singers");
+                var errors = await httpResponseMessage.Content.ReadFromJsonAsync<Errors>();
+                return BadRequest(errors);
+            }
+            catch (Exception ex)
+            {
+                // da sistemare
+            }
+            return View("Views/Home/Index.cshtml");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteSinger(Tokens token, SingerDto singer)
+        {
+            try
+            {
+                using HttpClient httpClient = new()
+                {
+                    BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!)
+                };
+                httpClient.DefaultRequestHeaders.Accept.Clear();
+
+                // Antiforgery token
+                httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
+                httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
+
+                // Jwt token
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
+
+                // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
+                HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/DeleteSinger", singer);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return RedirectToAction("Singers");
                 var errors = await httpResponseMessage.Content.ReadFromJsonAsync<Errors>();
                 return BadRequest(errors);
