@@ -4,7 +4,7 @@ namespace WebAPP.Models
 {
     public class SingerDto 
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string StageName { get; set; } = null!;

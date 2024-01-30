@@ -4,9 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - WebAPP</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebAPP.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/signin.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -36,10 +37,6 @@
         </nav>
     </header>
     
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
     <div class="container">
         <main role="main" class="pb-3">
             <form method="post">
@@ -57,17 +54,20 @@
                         <a class="nav-link disabled" href="#">Disabled</a>
                     </li>
                 </ul>
+                
+                <script src="~/jquery/dist/jquery.js"></script>
                 @RenderBody()
             </form>
         </main>
     </div>
-
+    
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2023 - WebAPP - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
-
+    <partial name="/Views/Shared/_Modal.cshtml"></partial>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -10,7 +10,7 @@
     <nav class="nav flex-column">
         <a class="nav-link active" href="#" onclick="addRow()">Add</a>
         <a class="nav-link disabled" href="#">Modify</a>
-        <a class="nav-link disabled" href="#">Delete</a>
+        <a class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest">Delete</a>
     </nav>
     <article>
         <table class="table table-striped">
@@ -22,6 +22,7 @@
                     <th scope="col">Surname</th>
                     <th scope="col">Age</th>
                     <th scope="col">Email</th>
+                    <th scope="col" style="display:none"></th>
                 </tr>
             </thead>
             <tbody>
@@ -34,11 +35,12 @@
                         <td>@s.Surname</td>
                         <td>@s.Age</td>
                         <td>@s.Email</td>
+                        <td style="display:none">@s.Id</td>
                     </tr>
                 }
             </tbody>
         </table>
-        <textarea class="warningMessage" readonly></textarea>
+        <p class="warningMessage"></p>
     </article>
 </div>
 
@@ -48,14 +50,13 @@
             let cell = $(this).find(':first');
             let index = cell.text();
             let bColor = Number(index) % 2 === 0 ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.01)';
-            let t = $(this).closest("table");
-            let activeColor = $(this).css("background-color") == bColor ? 'rgb(240, 248, 255)' : bColor;
+            let activeColor = $(this).css("background-color") == bColor ? 'yellowgreen' : bColor;
             $(this).css("background-color", activeColor);
         });
 
         $("table tbody").on('keypress', function (e) {
             if (e.which == 13) {
-                validateSinger();
+                addSinger();
             }
         });
     });
@@ -77,7 +78,7 @@
                                               </tr>');
     }
 
-    function validateSinger() {
+    function addSinger() {
         let singer = {
             StageName: "",
             Firstname: "",
@@ -118,12 +119,24 @@
                 let message = $.parseJSON(response.responseText);
                 let e = "";
                 jQuery.each(message.errors, function (i, val) {
-                    e = e + val.errorCode + ". " + val.errorMessage + "\n";
+                    e = e + val.errorCode + ". " + val.errorMessage + "<br>";
                 });
-                $(".warningMessage").val(e);
+                $(".warningMessage").html(e);
                 return false;
             }
         });
+    }
+
+    function deleteSinger() {
+
+        $('table > tbody:last-child > tr > td:last-child').each(function (index) {
+
+
+
+
+        });
+
+
     }
 </script>
 

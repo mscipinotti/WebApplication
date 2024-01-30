@@ -29,6 +29,11 @@ tr:nth-child(even) {
     background-color: rgba(0,0,0,0.01);
 }
 
+tbody tr:hover {
+    /*background-color: yellowgreen;*/
+    outline: thin solid;
+}
+
 .inputText {
     border-width: 0px;
     width: 250px;
