@@ -126,16 +126,17 @@
 
     function deleteSinger() {
         $('table > tbody:last-child > tr > td:last-child').each(function () {
-            var rowSelected = $(this).closest('tr').hasClass('rowSelected');
+            let row = $(this).closest('tr');
+            let rowSelected = row.hasClass('rowSelected');
 
             if (rowSelected) {
                 let singer = {
                     Id: Number($(this).text()),
-                    StageName: "",
-                    Firstname: "",
-                    Surname: "",
-                    Age: "",
-                    Email: "",
+                    StageName: row.find('td:eq(0)').text(),
+                    Firstname: row.find('td:eq(1)').text(),
+                    Surname: row.find('td:eq(2)').text(),
+                    Age: Number(row.find('td:eq(3)').text()),
+                    Email: row.find('td:eq(4)').text(),
                     Account: "@Model.Login"
                 }
                 let token = {
@@ -151,6 +152,11 @@
                     url: "DeleteSinger",
                     type: 'post',
                     success: function (response) {
+                        if (response.success) {
+                            row.fadeOut('slow', function () {
+                                row.remove();
+                            })
+                        }
                         return true;
                     },
                     error: function (response) {

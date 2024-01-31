@@ -29,7 +29,7 @@ namespace WebAPP.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Singers(AccountDto account)
+        public async Task<IActionResult> Singers(Tokens token)
         {
             // HttpContent per la chiamata sul client verso il BE. HttpContext per la risposta sul server verso il client.
             // I due token dell'antiforgery devono comparire in HttpContext.Form quello __RequestVerificationToken, l'altro in HttpContext.Headers.Cookie.
@@ -41,19 +41,18 @@ namespace WebAPP.Controllers
                 // Antiforgery token
                 var content = new FormUrlEncodedContent(new[]
                 {
-                    new KeyValuePair<string, string>("__RequestVerificationToken", account.RequestVerificationToken)
+                    new KeyValuePair<string, string>("__RequestVerificationToken", token.RequestVerificationToken)
                 });
-                content.Headers.Add("Cookie", account.Cookie);
+                content.Headers.Add("Cookie", token.Cookie);
 
                 // Jwt token
-                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {account.JwtToken}");
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.JwtToken}");
 
                 HttpResponseMessage httpResponseMessage = await _httpClient.PostAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Singers", content);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
-                    var singerList = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
-                    var singers = _mapper.Map<SingersDto>(account);
-                    singers.Singers = singerList ?? new List<SingerDto>();
+                    var singers = _mapper.Map<SingersDto>(token);
+                    singers.Singers = await httpResponseMessage.Content.ReadFromJsonAsync<List<SingerDto>>();
                     return View(singers);
                 }
             }
@@ -119,7 +118,7 @@ namespace WebAPP.Controllers
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
 
                 HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(request);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return RedirectToAction("Singers");
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return Json(new { success = true, responseText = "Deleted singer!" });
                 var errors = await httpResponseMessage.Content.ReadFromJsonAsync<Errors>();
                 return BadRequest(errors);
             }

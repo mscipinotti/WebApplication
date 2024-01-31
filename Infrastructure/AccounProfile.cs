@@ -7,8 +7,8 @@ namespace WebAPP.Infrastructure
     {
         public AccountProfile()
         {
-            CreateMap<AccountDto, SingersDto>();
-            CreateMap<SingersDto, AccountDto>();
+            CreateMap<Tokens, SingersDto>();
+            CreateMap<SingersDto, Tokens>();
         }
     }
 }

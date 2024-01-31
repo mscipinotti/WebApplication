@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Home\Prova.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\droplet.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
