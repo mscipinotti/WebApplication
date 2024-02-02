@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using WebAPP.Models;
+using WebAPP.Infrastructure.Models;
 
-namespace WebAPP.Infrastructure
+namespace WebAPP.Infrastructure.Infrastructure
 {
     public class AccountProfile : Profile
     {

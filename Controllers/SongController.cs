@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPP.Controllers
+namespace WebAPP.Infrastructure.Controllers
 {
     public class SongController : Controller
     {

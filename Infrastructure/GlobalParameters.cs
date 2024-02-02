@@ -1,4 +1,4 @@
-﻿namespace WebAPP.Infrastructure
+﻿namespace WebAPP.Infrastructure.Infrastructure
 {
     public static class GlobalParameters
     {

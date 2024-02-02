@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace WebAPP.Infrastructure
+namespace WebAPP.Infrastructure.Infrastructure
 {
     public class CookieAuthenticationEvent : CookieAuthenticationEvents
     {

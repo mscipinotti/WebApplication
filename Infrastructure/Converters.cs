@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace WebAPP.Infrastructure
+namespace WebAPP.Infrastructure.Infrastructure
 {
     public class Int32Converter : JsonConverter<int>
     {

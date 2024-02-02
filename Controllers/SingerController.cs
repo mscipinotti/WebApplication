@@ -5,10 +5,10 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
-using WebAPP.Infrastructure;
-using WebAPP.Models;
+using WebAPP.Infrastructure.Infrastructure;
+using WebAPP.Infrastructure.Models;
 
-namespace WebAPP.Controllers
+namespace WebAPP.Infrastructure.Controllers
 {
     public class SingerController : Controller
     {

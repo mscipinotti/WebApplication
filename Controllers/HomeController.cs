@@ -1,22 +1,28 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
-using System.Net.Http.Headers;
-using WebAPP.Infrastructure;
-using WebAPP.Models;
+using WebAPP.Infrastructure.Infrastructure;
+using WebAPP.Infrastructure.Models;
+using WebAPP.Utilities;
 
-namespace WebAPP.Controllers
+namespace WebAPP.Infrastructure.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : Controller, IActionFilter
     {
+        private readonly IConfiguration _config;
+        private readonly ILogger _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAntiforgery _antiforgery;
         private readonly HttpClient _httpClient;
         private readonly IMapper _mapper;
+        private readonly Dictionary<string, object> _configLogger;
 
-        public HomeController(IHttpContextAccessor httpContextAccessor, IAntiforgery antiforgery, IMapper mapper)
+        public HomeController(IConfiguration config, ILogger logger, IHttpContextAccessor httpContextAccessor, IAntiforgery antiforgery, IMapper mapper)
         {
+            _config = config;
+            _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _antiforgery = antiforgery;
             _httpClient = new HttpClient()
@@ -26,6 +32,10 @@ namespace WebAPP.Controllers
             };
             _httpClient.DefaultRequestHeaders.Accept.Clear();
             _mapper = mapper;
+            _configLogger = new()
+            {
+                { "OperationId", Guid.NewGuid() }
+            };
         }
 
         [HttpGet]
@@ -55,9 +65,9 @@ namespace WebAPP.Controllers
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // da sistemare
+                WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
             }
             return View("Index");
         }
@@ -88,6 +98,32 @@ namespace WebAPP.Controllers
                 // da sistemare
             }
             return View("Index");
+        }
+
+        void IActionFilter.OnActionExecuting(ActionExecutingContext context)
+        {
+            // Questi due metodi permettono di scrivere nel log quando comincia una chiamata e quando termina senza intasare il codice della action stessa e di validare il contesto. Il log è centralizzato
+            //try
+            //{
+            //    if (!context.ModelState.IsValid)
+            //    {
+            //        context.Result = context.ModelState.GetInvalidModelStateObjectResult();
+            //        WriteLog.WriteErrorLog(_logger, _configLogger, $"Invalid context for {context.ActionDescriptor.DisplayName} action");
+            //    }
+
+            //    _configLogger["Action"] = context.ActionDescriptor.DisplayName ?? string.Empty;
+
+            //    using (_logger.BeginScope(_configLogger)) _logger.LogInformation("Calling {Action} ...", _configLogger["Action"]);
+            //}
+            //catch (ArgumentException ex)
+            //{
+            //    _logger.LogError($"Something went wrong, probably token validation: {ex.Message}");
+            //}
+        }
+
+        void IActionFilter.OnActionExecuted(ActionExecutedContext context)
+        {
+            //using (_logger.BeginScope(_configLogger)) _logger.LogInformation("{Action} call ended", _configLogger["Action"]);
         }
     }
 }
