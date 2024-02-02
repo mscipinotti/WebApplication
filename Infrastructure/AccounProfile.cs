@@ -9,6 +9,9 @@ namespace WebAPP.Infrastructure
         {
             CreateMap<Tokens, SingersDto>();
             CreateMap<SingersDto, Tokens>();
+
+            CreateMap<Tokens, SongsDto>();
+            CreateMap<SongsDto, Tokens>();
         }
     }
 }

@@ -7,7 +7,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using WebAPP.Infrastructure;
 using WebAPP.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebAPP.Controllers
 {
@@ -83,15 +82,14 @@ namespace WebAPP.Controllers
 
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
                 HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return RedirectToAction("Singers");
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return View("Singers.cshtml", token);
                 var errors = await httpResponseMessage.Content.ReadFromJsonAsync<Errors>();
                 return BadRequest(errors);
             }
             catch (Exception ex)
             {
-                // da sistemare
+                return BadRequest(ex);
             }
-            return View("Views/Home/Index.cshtml");
         }
 
         [HttpPost]
@@ -99,34 +97,54 @@ namespace WebAPP.Controllers
         {
             try
             {
-                using HttpClient httpClient = new()
-                {
-                    BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!)
-                };
-                httpClient.DefaultRequestHeaders.Accept.Clear();
-
                 var request = new HttpRequestMessage(HttpMethod.Delete, $"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/DeleteSinger")
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(singer), Encoding.UTF8, "application/json")
                 };
 
                 // Antiforgery token
-                httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
-                httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
+                _httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
+                _httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
 
                 // Jwt token
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
 
-                HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(request);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return Json(new { success = true, responseText = "Deleted singer!" });
+                HttpResponseMessage httpResponseMessage = await _httpClient.SendAsync(request);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return Ok();
                 var errors = await httpResponseMessage.Content.ReadFromJsonAsync<Errors>();
                 return BadRequest(errors);
             }
             catch (Exception ex)
             {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Confirm(Tokens token, SingerDto singer)
+        {
+            try
+            {
+                // Antiforgery token
+                _httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
+                _httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
+
+                // Jwt token
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
+
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Songs", singer);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                {
+                    var songs = _mapper.Map<SongsDto>(token);
+                    songs.Songs = await httpResponseMessage.Content.ReadFromJsonAsync<List<SongDto>>();
+                    return PartialView("_ModalDeleteSinger", songs);
+                }
+            }
+            catch (Exception)
+            {
                 // da sistemare
             }
-            return View("Views/Home/Index.cshtml");
+            return View("Index");
         }
     }
 }

@@ -10,8 +10,7 @@
     <nav class="nav flex-column">
         <a class="nav-link active" href="#" onclick="addRow()">Add</a>
         <a class="nav-link disabled" href="#">Modify</a>
-        <a class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest">Delete</a>
-        <a class="nav-link" href="#" onclick="deleteSinger(); return false;">Delete 2</a>
+        <a class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest" onclick="return confirm();">Delete</a>
     </nav>
     <article>
         <table class="table table-striped">
@@ -124,7 +123,7 @@
         });
     }
 
-    function deleteSinger() {
+    function confirm() {
         $('table > tbody:last-child > tr > td:last-child').each(function () {
             let row = $(this).closest('tr');
             let rowSelected = row.hasClass('rowSelected');
@@ -145,18 +144,58 @@
                     RequestVerificationToken: "@Model.RequestVerificationToken",
                     Cookie: "@Model.Cookie",
                     JwtToken: "@Model.JwtToken"
-                };
+                }
 
                 $.ajax({
                     data: { token, singer },
-                    url: "DeleteSinger",
+                    async: true,
+                    url: "Confirm",
                     type: 'post',
                     success: function (response) {
-                        if (response.success) {
-                            row.fadeOut('slow', function () {
-                                row.remove();
-                            })
-                        }
+                        $('#modalRequest').find(".modal-content").html(response);
+                        $('#modalRequest').modal('show');
+                        return true;
+                    },
+                    error: function (response) {
+                        return false;
+                    }
+                });
+            }
+        });
+    }
+
+    function deleteSinger() {
+        $('table > tbody:last-child > tr > td:last-child').each(function () {
+            let row = $(this).closest('tr');
+            let rowSelected = row.hasClass('rowSelected');
+
+            if (rowSelected) {
+                let token = {
+                    Login: "@Model.Login",
+                    Password: "@Model.Password",
+                    RequestVerificationToken: "@Model.RequestVerificationToken",
+                    Cookie: "@Model.Cookie",
+                    JwtToken: "@Model.JwtToken"
+                }
+
+                let singer = {
+                    Id: Number($(this).text()),
+                    StageName: row.find('td:eq(0)').text(),
+                    Firstname: row.find('td:eq(1)').text(),
+                    Surname: row.find('td:eq(2)').text(),
+                    Age: Number(row.find('td:eq(3)').text()),
+                    Email: row.find('td:eq(4)').text(),
+                    Account: "@Model.Login"
+                }
+
+                $.ajax({
+                    data: { token, singer },
+                    url: "deleteSinger",
+                    type: 'post',
+                    success: function () {
+                        row.fadeOut('slow', function () {
+                            row.remove();
+                        });
                         return true;
                     },
                     error: function (response) {
@@ -170,9 +209,8 @@
                     }
                 });
             }
-        });
-
-
+        })
     }
+
 </script>
 

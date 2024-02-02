@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using WebAPP.Infrastructure;
 
 namespace WebAPP.Models
 {
@@ -12,7 +13,7 @@ namespace WebAPP.Models
         public string ErrorMessage { get; set; } = string.Empty;
 
         [JsonPropertyName("attemptedValue")]
-        [JsonConverter(typeof(ObjectPrimitiveConverter))]
+        [JsonConverter(typeof(StringConverter))]
         public string AttemptedValue { get; set; } = string.Empty;
 
         [JsonPropertyName("customState")]
@@ -33,23 +34,11 @@ namespace WebAPP.Models
         public string PropertyName { set; get; } = string.Empty;
 
         [JsonPropertyName("PropertyValue")]
-        [JsonConverter(typeof(ObjectPrimitiveConverter))]
+        [JsonConverter(typeof(StringConverter))]
         public string PropertyValue { set; get; } = string.Empty;
 
         [JsonPropertyName("PropertyPath")]
         public string PropertyPath { set; get; } = string.Empty;
 
-    }
-
-    public class ObjectPrimitiveConverter : JsonConverter<string>
-    {
-        public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) =>
-            reader.TokenType switch
-            {
-                JsonTokenType.String => reader.GetString(),
-                JsonTokenType.Number when reader.TryGetInt32(out var i) => i.ToString(),
-                _ => throw new JsonException()
-            };
-        public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options) => JsonSerializer.Serialize(writer, value, value.GetType());
     }
 }
