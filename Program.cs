@@ -1,5 +1,6 @@
 using NLog;
 using NLog.Web;
+using WebAPP.Infrastructure.Controllers;
 using WebAPP.Infrastructure.Models.Validation;
 
 Logger logger = LogManager.Setup()
@@ -16,12 +17,14 @@ try {
     // NLog: Setup NLog for Dependency injection
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
-
+    builder.Services.AddControllers();
     builder.Services.AddAntiforgery(options =>
                                         {
                                             options.Cookie.Name = "XSRF-TOKEN";
                                             options.HeaderName = "X-XSRF-TOKEN";
                                         })
+                    .AddAutoMapper(typeof(Program))
+                    .AddScoped<Microsoft.Extensions.Logging.ILogger>(s => s.GetRequiredService<ILogger<HomeController>>())
                     .ValidationServices()
                     .AddControllersWithViews();
 
