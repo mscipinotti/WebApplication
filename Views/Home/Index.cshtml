@@ -22,6 +22,10 @@
 <script type="text/javascript">
     $(document).ready(function () {
         let params = new URLSearchParams(document.location.search);
-        $(".warningMessage").html(params.get("Error"));
+        @{
+            string message = string.Empty;
+        if (Model.Errors is not null) message = Model.Errors[0];
+        }
+        $(".warningMessage").html("@message" != "" ? "@message" : params.get("Error"));
     })
 </script>

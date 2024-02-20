@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using WebAPP.Infrastructure.Infrastructure;
 using WebAPP.Infrastructure.Models;
@@ -40,19 +41,20 @@ namespace WebAPP.Infrastructure.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index() => View(); 
+        public IActionResult Index() => View(new Tokens()); 
 
         #region Logon/logoff
         [HttpPost]
-        public async Task<IActionResult> Logon(AccountDto? account)
+        public async Task<IActionResult> Logon(AccountDto account)
         {
+            HttpResponseMessage httpResponseMessage;
             try
             {
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", account);
+                httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", account);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
-                    account = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
+                    account = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
                     if (account is not null)
                     {
                         var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
@@ -67,8 +69,11 @@ namespace WebAPP.Infrastructure.Controllers
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
+                account.Errors = [ ex.Message ];
+                return View($"Index", account);
             }
-            return View("Index");
+            account.Errors = [ httpResponseMessage.StatusCode.ToString() ];
+            return View($"Index", account);
         }
 
         [HttpPost]
