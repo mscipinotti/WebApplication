@@ -8,14 +8,17 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/signin.css" asp-append-version="true"  />
-
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="~/jquery/dist/jquery.js"></script>
   </head>
+
   <body class="d-flex align-items-center py-4 bg-body-tertiary text-center">
     <main class="form-signin w-100 m-auto">
         <form method="post" asp-controller="Home" asp-action="Logon">
             @RenderBody()
         </form>
     </main>
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
   </body>
 </html>

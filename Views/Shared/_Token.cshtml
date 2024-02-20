@@ -1,3 +1,42 @@
 ﻿@model WebAPP.Infrastructure.Models.Tokens
 
-<input type="text" class="inputText" readonly asp-for=Login value="@Model.Login" />
+<div class="navbar-text">
+    <div class="dropdown">
+        <input class="btn dropdown-toggle" type="button" href="#" value="@Model.Login" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Administrator</a></li>
+            <li><a class="dropdown-item" href="#">Power user</a></li>
+            <li><a class="dropdown-item" href="#">User</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" onclick="Logoff();">Logoff</a></li>
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function Logoff() {
+        let token = {
+            Login: "@Model.Login",
+            Password: "@Model.Password",
+            RequestVerificationToken: "@Model.RequestVerificationToken",
+            Cookie: "@Model.Cookie",
+            JwtToken: "@Model.JwtToken",
+            Errors : null
+        };
+
+        $.ajax({
+            async: true,
+            data: { token },
+            url: "Logoff",
+            type: 'post',
+            success: function (response) {
+                window.open('Index', '_self');
+                return true;
+            },
+            error: function (response) {
+                window.open('Index?Error=' + response.responseText, '_self');
+                return false;
+            }
+        });
+    }
+</script>

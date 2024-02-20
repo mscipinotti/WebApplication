@@ -6,9 +6,7 @@
     <title>@ViewData["Title"] - WebAPP</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <script src="~/jquery/dist/jquery.js"></script>
 </head>
-
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -26,9 +24,12 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                     </ul>
-                    <div class="navbar-text">
-                        <partial name="_Token.cshtml" />
-                    </div>
+                    <span class="navbar-text">
+                        @* <partial name="_Token.cshtml" /> *@
+                    </span>
+                    <span class="navbar-text">
+                    prova
+                    </span>
                 </div>
             </div>
         </nav>

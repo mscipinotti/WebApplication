@@ -1,4 +1,4 @@
-﻿@model WebAPP.Infrastructure.Models.AccountDto
+﻿@model WebAPP.Infrastructure.Models.Tokens
 
 @{
     Version? v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -17,3 +17,11 @@
 
 <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
 <p class="mt-5 mb-3 text-body-secondary">Versione @v</p>
+<p class="warningMessage"></p>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        let params = new URLSearchParams(document.location.search);
+        $(".warningMessage").html(params.get("Error"));
+    })
+</script>

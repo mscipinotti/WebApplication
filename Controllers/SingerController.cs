@@ -67,21 +67,9 @@ namespace WebAPP.Infrastructure.Controllers
         {
             try
             {
-                using HttpClient httpClient = new()
-                {
-                    BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!)
-                };
-                httpClient.DefaultRequestHeaders.Accept.Clear();
-
-                // Antiforgery token
-                httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
-                httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
-
-                // Jwt token
-                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
-
+                InitHttpClient(token);
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return View("Singers.cshtml", token);
                 var errors = await httpResponseMessage.Content.ReadFromJsonAsync<Errors>();
                 return BadRequest(errors);
@@ -97,17 +85,12 @@ namespace WebAPP.Infrastructure.Controllers
         {
             try
             {
+                InitHttpClient(token);
+
                 var request = new HttpRequestMessage(HttpMethod.Delete, $"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/DeleteSinger")
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(singer), Encoding.UTF8, "application/json")
                 };
-
-                // Antiforgery token
-                _httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
-                _httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
-
-                // Jwt token
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
 
                 HttpResponseMessage httpResponseMessage = await _httpClient.SendAsync(request);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return Ok();
@@ -125,12 +108,7 @@ namespace WebAPP.Infrastructure.Controllers
         {
             try
             {
-                // Antiforgery token
-                _httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
-                _httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
-
-                // Jwt token
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
+                InitHttpClient(token);
 
                 HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Songs", singer);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
@@ -145,6 +123,16 @@ namespace WebAPP.Infrastructure.Controllers
                 // da sistemare
             }
             return View("Index");
+        }
+
+        private void InitHttpClient(Tokens token)
+        {
+            // Antiforgery token
+            _httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
+            _httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
+
+            // Jwt token
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
         }
     }
 }

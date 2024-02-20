@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
+using System.Net.Http.Headers;
 using WebAPP.Infrastructure.Infrastructure;
 using WebAPP.Infrastructure.Models;
 using WebAPP.Utilities;
@@ -39,11 +40,9 @@ namespace WebAPP.Infrastructure.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
-        {
-            return View(); 
-        }
+        public IActionResult Index() => View(); 
 
+        #region Logon/logoff
         [HttpPost]
         public async Task<IActionResult> Logon(AccountDto? account)
         {
@@ -71,6 +70,27 @@ namespace WebAPP.Infrastructure.Controllers
             }
             return View("Index");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Logoff(Tokens token)
+        {
+            InitHttpClient(token);
+            try
+            {
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logoff", token);
+                if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
+                {
+                    token = (await httpResponseMessage.Content.ReadFromJsonAsync<Tokens?>())!;
+                    return BadRequest(token.Errors![0]);
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
+            }
+            return Ok();
+        }
+        #endregion
 
         [HttpPost]
         public async Task<IActionResult> AddSinger(AccountDto? account, SingerDto singer)
@@ -102,28 +122,37 @@ namespace WebAPP.Infrastructure.Controllers
 
         void IActionFilter.OnActionExecuting(ActionExecutingContext context)
         {
-            // Questi due metodi permettono di scrivere nel log quando comincia una chiamata e quando termina senza intasare il codice della action stessa e di validare il contesto. Il log è centralizzato
-            //try
-            //{
-            //    if (!context.ModelState.IsValid)
-            //    {
-            //        context.Result = context.ModelState.GetInvalidModelStateObjectResult();
-            //        WriteLog.WriteErrorLog(_logger, _configLogger, $"Invalid context for {context.ActionDescriptor.DisplayName} action");
-            //    }
+            // Questi due metodi permettono di scrivere nel log quando comincia una chiamata e quando termina senza intasare il codice della action stessa e di validare il contesto.Il log è centralizzato
+            try
+            {
+                if (!context.ModelState.IsValid)
+                {
+                    //context.Result = context.ModelState.GetInvalidModelStateObjectResult();
+                    WriteLog.WriteErrorLog(_logger, _configLogger, $"Invalid context for {context.ActionDescriptor.DisplayName} action");
+                }
 
-            //    _configLogger["Action"] = context.ActionDescriptor.DisplayName ?? string.Empty;
+                _configLogger["Action"] = context.ActionDescriptor.DisplayName ?? string.Empty;
 
-            //    using (_logger.BeginScope(_configLogger)) _logger.LogInformation("Calling {Action} ...", _configLogger["Action"]);
-            //}
-            //catch (ArgumentException ex)
-            //{
-            //    _logger.LogError($"Something went wrong, probably token validation: {ex.Message}");
-            //}
+                using (_logger.BeginScope(_configLogger)) _logger.LogInformation("Calling {Action} ...", _configLogger["Action"]);
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogError($"Something went wrong, probably token validation: {ex.Message}");
+            }
         }
 
         void IActionFilter.OnActionExecuted(ActionExecutedContext context)
         {
-            //using (_logger.BeginScope(_configLogger)) _logger.LogInformation("{Action} call ended", _configLogger["Action"]);
+            using (_logger.BeginScope(_configLogger)) _logger.LogInformation("{Action} call ended", _configLogger["Action"]);
+        }
+        private void InitHttpClient(Tokens token)
+        {
+            // Antiforgery token
+            _httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
+            _httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
+
+            // Jwt token
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
         }
     }
 }
