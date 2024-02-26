@@ -24,7 +24,7 @@
         let params = new URLSearchParams(document.location.search);
         @{
             string message = string.Empty;
-        if (Model.Errors is not null) message = Model.Errors[0];
+            if (Model.Errors is not null) message = Model.Errors[0];
         }
         $(".warningMessage").html("@message" != "" ? "@message" : params.get("Error"));
     })

@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using WebAPP.Infrastructure.Infrastructure;
+using WebAPP.Extensions;
+using WebAPP.Infrastructure.Filters;
 using WebAPP.Infrastructure.Models;
+using WebAPP.MiddlewareFactory;
 using WebAPP.Utilities;
 
 namespace WebAPP.Infrastructure.Controllers
@@ -21,18 +21,13 @@ namespace WebAPP.Infrastructure.Controllers
         private readonly IMapper _mapper;
         private readonly Dictionary<string, object> _configLogger;
 
-        public HomeController(IConfiguration config, ILogger logger, IHttpContextAccessor httpContextAccessor, IAntiforgery antiforgery, IMapper mapper)
+        public HomeController(IConfiguration config, ILogger logger, IHttpContextAccessor httpContextAccessor, HttpClientFactory httpClientFactory, IAntiforgery antiforgery, IMapper mapper)
         {
             _config = config;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _antiforgery = antiforgery;
-            _httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!)
-
-            };
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            _httpClient = httpClientFactory.Client;
             _mapper = mapper;
             _configLogger = new()
             {
@@ -44,77 +39,74 @@ namespace WebAPP.Infrastructure.Controllers
         public IActionResult Index() => View(new Tokens()); 
 
         #region Logon/logoff
-        [HttpPost]
-        public async Task<IActionResult> Logon(AccountDto account)
+        [HttpPost("Logon")]
+        public async Task<IActionResult> LogonAsync(Tokens token)
         {
-            HttpResponseMessage httpResponseMessage;
             try
             {
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", account);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", token);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
-                    account = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
-                    if (account is not null)
+                    var responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
+                    if (responseAccount is not null)
                     {
                         var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
-                        account.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        account.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
-                                                                      .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
-                                                                      .Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        return View("Views/Dashboard/Dashboard.cshtml", account);
+                        responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                        responseAccount.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
+                                                                          .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
+                                                                          .Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                        _httpClient.SetTokens(responseAccount);
+                        return View("Views/Dashboard/Dashboard.cshtml", responseAccount);
                     }
                 }
+                token.Errors = [ httpResponseMessage.StatusCode.ToString() ];
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
-                account.Errors = [ ex.Message ];
-                return View($"Index", account);
+                token.Errors = [ ex.Message ];
             }
-            account.Errors = [ httpResponseMessage.StatusCode.ToString() ];
-            return View($"Index", account);
+            return View($"Index", token);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Logoff(Tokens token)
+        [HttpPost("Logoff")]
+        public async Task<IActionResult> LogoffAsync(Tokens token)
         {
-            InitHttpClient(token);
             try
             {
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logoff", token);
-                if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
-                {
-                    token = (await httpResponseMessage.Content.ReadFromJsonAsync<Tokens?>())!;
-                    return BadRequest(token.Errors![0]);
-                }
+                _httpClient.SetTokens(token);
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logoff", token);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return Ok();
+                token = (await httpResponseMessage.Content.ReadFromJsonAsync<Tokens?>())!;
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
             }
-            return Ok();
+            return BadRequest(token.Errors![0]);
         }
         #endregion
 
         [HttpPost]
-        public async Task<IActionResult> AddSinger(AccountDto? account, SingerDto singer)
+        public async Task<IActionResult> AddSinger(Tokens? token, SingerDto singer)
         {
             try
             {
+                _httpClient.SetTokens(token);
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", account);
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", token);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
-                    account = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
-                    if (account is not null)
+                    token = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
+                    if (token is not null)
                     {
                         var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
-                        account.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        account.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
+                        token.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                        token.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
                                                                       .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
                                                                       .Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        return View("Views/Dashboard/Dashboard.cshtml", account);
+                        return View("Views/Dashboard/Dashboard.cshtml", token);
                     }
                 }
             }
@@ -125,39 +117,29 @@ namespace WebAPP.Infrastructure.Controllers
             return View("Index");
         }
 
-        void IActionFilter.OnActionExecuting(ActionExecutingContext context)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             // Questi due metodi permettono di scrivere nel log quando comincia una chiamata e quando termina senza intasare il codice della action stessa e di validare il contesto.Il log è centralizzato
             try
             {
                 if (!context.ModelState.IsValid)
                 {
-                    //context.Result = context.ModelState.GetInvalidModelStateObjectResult();
                     WriteLog.WriteErrorLog(_logger, _configLogger, $"Invalid context for {context.ActionDescriptor.DisplayName} action");
                 }
 
                 _configLogger["Action"] = context.ActionDescriptor.DisplayName ?? string.Empty;
 
-                using (_logger.BeginScope(_configLogger)) _logger.LogInformation("Calling {Action} ...", _configLogger["Action"]);
+                using (_logger.BeginScope(_configLogger)) WriteLog.WriteInfoLog(_logger, _configLogger, "Calling {Action} ...");
             }
             catch (ArgumentException ex)
             {
-                _logger.LogError($"Something went wrong, probably token validation: {ex.Message}");
+                WriteLog.WriteInfoLog(_logger, _configLogger, $"Something went wrong, probably token validation: {ex.Message}");
             }
         }
 
-        void IActionFilter.OnActionExecuted(ActionExecutedContext context)
+        public override void OnActionExecuted(ActionExecutedContext context)
         {
-            using (_logger.BeginScope(_configLogger)) _logger.LogInformation("{Action} call ended", _configLogger["Action"]);
-        }
-        private void InitHttpClient(Tokens token)
-        {
-            // Antiforgery token
-            _httpClient.DefaultRequestHeaders.Add("X-XSRF-TOKEN", $"{token.RequestVerificationToken}");
-            _httpClient.DefaultRequestHeaders.Add("Cookie", $"{token.Cookie}");
-
-            // Jwt token
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
+            using (_logger.BeginScope(_configLogger)) WriteLog.WriteInfoLog(_logger, _configLogger, "{Action} call ended");
         }
     }
 }

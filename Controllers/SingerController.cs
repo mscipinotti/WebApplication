@@ -20,7 +20,7 @@ namespace WebAPP.Infrastructure.Controllers
             _antiforgery = antiforgery;
             _httpClient = new HttpClient()
             {
-                BaseAddress = new Uri(GlobalParameters.Config.GetValue<string>("apiURL")!)
+                BaseAddress = new Uri(GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!)
 
             };
             _httpClient.DefaultRequestHeaders.Accept.Clear();
@@ -47,7 +47,7 @@ namespace WebAPP.Infrastructure.Controllers
                 // Jwt token
                 _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {token.JwtToken}");
 
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Singers", content);
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/Singers", content);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     var singers = _mapper.Map<SingersDto>(token);
@@ -69,7 +69,7 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 InitHttpClient(token);
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", singer);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return View("Singers.cshtml", token);
                 var errors = await httpResponseMessage.Content.ReadFromJsonAsync<Errors>();
                 return BadRequest(errors);
@@ -87,7 +87,7 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 InitHttpClient(token);
 
-                var request = new HttpRequestMessage(HttpMethod.Delete, $"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/DeleteSinger")
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/DeleteSinger")
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(singer), Encoding.UTF8, "application/json")
                 };
@@ -110,7 +110,7 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 InitHttpClient(token);
 
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Songs", singer);
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/Songs", singer);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     var songs = _mapper.Map<SongsDto>(token);
