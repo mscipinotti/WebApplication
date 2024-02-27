@@ -1,7 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http;
-using WebAPP.Infrastructure.GlobalParameters;
-using WebAPP.Infrastructure.Models;
+﻿using WebAPP.Infrastructure.GlobalParameters;
 
 namespace WebAPP.MiddlewareFactory
 {

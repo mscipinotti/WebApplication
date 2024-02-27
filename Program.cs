@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.Controllers;
 using WebAPP.Infrastructure.DBContext;
-using WebAPP.Infrastructure.Filters;
 using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.Infrastructure.Models.Validation;
 using WebAPP.MiddlewareFactory;

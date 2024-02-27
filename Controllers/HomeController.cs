@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 using System.Net;
 using WebAPP.Extensions;
-using WebAPP.Infrastructure.Filters;
 using WebAPP.Infrastructure.Models;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Utilities;
@@ -13,7 +14,6 @@ namespace WebAPP.Infrastructure.Controllers
 {
     public class HomeController : Controller, IActionFilter
     {
-        private readonly IConfiguration _config;
         private readonly ILogger _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IAntiforgery _antiforgery;
@@ -21,9 +21,8 @@ namespace WebAPP.Infrastructure.Controllers
         private readonly IMapper _mapper;
         private readonly Dictionary<string, object> _configLogger;
 
-        public HomeController(IConfiguration config, ILogger logger, IHttpContextAccessor httpContextAccessor, HttpClientFactory httpClientFactory, IAntiforgery antiforgery, IMapper mapper)
+        public HomeController(ILogger logger, IHttpContextAccessor httpContextAccessor, HttpClientFactory httpClientFactory, IAntiforgery antiforgery, IMapper mapper)
         {
-            _config = config;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
             _antiforgery = antiforgery;
@@ -36,7 +35,7 @@ namespace WebAPP.Infrastructure.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index() => View(new Tokens()); 
+        public async Task<IActionResult> Index() => await Task.Run(() => View(new Tokens()));
 
         #region Logon/logoff
         [HttpPost("Logon")]
@@ -60,12 +59,12 @@ namespace WebAPP.Infrastructure.Controllers
                         return View("Views/Dashboard/Dashboard.cshtml", responseAccount);
                     }
                 }
-                token.Errors = [ httpResponseMessage.StatusCode.ToString() ];
+                token.Errors = [httpResponseMessage.StatusCode.ToString()];
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
-                token.Errors = [ ex.Message ];
+                token.Errors = [ex.Message];
             }
             return View($"Index", token);
         }
@@ -77,17 +76,19 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 _httpClient.SetTokens(token);
                 HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logoff", token);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.OK) return Ok();
-                token = (await httpResponseMessage.Content.ReadFromJsonAsync<Tokens?>())!;
+                // Il servizio Logoff è targato per ritornare codici 200 e 400 esclusivamente
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
+                token.Errors = [ex.Message];
             }
-            return BadRequest(token.Errors![0]);
+            return View("Index", token);
         }
         #endregion
 
+        #region Singer
         [HttpPost]
         public async Task<IActionResult> AddSinger(Tokens? token, SingerDto singer)
         {
@@ -116,6 +117,7 @@ namespace WebAPP.Infrastructure.Controllers
             }
             return View("Index");
         }
+        #endregion
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
