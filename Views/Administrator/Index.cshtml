@@ -28,9 +28,20 @@
                     <tr>
                         <th scope="row">@Model.Accounts.IndexOf(a)</th>
                         <td>@a.Login</td>
-                        <td>@a.Password</td>
+                        <td>@(Model.Login == a.Login ? a.Password : "******")</td>
                         <td>@a.ExpirationDate</td>
-                        <td>@a.Enabled</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="Status@Model.Login" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @a.Status
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="Status@Model.Login">
+                                    <a class="dropdown-item" href="#">Inactive</a>
+                                    <a class="dropdown-item" href="#">Active</a>
+                                    <a class="dropdown-item" href="#">ChangePassword</a>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -38,3 +49,11 @@
         <p class="warningMessage"></p>
     </article>
 </div>
+
+<script type="text/javascript">
+    $(function () {
+        $(".dropdown-menu").on('click', 'a', function () {
+            $(this).parents('.dropdown').find('button').text($(this).text());
+        });
+    });
+</script>
