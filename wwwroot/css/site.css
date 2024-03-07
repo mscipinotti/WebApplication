@@ -38,9 +38,24 @@ tbody tr:hover {
     outline: thin solid;
 }
 
+.hugeInputText {
+    border-width: 0px;
+    width: 300px;
+}
+
 .inputText {
     border-width: 0px;
     width: 250px;
+}
+
+.midInputText {
+    border-width: 0px;
+    width: 200px;
+}
+
+.slimInputText {
+    border-width: 0px;
+    width: 150px;
 }
 
 .warningMessage {

@@ -15,17 +15,13 @@ namespace WebAPP.Infrastructure.Controllers
     public class HomeController : Controller, IActionFilter
     {
         private readonly ILogger _logger;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IAntiforgery _antiforgery;
         private readonly HttpClient _httpClient;
         private readonly IMapper _mapper;
         private readonly Dictionary<string, object> _configLogger;
 
-        public HomeController(ILogger logger, IHttpContextAccessor httpContextAccessor, HttpClientFactory httpClientFactory, IAntiforgery antiforgery, IMapper mapper)
+        public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper)
         {
             _logger = logger;
-            _httpContextAccessor = httpContextAccessor;
-            _antiforgery = antiforgery;
             _httpClient = httpClientFactory.Client;
             _mapper = mapper;
             _configLogger = new()
