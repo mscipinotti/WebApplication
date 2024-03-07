@@ -19,7 +19,7 @@
                     <th scope="col">Username</th>
                     <th scope="col">Password</th>
                     <th scope="col">ExpirationDate</th>
-                    <th scope="col">Enabled</th>
+                    <th scope="col">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,14 +32,12 @@
                         <td>@a.ExpirationDate</td>
                         <td>
                             <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="Status@Model.Login" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    @a.Status
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="Status@Model.Login">
-                                    <a class="dropdown-item" href="#">Inactive</a>
-                                    <a class="dropdown-item" href="#">Active</a>
-                                    <a class="dropdown-item" href="#">ChangePassword</a>
-                                </div>
+                                <input class="btn dropdown-toggle" type="button" href="#" value="@a.Status" id="Status1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Inactive</a></li>
+                                    <li><a class="dropdown-item" href="#">Active</a></li>
+                                    <li><a class="dropdown-item" href="#">ChangePassword</a></li>
+                                </ul>
                             </div>
                         </td>
                     </tr>
@@ -54,6 +52,26 @@
     $(function () {
         $(".dropdown-menu").on('click', 'a', function () {
             $(this).parents('.dropdown').find('button').text($(this).text());
+        });
+
+
+        $('#Statu1').click(function () {
+            alert('chiamata');
+            var pos = $(this).closest('td').position();
+            var ele = $(this).siblings('div.dropdown-menu');
+            var width = $(document).width() - 200;
+
+            if (width > pos.left) {
+                $(ele).css({
+                    left: pos.left,
+                    top: (pos.top + 20)
+                });
+            } else {
+                $(ele).css({
+                    left: (pos.left - 180),
+                    top: (pos.top + 20)
+                });
+            }
         });
     });
 </script>

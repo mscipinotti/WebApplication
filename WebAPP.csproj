@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Prova.cshtml" />
+    <Content Remove="wwwroot\lib\bootstrap\bootstrap.css" />
+    <Content Remove="wwwroot\lib\bootstrap\bootstrap.css.map" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +35,8 @@
 
   <ItemGroup>
     <Folder Include="Views\Song\" />
+    <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
+    <Folder Include="wwwroot\lib\bootstrap\dist\css\" />
   </ItemGroup>
 
   <ItemGroup>
