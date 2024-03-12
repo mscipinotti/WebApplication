@@ -40,5 +40,41 @@ namespace WebAPP.Infrastructure.Controllers
             }
             return View(token);
         }
+
+        [HttpPost("AddAccount")]
+        public async Task<IActionResult> AddAccountAsync(AccountsDto account)
+        {
+            try
+            {
+                _httpClient.SetTokens(account);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/AddAccount", account);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
+                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
+            }
+            catch (Exception ex)
+            {
+                WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
+                account.Errors = [ex.Message];
+            }
+            return View(account);
+        }
+
+        [HttpPost("DeleteAccount")]
+        public async Task<IActionResult> DeleteUserAsync(AccountDto account)
+        {
+            try
+            {
+                _httpClient.SetTokens(account);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/DeleteAccount", account);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
+                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
+            }
+            catch (Exception ex)
+            {
+                WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
+                account.Errors = [ex.Message];
+            }
+            return View(account);
+        }
     }
 }
