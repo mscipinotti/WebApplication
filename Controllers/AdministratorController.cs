@@ -42,21 +42,21 @@ namespace WebAPP.Infrastructure.Controllers
         }
 
         [HttpPost("AddAccount")]
-        public async Task<IActionResult> AddAccountAsync(AccountsDto account)
+        public async Task<IActionResult> AddAccountAsync([FromBody] AccountsDto accountsDto)
         {
             try
             {
-                _httpClient.SetTokens(account);
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/AddAccount", account);
+                _httpClient.SetTokens(accountsDto);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/AddAccount", accountsDto);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
                 return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
-                account.Errors = [ex.Message];
+                accountsDto.Errors = [ex.Message];
             }
-            return View(account);
+            return View(accountsDto);
         }
 
         [HttpPost("DeleteAccount")]
