@@ -1,8 +1,5 @@
-﻿using NuGet.Common;
-using System.Net.Http.Headers;
-using WebAPP.Infrastructure.GlobalParameters;
+﻿using System.Net.Http.Headers;
 using WebAPP.Infrastructure.Models;
-using WebAPP.MiddlewareFactory;
 
 namespace WebAPP.Extensions
 {
