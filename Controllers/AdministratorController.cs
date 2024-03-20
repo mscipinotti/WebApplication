@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http;
 using WebAPP.Extensions;
@@ -51,10 +52,10 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 _httpClient.SetTokens(accountsDto);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/AddAccounts", accountsDto, _ct.Token);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
+                if (httpResponseMessage.StatusCode != HttpStatusCode.OK) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
                 return await Task.Run(async () => View("Index", await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
             }
-            catch (Exception ex)
+            catch (BadHttpRequestException ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
                 accountsDto.Errors = [ex.Message];
@@ -69,7 +70,7 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 _httpClient.SetTokens(accountsDto);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/ModifyAccount", accountsDto, _ct.Token);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
+                if (httpResponseMessage.StatusCode != HttpStatusCode.OK) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
                 return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
             }
             catch (Exception ex)
