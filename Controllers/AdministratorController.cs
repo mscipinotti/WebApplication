@@ -52,14 +52,14 @@ namespace WebAPP.Infrastructure.Controllers
                 _httpClient.SetTokens(accountsDto);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/AddAccounts", accountsDto, _ct.Token);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
-                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
+                return await Task.Run(async () => View("Index", await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
                 accountsDto.Errors = [ex.Message];
             }
-            return View(accountsDto);
+            return BadRequest(accountsDto);
         }
 
         [HttpPost("ModifyAccount")]

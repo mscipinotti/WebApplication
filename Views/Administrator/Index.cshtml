@@ -74,7 +74,9 @@
 
         $("table tbody").on('keypress', function (e) {
             if (e.which == 13) {
-                addAccount();
+                return addAccount();
+                // e.preventDefault();
+                // return false;
             }
         });
     });
@@ -98,7 +100,7 @@
                             '<li><a class="dropdown-item" href = "#">ChangePassword</a></li>' +
                         '</ul>' +
                     '</div>';
-        $('table > tbody:last-child').append('<tr class="rowSelected">                                                  \
+        $('table > tbody:last-child').append('<tr class="rowSelected">                              \
                                                 <th scope="row">' + index + '</th>                  \
                                                 <td class="hugeInputText">' + email + '</td>        \
                                                 <td class="inputText">' + name + '</td>             \
@@ -114,6 +116,7 @@
     }
 
     function addAccount() {
+        let addAccountReturn = true;
         let row = 0;
         let text;
         let accountsDto = {
@@ -135,7 +138,6 @@
                 Password: '',
                 ExpirationDate: ''
             };
-            // accountsDto[row] = new Array();
             $(this).find('td input').each(function (index) {
                 switch (index) {
                     case 0: accountDto.Email = $(this).val();
@@ -166,21 +168,21 @@
             url: "AddAccounts",
             type: 'post',
             dataType: 'json',
+            async: false,
             data: JSON.stringify(accountsDto),
-            contentType: 'application/json; charset=utf-8',
-            success: function (response) {
-                return true;
-            },
-            error: function (response) {
-                let message = $.parseJSON(response.responseText);
-                let e = "";
-                jQuery.each(message.errors, function (i, val) {
-                    e = e + val.errorCode + ". " + val.errorMessage + "<br>";
-                });
-                $(".warningMessage").html(e);
-                return false;
-            }
+            contentType: 'application/json; charset=utf-8'
+        }).fail(function (jqXHR) {
+            let response = $.parseJSON(jqXHR.responseText);
+            let message = "";
+            jQuery.each(response.errors, function (i, val) {
+                i = parseInt(i + 1);
+                message = message + i + ". " + val + "<br>";
+            });
+            $(".warningMessage").html(message);
+            addAccountReturn = false;
         });
+
+        return addAccountReturn;
     }
 
     function modifyRows() {
