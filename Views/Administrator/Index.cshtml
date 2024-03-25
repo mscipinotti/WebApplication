@@ -40,7 +40,7 @@
                         <td class="hugeInputText">@a.Email</td>
                         <td class="inputText">@a.Name</td>
                         <td class="inputText">@a.Surname</td>
-                        <td class="inputText">@a.Cf</td>
+                        <td class="inputText">@a.FC</td>
                         <td class="inputText">@a.Age</td>
                         <td class="inputText">******</td>
                         <td class="inputText">@a.ExpirationDate</td>
@@ -75,8 +75,6 @@
         $("table tbody").on('keypress', function (e) {
             if (e.which == 13) {
                 return addAccount();
-                // e.preventDefault();
-                // return false;
             }
         });
     });
@@ -133,7 +131,7 @@
                 Email: '',
                 Name: '',
                 Surnme: '',
-                Cf: '',
+                FC: '',
                 Age: 0,
                 Password: '',
                 ExpirationDate: ''
@@ -146,7 +144,7 @@
                        break;
                     case 2: accountDto.Surname = $(this).val();
                        break;
-                    case 3: accountDto.Cf = $(this).val();
+                    case 3: accountDto.FC = $(this).val();
                         break;
                     case 4: accountDto.Age = $(this).val();
                         break;

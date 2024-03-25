@@ -18,6 +18,11 @@ namespace WebAPP.Infrastructure.Controllers
         private readonly HttpClient _httpClient;
         private readonly IMapper _mapper;
         private readonly Dictionary<string, object> _configLogger;
+        private readonly Tokens _initialToken = new ()
+        {
+            Login = string.Empty,
+            Password = string.Empty
+        };
 
         public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper)
         {
@@ -31,7 +36,7 @@ namespace WebAPP.Infrastructure.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index() => await Task.Run(() => View(new Tokens()));
+        public async Task<IActionResult> Index() => await Task.Run(() => View(_initialToken));
 
         #region Logon/logoff
         [HttpPost("Logon")]
