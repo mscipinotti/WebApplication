@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Net.Http;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.Models;
 using WebAPP.MiddlewareFactory;
@@ -41,8 +39,8 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
                 token.Errors = [ex.Message];
+                return View(token);
             }
-            return View(token);
         }
 
         [HttpPost("AddAccounts")]
@@ -52,15 +50,18 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 _httpClient.SetTokens(accountsDto);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/AddAccounts", accountsDto, _ct.Token);
-                if (httpResponseMessage.StatusCode != HttpStatusCode.OK) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    accountsDto.Errors = (await httpResponseMessage!.Content.ReadFromJsonAsync<AccountsDto>())!.Errors;
+                    return BadRequest(accountsDto);
+                }
                 return await Task.Run(async () => View("Index", await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
             }
-            catch (BadHttpRequestException ex)
+            catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
-                accountsDto.Errors = [ex.Message];
+                return View("Index", accountsDto);
             }
-            return BadRequest(accountsDto);
         }
 
         [HttpPost("ModifyAccount")]

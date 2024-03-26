@@ -23,12 +23,12 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Fiscal Code</th>
-                    <th scope="col">Age</th>
-                    <th scope="col">Password</th>
-                    <th scope="col">Expiration Date</th>
+                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="max 16 chars">Name</div></th>
+                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="max 16 chars">Surname</div></th>
+                    <th scope="col">Fiscal Code<div data-toggle="tooltip" data-placement="top" title="16 chars requested"></div></th>
+                    <th scope="col">Age<div data-toggle="tooltip" data-placement="top" title="min 15 years"></div></th>
+                    <th scope="col">Password<div data-toggle="tooltip" data-placement="top" title="min 8 chars"></div></th>
+                    <th scope="col">Expiration Date<div data-toggle="tooltip" data-placement="top" title="not before today"></div></th>
                     <th scope="col">Status</th>
                 </tr>
             </thead>
@@ -77,7 +77,14 @@
                 return addAccount();
             }
         });
-    });
+
+        let params = new URLSearchParams(document.location.search);
+        @{
+            string message = string.Empty;
+            if (Model.Errors is not null) message = Model.Errors[0];
+        }
+        $(".warningMessage").html("@message" != "" ? "@message" : params.get("Error"));
+        });
 
     function addRow() {
         $('#Modify').prop('disabled', true);
@@ -170,9 +177,9 @@
             data: JSON.stringify(accountsDto),
             contentType: 'application/json; charset=utf-8'
         }).fail(function (jqXHR) {
-            let response = $.parseJSON(jqXHR.responseText);
+            let accountsDto = $.parseJSON(jqXHR.responseText);
             let message = "";
-            jQuery.each(response.errors, function (i, val) {
+            jQuery.each(accountsDto.errors, function (i, val) {
                 i = parseInt(i + 1);
                 message = message + i + ". " + val + "<br>";
             });
