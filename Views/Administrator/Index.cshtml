@@ -134,6 +134,8 @@
         };
 
         $('table > tbody:last-child > tr.rowSelected').each(function (e) {
+            waitingDialog.show();
+
             let accountDto = {
                 Email: '',
                 Name: '',
@@ -187,6 +189,9 @@
             addAccountReturn = false;
         });
 
+        setTimeout(function () { waitingDialog.hide(); }, 2000);
+        // Obbligatorio chiamare la chiusura dello spinner modale con il setTimeout altrimenti rimane visibile
+        
         return addAccountReturn;
     }
 
