@@ -23,11 +23,11 @@ body {
 
 /* Le seguenti 2 proprietà non vengono applicate se non si sovrascrive bootstrap con .rowSelected sulla riga ove si è fatto click */
     tr:nth-child(odd) {
-        background-color: yellowgreen;
+        background-color:lightgreen;
     }
 
     tr:nth-child(even) {
-        background-color: yellowgreen;
+        background-color: lightgreen;
     }
 
     .rowSelected {
