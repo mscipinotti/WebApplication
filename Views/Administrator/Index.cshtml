@@ -13,8 +13,8 @@
 
 <div style="display: flex">
     <nav class="nav flex-column">
-        <a id="Add" class="nav-link active" href="#" onclick="addRow();">Add</a>
-        <a id="Delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest" onclick="return confirm();">Delete</a>
+        <a id="add" class="nav-link active" href="#" onclick="addRow();">Add</a>
+        <a id="delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest" onclick="return confirm();">Delete</a>
     </nav>
     <article>
         <table class="table table-striped">
@@ -45,11 +45,11 @@
                         <td class="slimInputText">@a.ExpirationDate</td>
                         <td class="midInputText">
                             <div class="dropdown">
-                                <a class="btn dropdown-toggle" type="button" role="button" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@a.Status</a>
+                                <a class="btn dropdown-toggle" type="button" role="button" href="#" data-toggle="dropdown" data-itemid="" aria-haspopup="true" aria-expanded="false">@a.Status</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Inactive</a></li>
-                                    <li><a class="dropdown-item" href="#">Active</a></li>
-                                    <li><a class="dropdown-item" href="#">ChangePassword</a></li>
+                                    <li><a class="dropdown-item" href="#" data-itemid="1">Inactive</a></li>
+                                    <li><a class="dropdown-item" href="#" data-itemid="2">Active</a></li>
+                                    <li><a class="dropdown-item" href="#" data-itemid="3">ChangePassword</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -92,6 +92,7 @@
         $("tbody").on('click', 'tr.rowSelected .dropdown-menu .dropdown-item', function () {
             $(this).closest(".dropdown")
                    .find("a:first")
+                   .data('itemid', $(this).data('itemid'))
                    .text($(this).text());
         });
 
@@ -108,8 +109,8 @@
     });
 
     function addRow() {
+        $("#delete").attr('disabled', 'disabled');
         $("table").hide();
-        $('#Modify').prop('disabled', true);
 
         let index = Number($('table > tbody:last-child > tr:last-child > th').text()) + 1;
         let email = '<input type="email" class="hugeInputText" contenteditable="true" placeholder="name@example.com" />';
@@ -161,7 +162,7 @@
             let accountDto = {
                 Email: '',
                 Name: '',
-                Surnme: '',
+                Surname: '',
                 FC: '',
                 Age: 0,
                 Password: '',
@@ -224,8 +225,73 @@
     }
 
     function confirmed() {
-        $('.modal-body p').html("Cancellare gli account evidenziati?");
-        $('#modalRequest').modal('show');
-        return true;
+        let addAccountReturn = true;
+        let row = 0;
+        let text;
+        let accountsDto = {
+            Login: "@Model.Login",
+            Password: "@Model.Password",
+            RequestVerificationToken: "@Model.RequestVerificationToken",
+            Cookie: "@Model.Cookie",
+            JwtToken: "@Model.JwtToken",
+            Accounts: []
+        };
+
+        $('table > tbody:last-child > tr.rowSelected').each(function (e) {
+            waitingDialog.show();
+
+            let accountDto = {
+                Email: $(this).find('td:first').html(),
+                Name: '',
+                Surname: '',
+                FC: '',
+                Age: 0,
+                Password: '',
+                ExpirationDate: ''
+            };
+            $(this).find('td input').each(function (index) {
+                switch (index) {
+                    case 0: accountDto.Name = $(this).val();
+                        break;
+                    case 1: accountDto.Surname = $(this).val();
+                        break;
+                    case 2: accountDto.FC = $(this).val();
+                        break;
+                    case 3: accountDto.Age = $(this).val();
+                        break;
+                    case 4: accountDto.Password = $(this).val();
+                        break;
+                    case 5: accountDto.ExpirationDate = $(this).val();
+                        break;
+                }
+            });
+            var prova = $(this).find('td div > a');
+            accountDto.Status = $(this).find('td div > a').data('itemid');
+            accountsDto.Accounts.push(accountDto);
+            row = row + 1;
+        });
+
+        $.ajax({
+            url: "DeleteAccounts",
+            type: 'post',
+            dataType: 'json',
+            async: false,
+            data: JSON.stringify(accountsDto),
+            contentType: 'application/json; charset=utf-8'
+        }).fail(function (jqXHR) {
+            let accountsDto = $.parseJSON(jqXHR.responseText);
+            let message = "";
+            jQuery.each(accountsDto.errors, function (i, val) {
+                i = parseInt(i + 1);
+                message = message + i + ". " + val + "<br>";
+            });
+            $(".warningMessage").html(message);
+            addAccountReturn = false;
+        });
+
+        setTimeout(function () { waitingDialog.hide(); }, 2000);
+        // Obbligatorio chiamare la chiusura dello spinner modale con il setTimeout altrimenti rimane visibile
+
+        return addAccountReturn;
     }
 </script>

@@ -82,13 +82,13 @@ namespace WebAPP.Infrastructure.Controllers
             return View(accountsDto);
         }
 
-        [HttpPost("DeleteAccount")]
-        public async Task<IActionResult> DeleteUserAsync(AccountDto account)
+        [HttpPost("DeleteAccounts")]
+        public async Task<IActionResult> DeleteAccountsAsync(AccountDto account)
         {
             try
             {
                 _httpClient.SetTokens(account);
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/DeleteAccount", account);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/DeleteAccounts", account);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
                 return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
             }
