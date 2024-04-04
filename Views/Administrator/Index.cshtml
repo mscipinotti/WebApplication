@@ -14,7 +14,6 @@
 <div style="display: flex">
     <nav class="nav flex-column">
         <a id="Add" class="nav-link active" href="#" onclick="addRow();">Add</a>
-        <a id="Modify" class="nav-link disabled" href="#" onclick="modifyRows();">Modify</a>
         <a id="Delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest" onclick="return confirm();">Delete</a>
     </nav>
     <article>
@@ -37,7 +36,7 @@
                 {
                     <tr>
                         <th scope="row">@Model.Accounts.IndexOf(a)</th>
-                        <td class="hugeInputText firstTd" style="cursor:grab">@a.Email</td>
+                        <td class="hugeInputText" style="cursor:grab">@a.Email</td>
                         <td class="inputText">@a.Name</td>
                         <td class="inputText">@a.Surname</td>
                         <td class="midInputText">@a.FC</td>
@@ -97,9 +96,7 @@
         });
 
         $("table tbody").on('keypress', function (e) {
-            if (e.which == 13) {
-                return addAccount();
-            }
+            if (e.which == 13) return addAccount();
         });
 
         let params = new URLSearchParams(document.location.search);
@@ -190,7 +187,7 @@
             });
             text = $(this).find('td div > a').html();
             $.each($(this).find('td div > ul li a'), function (index, item) {
-                if (item.innerHTML == text) accountDto.Status = index;
+                if (item.innerHTML == text) accountDto.Status = parseInt(index) + 1;
             });
             accountsDto.Accounts.push(accountDto);
             row = row + 1;
@@ -220,7 +217,15 @@
         return addAccountReturn;
     }
 
-    function modifyRows() {
-        $('#Add').prop('disabled', true);
+    function confirm() {
+        $('.modal-body p').html("Cancellare gli account evidenziati?");
+        $('#modalRequest').modal('show');
+        return true;
+    }
+
+    function confirmed() {
+        $('.modal-body p').html("Cancellare gli account evidenziati?");
+        $('#modalRequest').modal('show');
+        return true;
     }
 </script>
