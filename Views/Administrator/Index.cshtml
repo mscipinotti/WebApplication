@@ -45,7 +45,7 @@
                         <td class="slimInputText">@a.ExpirationDate</td>
                         <td class="midInputText">
                             <div class="dropdown">
-                                <a class="btn dropdown-toggle" type="button" role="button" href="#" data-toggle="dropdown" data-itemid="" aria-haspopup="true" aria-expanded="false">@a.Status</a>
+                                <a class="btn dropdown-toggle" type="button" role="button" href="#" data-toggle="dropdown" data-itemid="@Convert.ToByte(a.Status)" aria-haspopup="true" aria-expanded="false">@a.Status</a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="#" data-itemid="1">Inactive</a></li>
                                     <li><a class="dropdown-item" href="#" data-itemid="2">Active</a></li>
@@ -73,8 +73,14 @@
                         let l = ["inputText", "inputText", "midInputText", "slimInputText", "inputText", "slimInputText"];
                         let p = ["Name", "Surname", "Fiscale Code", "Age", "Password", "Expiration Date"];
                         let t = ["text", "text", "text", "number", "password", "date"];
+                        let data = $(this).text();
+                        let itemid = "";
+                        if (index == 6) {
+                            let tmpDate = new Date($(this).text());
+                            data = tmpDate.getFullYear() + '-' + (tmpDate.getMonth() + 1).toString().padStart(2, '0') + '-' + tmpDate.getDate().toString().padStart(2, '0');
+                        }
                         if (e.length == 0) {
-                            let html = '<input type="' + t[index - 1] + '" class="'+ l[index - 1] + '" placeholder="' + p[index - 1] + '" value="' + $(this).text() + '" />';
+                            let html = '<input type="' + t[index - 1] + '" class="' + l[index - 1] + '" placeholder="' + p[index - 1] + '" value="' + data + '" />';
                             $(this).html(html);
                         }
                         else {
@@ -121,7 +127,7 @@
         let password = '<input type="password" class="inputText" placeholder="password" />';
         let expirationDate = '<input type="date" class="slimInputText" value="expirationDate" />';
         let status = '<div class="dropdown">' +
-                        '<a class="btn dropdown-toggle" type = "button" role = "button" href = "#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Inactive</a>' +
+                        '<a class="btn dropdown-toggle" type = "button" role = "button" href = "#" data-toggle="dropdown" data-itemid="" aria-haspopup="true" aria-expanded="false">Inactive</a>' +
                         '<ul class="dropdown-menu">' +
                             '<li><a class="dropdown-item" href = "#">Inactive</a></li>' +
                             '<li><a class="dropdown-item" href = "#">Active</a></li>' +
@@ -265,7 +271,6 @@
                         break;
                 }
             });
-            var prova = $(this).find('td div > a');
             accountDto.Status = $(this).find('td div > a').data('itemid');
             accountsDto.Accounts.push(accountDto);
             row = row + 1;
@@ -291,7 +296,10 @@
 
         setTimeout(function () { waitingDialog.hide(); }, 2000);
         // Obbligatorio chiamare la chiusura dello spinner modale con il setTimeout altrimenti rimane visibile
+        
+        $('#modalRequest').modal('hide');
 
         return addAccountReturn;
     }
+
 </script>

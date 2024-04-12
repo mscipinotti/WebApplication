@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Infrastructure\Converters.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Views\Home\Prova.cshtml" />
     <Content Remove="wwwroot\lib\bootstrap\bootstrap.css" />
     <Content Remove="wwwroot\lib\bootstrap\bootstrap.css.map" />
