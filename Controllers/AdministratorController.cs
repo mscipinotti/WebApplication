@@ -94,11 +94,7 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 _httpClient.SetTokens(accountsDto);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/DeleteAccounts", accountsDto, _ct.Token);
-                if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
-                {
-                    accountsDto = await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>();
-                    return BadRequest(accountsDto);
-                }
+                if (httpResponseMessage.StatusCode != HttpStatusCode.OK) return BadRequest(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>());
             }
             catch (Exception ex)
             {
@@ -106,7 +102,7 @@ namespace WebAPP.Infrastructure.Controllers
                 accountsDto.Errors = [ex.Message];
                 return BadRequest(accountsDto);
             }
-            return await Task.Run(() => View(accountsDto));
+            return await Task.Run(() => View("Index", accountsDto));
         }
     }
 }

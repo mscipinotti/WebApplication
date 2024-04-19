@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Resources\Views\Shared\_Culture\**" />
+    <Content Remove="Views\Resources\Views\Shared\_Culture\**" />
+    <EmbeddedResource Remove="Views\Resources\Views\Shared\_Culture\**" />
+    <None Remove="Views\Resources\Views\Shared\_Culture\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Infrastructure\Converters.cs" />
   </ItemGroup>
 
@@ -45,6 +52,21 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebApp.Infrastructure\WebApp.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\Home\Index\resources\Index.en.resx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Home\Index\resources\Index.it.resx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Resources\Views\Shared\_Culture.en.resx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Resources\Views\Shared\_Culture.resx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

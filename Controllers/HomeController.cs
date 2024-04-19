@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using System.Net;
 using WebAPP.Extensions;
@@ -18,13 +19,14 @@ namespace WebAPP.Infrastructure.Controllers
         private readonly HttpClient _httpClient;
         private readonly IMapper _mapper;
         private readonly Dictionary<string, object> _configLogger;
+        private readonly IStringLocalizer<HomeController> _localizer;
         private readonly Tokens _initialToken = new ()
         {
             Login = string.Empty,
             Password = string.Empty
         };
 
-        public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper)
+        public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<HomeController> localizer)
         {
             _logger = logger;
             _httpClient = httpClientFactory.Client;
@@ -33,6 +35,7 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 { "OperationId", Guid.NewGuid() }
             };
+            _localizer = localizer;
         }
 
         [HttpGet]

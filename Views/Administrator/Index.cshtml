@@ -41,7 +41,7 @@
                         <td class="inputText">@a.Surname</td>
                         <td class="midInputText">@a.FC</td>
                         <td class="slimInputText">@a.Age</td>
-                        <td class="inputText">******</td>
+                        <td class="inputText">********</td>
                         <td class="slimInputText">@a.ExpirationDate</td>
                         <td class="midInputText">
                             <div class="dropdown">
@@ -76,7 +76,8 @@
                         let data = $(this).text();
                         let itemid = "";
                         if (index == 6) {
-                            let tmpDate = new Date($(this).text());
+                            // Il formato delle date sul browser deve essere italiano
+                            let tmpDate = new Date($(this).text().substr(6, 4), parseInt($(this).text().substr(3, 2)) - 1, $(this).text().substr(0, 2));
                             data = tmpDate.getFullYear() + '-' + (tmpDate.getMonth() + 1).toString().padStart(2, '0') + '-' + tmpDate.getDate().toString().padStart(2, '0');
                         }
                         if (e.length == 0) {

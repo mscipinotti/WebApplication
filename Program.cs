@@ -1,6 +1,10 @@
+using Humanizer;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Web;
+using System.Globalization;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.Controllers;
 using WebAPP.Infrastructure.DBContext;
@@ -9,6 +13,7 @@ using WebAPP.Infrastructure.Models.Validation;
 using WebAPP.MiddlewareFactory;
 
 namespace WebAPP;
+// Preconditions: 1) Il browser deve essere configurato per visualizzare le date nel formato italiano (gg/mm/YYYY).
 public class Program
 {
     protected Program() { }
@@ -39,9 +44,22 @@ public class Program
                             .AddScoped<Microsoft.Extensions.Logging.ILogger>(s => s.GetRequiredService<ILogger<HomeController>>())
                             .AddScoped<HttpClientFactory>()
                             .AddDbContext<DiscographyContext>(options => options.UseSqlServer(GlobalParameters.Config.GetConnectionString("Discography")))
+                            .AddLocalization(options => options.ResourcesPath = "Views/Resources")
+                            .Configure<RequestLocalizationOptions>(options =>
+                            {
+                                var cultures = new List<CultureInfo> {
+                                    new ("en"),
+                                    new ("it")
+                                };
+                                options.DefaultRequestCulture = new RequestCulture("it");
+                                options.SupportedCultures = cultures;
+                                options.SupportedUICultures = cultures;
+                            })
                             .ValidationServices()
                             .AddControllersWithViews();
-
+            builder.Services.AddMvc()
+                            .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
+                            .AddDataAnnotationsLocalization();
             // Per accedere ai coocky
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -60,6 +78,7 @@ public class Program
                .UseRouting()
                .UseAuthentication()
                .UseAuthorization()
+               .UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value)
                .UseCustomMiddlewareExtension();
 
             app.MapControllerRoute(
