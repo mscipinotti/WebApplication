@@ -1,31 +1,31 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <partial name="_head" />
+    <partial name="_Head" />
 </head>
 <body>
     <form method="post">
-        <partial name="_header" />
+        <partial name="_Header" />
         <div class="container">
             <main role="main" class="pb-3">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Active</a>
-                        </li>
-                        <li class="nav-item">
-                            <input type="submit" class="nav-link" asp-controller="Singer" asp-action="Singers" value="Singers" />
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Songs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Disabled</a>
-                        </li>
-                    </ul>
-                    @RenderBody()
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Active</a>
+                    </li>
+                    <li class="nav-item">
+                        <input type="submit" class="nav-link" asp-controller="Singer" asp-action="Singers" value="Singers" />
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Songs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                </ul>
+                @RenderBody()
+                <partial name="_Footer" />
             </main>
         </div>
     </form>
-    <partial name="_footer" />
     </body>
 </html>

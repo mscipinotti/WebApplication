@@ -1,10 +1,13 @@
-﻿<!doctype html>
-<html lang="en" data-bs-theme="auto">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+
+<!doctype html>
+<html data-bs-theme="auto">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Marco Scipinotti">
-    <title>Graph Drawing Algorithms</title>
+    <title>@localizer["GDA"]</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/signin.css" asp-append-version="true"  />
@@ -17,7 +20,8 @@
         <form method="post" asp-controller="Home" asp-action="Logon">
             @RenderBody()
         </form>
-        <partial name="_footer" />
+        <partial name="_Footer" />
+        <partial name="_Culture" />
     </main>
   </body>
 

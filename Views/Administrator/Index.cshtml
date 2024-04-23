@@ -1,4 +1,6 @@
-﻿@model WebAPP.Infrastructure.Models.AccountsDto
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+@model WebAPP.Infrastructure.Models.AccountsDto
 
 <input type="hidden" asp-for=Login value="@Model.Login" />
 <input type="hidden" asp-for=Password value="@Model.Password" />
@@ -22,13 +24,13 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Email</th>
-                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="max 24 chars">Name</div></th>
-                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="max 24 chars">Surname</div></th>
-                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="16 chars requested">Fiscal Code</div></th>
-                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="min 15 years">Age</div></th>
+                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="max 24 chars">@localizer["Name"]</div></th>
+                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="max 24 chars">@localizer["Surname"]</div></th>
+                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="16 chars requested">@localizer["FiscalCode"]</div></th>
+                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="min 15 years">@localizer["Age"]</div></th>
                     <th scope="col"><div data-toggle="tooltip" data-placement="top" title="min 8 chars">Password</div></th>
-                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="not before today">Expiration Date</div></th>
-                    <th scope="col">Status</th>
+                    <th scope="col"><div data-toggle="tooltip" data-placement="top" title="not before today">@localizer["ExpirationDate"]</div></th>
+                    <th scope="col">@localizer["Status"]</th>
                 </tr>
             </thead>
             <tbody>
