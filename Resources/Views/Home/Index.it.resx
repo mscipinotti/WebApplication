@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="en" xml:space="preserve">
+    <value>inglese</value>
+  </data>
   <data name="GDA" xml:space="preserve">
-    <value>Graph Drawing Algorithms</value>
+    <value>Algoritmi per il Disegno di Grafi</value>
+  </data>
+  <data name="it" xml:space="preserve">
+    <value>italianoA</value>
   </data>
 </root>

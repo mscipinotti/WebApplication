@@ -8,10 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\Resources\Views\Shared\_Culture\**" />
-    <Content Remove="Views\Resources\Views\Shared\_Culture\**" />
-    <EmbeddedResource Remove="Views\Resources\Views\Shared\_Culture\**" />
-    <None Remove="Views\Resources\Views\Shared\_Culture\**" />
+    <Compile Remove="Resources\Views\Shared\_Culture\**" />
+    <Compile Remove="Views\Home\Index\**" />
+    <Content Remove="Resources\Views\Shared\_Culture\**" />
+    <Content Remove="Views\Home\Index\**" />
+    <EmbeddedResource Remove="Resources\Views\Shared\_Culture\**" />
+    <EmbeddedResource Remove="Views\Home\Index\**" />
+    <None Remove="Resources\Views\Shared\_Culture\**" />
+    <None Remove="Views\Home\Index\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +26,10 @@
     <Content Remove="Views\Home\Prova.cshtml" />
     <Content Remove="wwwroot\lib\bootstrap\bootstrap.css" />
     <Content Remove="wwwroot\lib\bootstrap\bootstrap.css.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Resources\Views\Shared\_Culture.resx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,16 +63,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Views\Home\Index\resources\Index.en.resx">
+    <EmbeddedResource Update="Resources\Views\Shared\_Culture.it.resx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Home\Index\resources\Index.it.resx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\Resources\Views\Shared\_Culture.en.resx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\Resources\Views\Shared\_Culture.resx">
+    <EmbeddedResource Update="Resources\Views\Shared\_Culture.en.resx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

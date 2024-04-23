@@ -1,12 +1,11 @@
-using Humanizer;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Web;
 using System.Globalization;
+using WebAPP.Controllers;
 using WebAPP.Extensions;
-using WebAPP.Infrastructure.Controllers;
 using WebAPP.Infrastructure.DBContext;
 using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.Infrastructure.Models.Validation;
@@ -44,14 +43,14 @@ public class Program
                             .AddScoped<Microsoft.Extensions.Logging.ILogger>(s => s.GetRequiredService<ILogger<HomeController>>())
                             .AddScoped<HttpClientFactory>()
                             .AddDbContext<DiscographyContext>(options => options.UseSqlServer(GlobalParameters.Config.GetConnectionString("Discography")))
-                            .AddLocalization(options => options.ResourcesPath = "Views/Resources")
+                            .AddLocalization(options => options.ResourcesPath = "Resources")
                             .Configure<RequestLocalizationOptions>(options =>
                             {
                                 var cultures = new List<CultureInfo> {
                                     new ("en"),
                                     new ("it")
                                 };
-                                options.DefaultRequestCulture = new RequestCulture("it");
+                                options.DefaultRequestCulture = new RequestCulture("en");
                                 options.SupportedCultures = cultures;
                                 options.SupportedUICultures = cultures;
                             })

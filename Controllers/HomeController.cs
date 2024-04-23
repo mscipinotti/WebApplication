@@ -1,17 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
-using Newtonsoft.Json;
 using System.Net;
 using WebAPP.Extensions;
+using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.Infrastructure.Models;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Utilities;
 
-namespace WebAPP.Infrastructure.Controllers
+namespace WebAPP.Controllers
 {
     public class HomeController : Controller, IActionFilter
     {
@@ -39,7 +37,7 @@ namespace WebAPP.Infrastructure.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index() => await Task.Run(() => View(_initialToken));
+        public async Task<IActionResult> IndexAsync() => await Task.Run(() => View(_initialToken));
 
         #region Logon/logoff
         [HttpPost("Logon")]
@@ -48,7 +46,7 @@ namespace WebAPP.Infrastructure.Controllers
             try
             {
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", token);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", token);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     var responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
@@ -79,7 +77,7 @@ namespace WebAPP.Infrastructure.Controllers
             try
             {
                 _httpClient.SetTokens(token);
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logoff", token);
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logoff", token);
                 // Il servizio Logoff è targato per ritornare codici 200 e 400 esclusivamente
                 if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
             }
@@ -100,7 +98,7 @@ namespace WebAPP.Infrastructure.Controllers
             {
                 _httpClient.SetTokens(token);
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", token);
+                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", token);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
                 {
                     token = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
