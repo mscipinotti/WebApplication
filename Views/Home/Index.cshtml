@@ -9,15 +9,15 @@
 
 <div class="form-floating">
     <input type="email" class="form-control" asp-for="Login" placeholder="name@example.com">
-    <label asp-for="Login">Email address</label>
+    <label asp-for="Login">@localizer["Email"]</label>
 </div>
 <div class="form-floating">
     <input type="password" class="form-control" asp-for="Password" placeholder="Password">
     <label asp-for="Password">Password</label>
 </div>
 
-<button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
-<p class="mt-4 mb-2 text-body-secondary">Versione @v</p>
+<button class="btn btn-primary w-100 py-2" type="submit">@localizer["SignIn"]</button>
+<p class="mt-4 mb-2 text-body-secondary">@localizer["Version"] @v</p>
 <p class="warningMessage"></p>
 
 <script type="text/javascript">

@@ -117,13 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="en" xml:space="preserve">
-    <value>english</value>
+  <data name="Email" xml:space="preserve">
+    <value>Email Address</value>
   </data>
   <data name="GDA" xml:space="preserve">
     <value>Graph Drawing Algorithms</value>
   </data>
-  <data name="it" xml:space="preserve">
-    <value>italian</value>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version</value>
   </data>
 </root>

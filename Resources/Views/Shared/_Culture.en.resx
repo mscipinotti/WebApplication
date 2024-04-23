@@ -120,13 +120,7 @@
   <data name="en" xml:space="preserve">
     <value>English</value>
   </data>
-  <data name="GDA" xml:space="preserve">
-    <value>Graph Drawing Algorithms</value>
-  </data>
   <data name="it" xml:space="preserve">
     <value>Italian</value>
-  </data>
-  <data name="Request culture provider:" xml:space="preserve">
-    <value>English</value>
   </data>
 </root>
