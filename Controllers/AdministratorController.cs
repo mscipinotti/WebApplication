@@ -43,20 +43,20 @@ namespace WebAPP.Infrastructure.Controllers
             }
         }
 
-        [HttpPost("AddAccounts")]
-        public async Task<IActionResult> AddAccountsAsync([FromBody] AccountsDto accountsDto)
+        [HttpPost("UpdateAccounts")]
+        public async Task<IActionResult> UpdateAccountsAsync([FromBody] AccountsDto accountsDto)
         {
             try
             {
                 _httpClient.SetTokens(accountsDto);
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/AddAccounts", accountsDto, _ct.Token);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/UpdateAccounts", accountsDto, _ct.Token);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
                 {
                     accountsDto.Errors = (await httpResponseMessage!.Content.ReadFromJsonAsync<AccountsDto>())!.Errors;
                     return BadRequest(accountsDto);
                 }
                 
-                // La chiamata è partita da ajaxp per cui, se tutto OK, ritornando true il reload della pagina è automatico
+                // La chiamata è partita da ajax per cui, se tutto OK, ritornando Ok e true in ajax il reload della pagina è automatico
                 return Ok(accountsDto);
             }
             catch (Exception ex)
@@ -64,24 +64,6 @@ namespace WebAPP.Infrastructure.Controllers
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
                 return View("Index", accountsDto);
             }
-        }
-
-        [HttpPost("ModifyAccount")]
-        public async Task<IActionResult> ModifyAccountAsync([FromBody] AccountsDto accountsDto)
-        {
-            try
-            {
-                _httpClient.SetTokens(accountsDto);
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/ModifyAccount", accountsDto, _ct.Token);
-                if (httpResponseMessage.StatusCode != HttpStatusCode.OK) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStringAsync().ToString() ?? string.Empty);
-                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
-            }
-            catch (Exception ex)
-            {
-                WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
-                accountsDto.Errors = [ex.Message];
-            }
-            return View(accountsDto);
         }
 
         [HttpPost("DeleteAccounts")]
@@ -100,7 +82,7 @@ namespace WebAPP.Infrastructure.Controllers
                 return BadRequest(accountsDto);
             }
 
-            // La chiamata è partita da ajaxp per cui, se tutto OK, ritornando true il reload della pagina è automatico
+            // La chiamata è partita da ajax per cui, se tutto OK, ritornando Ok e true in ajax il reload della pagina è automatico
             return Ok(accountsDto);
         }
     }
