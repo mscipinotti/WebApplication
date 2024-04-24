@@ -15,8 +15,8 @@
 
 <div style="display: flex">
     <nav class="nav flex-column">
-        <a id="add" class="nav-link active" href="#" onclick="addRow();">Add</a>
-        <a id="delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest" onclick="return confirm();">Delete</a>
+        <a id="add" class="nav-link active" href="#" onclick="addRow();">@localizer["Add"]</a>
+        <a id="delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest" onclick="return confirm();">@localizer["Delete"]</a>
     </nav>
     <article>
         <table class="table table-striped">
@@ -221,9 +221,10 @@
             addAccountReturn = false;
         });
 
-        setTimeout(function () { waitingDialog.hide(); }, 2000);
         // Obbligatorio chiamare la chiusura dello spinner modale con il setTimeout altrimenti rimane visibile
+        setTimeout(function () { waitingDialog.hide(); }, 2000);
         
+        // Se true ricarica la pagina
         return addAccountReturn;
     }
 
@@ -285,23 +286,33 @@
             dataType: 'json',
             async: false,
             data: JSON.stringify(accountsDto),
-            contentType: 'application/json; charset=utf-8'
-        }).fail(function (jqXHR) {
-            let accountsDto = $.parseJSON(jqXHR.responseText);
-            let message = "";
-            jQuery.each(accountsDto.errors, function (i, val) {
-                i = parseInt(i + 1);
-                message = message + i + ". " + val + "<br>";
-            });
-            $(".warningMessage").html(message);
-            addAccountReturn = false;
+            contentType: 'application/json; charset=utf-8',
+            success: function () {
+                $('table > tbody:last-child > tr.rowSelected').each(function (e) {
+                    $(this).fadeOut('slow', function () {
+                        $(this).remove();
+                    });
+                    return true;
+                })
+            },
+            fail: function (jqXHR) {
+                let accountsDto = $.parseJSON(jqXHR.responseText);
+                let message = "";
+                jQuery.each(accountsDto.errors, function (i, val) {
+                    i = parseInt(i + 1);
+                    message = message + i + ". " + val + "<br>";
+                });
+                $(".warningMessage").html(message);
+                addAccountReturn = false;
+            }
         });
 
-        setTimeout(function () { waitingDialog.hide(); }, 2000);
         // Obbligatorio chiamare la chiusura dello spinner modale con il setTimeout altrimenti rimane visibile
+        setTimeout(function () { waitingDialog.hide(); }, 2000);
         
         $('#modalRequest').modal('hide');
 
+        // Se true ricarica la pagina
         return addAccountReturn;
     }
 

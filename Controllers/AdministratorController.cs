@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Net;
-using System.Net.Http.Json;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.Models;
 using WebAPP.MiddlewareFactory;
@@ -60,7 +55,9 @@ namespace WebAPP.Infrastructure.Controllers
                     accountsDto.Errors = (await httpResponseMessage!.Content.ReadFromJsonAsync<AccountsDto>())!.Errors;
                     return BadRequest(accountsDto);
                 }
-                return await Task.Run(async () => View("Index", await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
+                
+                // La chiamata è partita da ajaxp per cui, se tutto OK, ritornando true il reload della pagina è automatico
+                return Ok(accountsDto);
             }
             catch (Exception ex)
             {
@@ -102,7 +99,9 @@ namespace WebAPP.Infrastructure.Controllers
                 accountsDto.Errors = [ex.Message];
                 return BadRequest(accountsDto);
             }
-            return await Task.Run(() => View("Index", accountsDto));
+
+            // La chiamata è partita da ajaxp per cui, se tutto OK, ritornando true il reload della pagina è automatico
+            return Ok(accountsDto);
         }
     }
 }

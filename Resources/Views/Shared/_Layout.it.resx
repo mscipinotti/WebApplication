@@ -117,28 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Add" xml:space="preserve">
-    <value>Add</value>
-  </data>
-  <data name="Age" xml:space="preserve">
-    <value>Age</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="ExpirationDate" xml:space="preserve">
-    <value>Expiration Date</value>
-  </data>
-  <data name="FiscaleCode" xml:space="preserve">
-    <value>Fiscal Code</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="Status" xml:space="preserve">
-    <value>Status</value>
-  </data>
-  <data name="Surname" xml:space="preserve">
-    <value>Surname</value>
+  <data name="GDA" xml:space="preserve">
+    <value>Algoritmi per il Disegno di Grafi</value>
   </data>
 </root>
