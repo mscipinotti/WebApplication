@@ -82,7 +82,8 @@ namespace WebAPP.Infrastructure.Controllers
                 return BadRequest(accountsDto);
             }
 
-            // La chiamata è partita da ajax per cui, se tutto OK, ritornando Ok e true in ajax il reload della pagina è automatico
+            // Con il passaggio della modale il return true / false è già stato effettuato. Javascript non può gestire il reload della pagina nel caso in cui non ci sono stati errori.
+            // Nessun reload della pagina, solo aggiornamento della tabella tramite javascript
             return Ok(accountsDto);
         }
     }

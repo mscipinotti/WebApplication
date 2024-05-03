@@ -1,4 +1,13 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿function errorsAccountsDtoCallback(accounts) {
+    let accountsDto = JSON.parse(accounts.responseText);
+    let message = "";
+    jQuery.each(accountsDto.errors, function (i, val) {
+        i = parseInt(i + 1);
+        message = message + i + ". " + val + "<br>";
+    });
+    $(".warningMessage").html(message);
+}
 
-// Write your JavaScript code.
+function successAccountsDtoCallback() {
+    $(".warningMessage").html('');
+}

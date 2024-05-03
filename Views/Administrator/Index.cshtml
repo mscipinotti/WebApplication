@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer localizer
+@inject IConfiguration Config
 @model WebAPP.Infrastructure.Models.AccountsDto
 
 <input type="hidden" asp-for=Login value="@Model.Login" />
@@ -15,8 +16,8 @@
 
 <div style="display: flex">
     <nav class="nav flex-column">
-        <a id="add" class="nav-link active" href="#" onclick="addRow();">@localizer["Add"]</a>
-        <a id="delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest" onclick="return confirm();">@localizer["Delete"]</a>
+        <a class="nav-link active" href="#" onclick="addRow();">@localizer["Add"]</a>
+        <a id="delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest">@localizer["Delete"]</a>
     </nav>
     <article>
         <table class="table table-striped">
@@ -66,6 +67,7 @@
 <script type="text/javascript">
     $(function () {
         $("td:nth-child(2)").on('click', function () {
+            if ($(this).text() == "@Config.GetValue(typeof(string), "MasterAdministrator")") return;
             $("table").hide();
             $(this).parent()
                    .toggleClass('rowSelected')
@@ -93,6 +95,10 @@
                    });
             $("table").show("slow");
         });
+        
+        $("#delete").on('click', function () {
+            $('.modal-body p').html("Cancellare gli account evidenziati?");
+        });
 
         // https://learn.jquery.com/events/event-delegation/
         // Event delegation. Problema: aggiungere il click event alla riga dinamicamente creata. Si usa
@@ -115,6 +121,7 @@
             if (Model.Errors is not null) message = Model.Errors[0];
         }
         $(".warningMessage").html("@message" != "" ? "@message" : params.get("Error"));
+
     });
 
     function addRow() {
@@ -252,14 +259,8 @@
         // Obbligatorio chiamare la chiusura dello spinner modale con il setTimeout altrimenti rimane visibile
         setTimeout(function () { waitingDialog.hide(); }, 2000);
         
-        // Se true ricarica la pagina
+        // Se true ricarica la pagina automaticamente perchè si trova in ready function ($(function () { ...)
         return updateAccountReturn;
-    }
-
-    function confirm() {
-        $('.modal-body p').html("Cancellare gli account evidenziati?");
-        $('#modalRequest').modal('show');
-        return true;
     }
 
     function confirmed() {
@@ -320,17 +321,12 @@
                     $(this).fadeOut('slow', function () {
                         $(this).remove();
                     });
-                    return true;
-                })
-            },
-            fail: function (jqXHR) {
-                let accountsDto = $.parseJSON(jqXHR.responseText);
-                let message = "";
-                jQuery.each(accountsDto.errors, function (i, val) {
-                    i = parseInt(i + 1);
-                    message = message + i + ". " + val + "<br>";
                 });
-                $(".warningMessage").html(message);
+                successAccountsDtoCallback();
+                delAccountReturn = true;
+            },
+            error: function (accountsDto) {
+                errorsAccountsDtoCallback(accountsDto);
                 delAccountReturn = false;
             }
         });
@@ -340,7 +336,6 @@
         
         $('#modalRequest').modal('hide');
 
-        // Se true ricarica la pagina
         return delAccountReturn;
     }
 
