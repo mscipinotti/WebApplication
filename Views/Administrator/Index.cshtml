@@ -288,25 +288,28 @@
                 Password: '',
                 ExpirationDate: ''
             };
-            $(this).find('td input').each(function (index) {
-                switch (index) {
-                    case 0: accountDto.Name = $(this).val();
-                        break;
-                    case 1: accountDto.Surname = $(this).val();
-                        break;
-                    case 2: accountDto.FC = $(this).val();
-                        break;
-                    case 3: accountDto.Age = $(this).val();
-                        break;
-                    case 4: accountDto.Password = $(this).val();
-                        break;
-                    case 5: accountDto.ExpirationDate = $(this).val();
-                        break;
-                }
-            });
-            accountDto.Status = $(this).find('td div > a').data('itemid');
-            accountsDto.Accounts.push(accountDto);
-            row = row + 1;
+            if ($(this).find('td input').length == 6) {
+                // Solo account a DB presenti. L'utente può aver aperto una nuova riga per l'inserimento e poi cliccare delete
+                $(this).find('td input').each(function (index) {
+                    switch (index) {
+                        case 0: accountDto.Name = $(this).val();
+                            break;
+                        case 1: accountDto.Surname = $(this).val();
+                            break;
+                        case 2: accountDto.FC = $(this).val();
+                            break;
+                        case 3: accountDto.Age = $(this).val();
+                            break;
+                        case 4: accountDto.Password = $(this).val();
+                            break;
+                        case 5: accountDto.ExpirationDate = $(this).val();
+                            break;
+                    }
+                });
+                accountDto.Status = $(this).find('td div > a').data('itemid');
+                accountsDto.Accounts.push(accountDto);
+                row = row + 1;
+            }
         });
 
         $.ajax({

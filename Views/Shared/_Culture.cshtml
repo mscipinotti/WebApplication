@@ -6,13 +6,16 @@
 @inject IViewLocalizer localizer
 @inject IOptions<RequestLocalizationOptions> LocOptions
 @{
+    // Anche se non è presente il cookie la requestCulter è la lingua di default, dunque non può mai essere null
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
-    var cultureItems = LocOptions.Value.SupportedUICultures
+
+    // Elenco delle lingue supportate, non nullo
+    var cultureItems = LocOptions.Value.SupportedUICultures!
         .Select(c => new SelectListItem { Value = c.Name, Text = localizer.GetString(c.Name) })
         .ToList();
 }
 <div class="pt-4">
     <form asp-controller="Culture" asp-action="SetCulture" asp-route-returnUrl="~/" method="post" class="form-horizontal nav-link text-dark" role="form">
-        <select name="culture" onchange="this.form.submit();" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
+        <select name="culture" onchange="this.form.submit();" asp-for="@requestCulture!.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
     </form>
 </div>

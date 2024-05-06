@@ -42,7 +42,7 @@ public class Program
                             .AddAutoMapper(typeof(Program))
                             .AddScoped<Microsoft.Extensions.Logging.ILogger>(s => s.GetRequiredService<ILogger<HomeController>>())
                             .AddScoped<HttpClientFactory>()
-                            .AddDbContext<DiscographyContext>(options => options.UseSqlServer(GlobalParameters.Config.GetConnectionString("Discography")))
+                            .AddDbContext<GDAContext>(options => options.UseSqlServer(GlobalParameters.Config.GetConnectionString("GDA")))
                             .AddLocalization(options => options.ResourcesPath = "Resources")
                             .Configure<RequestLocalizationOptions>(options =>
                             {
