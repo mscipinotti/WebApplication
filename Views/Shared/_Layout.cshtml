@@ -3,26 +3,17 @@
 
 <!doctype html>
 <html data-bs-theme="auto">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="Marco Scipinotti">
-    <title>@localizer["GDA"]</title>
+    <head>
+        <partial name="_Head" />
+    </head>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/signin.css" asp-append-version="true"  />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <script src="~/jquery/dist/jquery.js"></script>
-  </head>
-
-  <body class="d-flex align-items-center py-4 bg-body-tertiary text-center">
-    <main class="form-signin w-100 m-auto">
-        <form method="post" asp-controller="Home" asp-action="Logon">
-            @RenderBody()
-        </form>
-        <partial name="_Footer" />
-        <partial name="_Culture" />
-    </main>
-  </body>
-
+    <body class="d-flex align-items-center py-4 bg-body-tertiary text-center">
+        <main class="form-signin w-100 m-auto">
+            <form method="post" asp-controller="Home" asp-action="Logon">
+                @RenderBody()
+            </form>
+            <partial name="_Footer" />
+            <partial name="_Culture" />
+        </main>
+    </body>
 </html>
