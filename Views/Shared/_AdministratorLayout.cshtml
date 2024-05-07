@@ -1,34 +1,48 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer localizer
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <partial name="_Head" />
 </head>
 <body>
-    <form method="post" asp-controller="Administrator">
-        <partial name="_Header" />
-        <div class="container">
-            <main role="main" class="pb-3">
-            
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Active</a>
-                        </li>
-                        <li class="nav-item">
-                            <input type="submit" class="nav-link" asp-controller="Singer" asp-action="Singers" value="Administrators" />
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Disabled</a>
-                        </li>
-                    </ul>
-                    @RenderBody()
-
-            </main>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar-->
+        <div class="border-end bg-white" id="sidebar-wrapper">
+            <div class="sidebar-heading border-bottom bg-light">@localizer["HelpPage"]</div>
+            <div class="list-group list-group-flush">
+                <p>@localizer["Add"]</p>
+                <p>@localizer["Modify"]</p>
+                <p>@localizer["Delete"]</p>
+            </div>
         </div>
-    </form>
-    <partial name="_Footer" />
-    <partial name="/Views/Shared/_Modal.cshtml" />
+        <form method="post" asp-controller="Administrator">
+            <partial name="_Header" />
+            <div class="container">
+                <main role="main" class="pb-3">
+            
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">Active</a>
+                            </li>
+                            <li class="nav-item">
+                                <input type="submit" class="nav-link" asp-controller="Singer" asp-action="Singers" value="Administrators" />
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link disabled" href="#">Disabled</a>
+                            </li>
+                        </ul>
+                        @RenderBody()
+
+                </main>
+            </div>
+            <partial name="_Footer" />
+        </form>
+        <partial name="/Views/Shared/_Modal.cshtml" />
+    </div>
 </body>
 </html>

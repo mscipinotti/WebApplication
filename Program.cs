@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NLog;
@@ -50,14 +51,25 @@ public class Program
                                     new ("en"),
                                     new ("it")
                                 };
+                                // State what the default culture for your application is. This will be used if no specific culture can be determined for a given request.
                                 options.DefaultRequestCulture = new RequestCulture("en");
+                                // You must explicitly state which cultures your application supports.
+                                // These are the cultures the app supports for formatting numbers, dates, etc.
                                 options.SupportedCultures = cultures;
+                                // These are the cultures the app supports for UI strings, i.e. we have localized resources for.
                                 options.SupportedUICultures = cultures;
+                                // You can change which providers are configured to determine the culture for requests, or even add a custom
+                                // provider with your own logic. The providers will be asked in order to provide a culture for each request,
+                                // and the first to provide a non-null result that is in the configured supported cultures list will be used.
+                                // By default, the following built-in providers are configured:
+                                // - QueryStringRequestCultureProvider, sets culture via "culture" and "ui-culture" query string values, useful for testing
+                                // - CookieRequestCultureProvider, sets culture via "ASPNET_CULTURE" cookie
+                                // - AcceptLanguageHeaderRequestCultureProvider, sets culture via the "Accept-Language" request header
                             })
                             .ValidationServices()
                             .AddControllersWithViews();
             builder.Services.AddMvc()
-                            .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
+                            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                             .AddDataAnnotationsLocalization();
             // Per accedere ai coocky
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

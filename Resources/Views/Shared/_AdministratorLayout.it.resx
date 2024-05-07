@@ -117,16 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Archive" xml:space="preserve">
-    <value>Archivio</value>
+  <data name="Add" xml:space="preserve">
+    <value>&lt;b&gt;Add&lt;/b&gt;. To add an administrator, click the &lt;i&gt;Add&lt;/i&gt; button. Compose editable fields with a white background. When you're done, type &lt;i&gt;ENTER&lt;/i&gt; on any edited field.</value>
   </data>
-  <data name="GDA" xml:space="preserve">
-    <value>Algoritmi per il Disegno di Grafi</value>
+  <data name="Delete" xml:space="preserve">
+    <value>&lt;b&gt;Cancella&lt;/b&gt;. Per cancellare un amministratore: &lt;ul&gt;&lt;li&gt;fare click sulla colonna &lt;i&gt;Email&lt;/i&gt; quando il cursore cambia nel formato di una mano.&lt;/li&gt;&lt;li&gt;Fare click sul pulsante &lt;i&gt;Delete&lt;/i&gt;. L'applicazione chiede conferma per la cancellazione.&lt;/li&gt;&lt;/ul&gt;</value>
   </data>
-  <data name="Help" xml:space="preserve">
-    <value>Aiuto</value>
+  <data name="HelpPage" xml:space="preserve">
+    <value>Pagina di aiuto</value>
   </data>
-  <data name="Simulator" xml:space="preserve">
-    <value>Simulatore</value>
+  <data name="Modify" xml:space="preserve">
+    <value>&lt;b&gt;Modifica&lt;/b&gt;. Per modificare i dati di un amministratore fare click sulla colonna &lt;i&gt;Email&lt;/i&gt; quando il cursore cambia nel formato di una mano. La riga diventa a sfondo verde ed i campi sono tutti editabili.&lt;br /&gt;NB. Se è necessario modificarne la email occorre cancellare per intero la riga delll'amministratore e ricrearla.</value>
   </data>
 </root>
