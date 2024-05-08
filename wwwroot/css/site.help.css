@@ -15,6 +15,7 @@
 
     #sidebar-wrapper .list-group {
         width: 25rem;
+        padding:1rem;
     }
 
 @media (min-width: 768px) {
