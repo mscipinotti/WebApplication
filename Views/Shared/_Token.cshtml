@@ -2,14 +2,13 @@
 @inject IViewLocalizer localizer
 
 @model WebAPP.Infrastructure.Models.Tokens
-<button type="submit" class="dropdown-item" asp-controller="User" asp-action="Index">@localizer["User"]</button>
 <div class="navbar-text">
     <div class="dropdown">
         <a class="btn dropdown-toggle" type="button" role="button" href="#" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@Model.Login</a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuButton">
-            <li><button type="submit" class="dropdown-item" asp-controller="Administrator" asp-action="Index">@localizer["Administrator"]</button></li>
-            <li><a class="dropdown-item active" href="#">@localizer["PowerUser"]</a></li>
-            <li><button type="submit" class="dropdown-item" asp-controller="User" asp-action="Recent">@localizer["User"]</button></li>
+            <li><button type="submit" class="dropdown-item" asp-controller="Administrator" asp-action="Accounts">@localizer["Administrator"]</button></li>
+            <li><button type="submit" class="dropdown-item" asp-controller="PowerUser" asp-action="Index">@localizer["PowerUser"]</button></li>
+            <li><button type="submit" class="dropdown-item" asp-controller="User" asp-action="Texts">@localizer["User"]</button></li>
             <li><hr class="dropdown-divider"></li>
             <li><button type="submit" class="dropdown-item" asp-controller="Home" asp-action="Logoff">@localizer["Logoff"]</button></li>
         </ul>

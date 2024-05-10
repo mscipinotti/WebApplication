@@ -37,7 +37,7 @@
                 @foreach (var a in Model.Accounts)
                 {
                     <tr>
-                        <th scope="row">@Model.Accounts.IndexOf(a)</th>
+                        <th scope="row">@(Model.Accounts.IndexOf(a) + 1)</th>
                         <td class="hugeInputText" style="cursor:grab">@a.Email</td>
                         <td class="inputText">@a.Name</td>
                         <td class="inputText">@a.Surname</td>
