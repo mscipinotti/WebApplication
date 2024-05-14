@@ -46,7 +46,7 @@ namespace WebAPP.Infrastructure.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            // Questi due metodi permettono di scrivere nel log quando comincia una chiamata e quando termina senza intasare il codice della action stessa e di validare il contesto.Il log è centralizzato
+            // Questi due metodi permettono di scrivere nel log quando comincia una chiamata e quando termina senza intasare il codice della action stessa e di validare il contesto. Il log è centralizzato
             try
             {
                 if (!context.ModelState.IsValid)

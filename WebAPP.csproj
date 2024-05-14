@@ -29,10 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="Resources\Views\Shared\_Culture.resx" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\droplet.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -66,7 +62,7 @@
     <EmbeddedResource Update="Resources\Views\Shared\_Culture.it.resx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Views\Shared\_Culture.en.resx">
+    <EmbeddedResource Update="Resources\Views\Shared\_Culture.resx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

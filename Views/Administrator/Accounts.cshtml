@@ -5,6 +5,7 @@
 
 <input type="hidden" asp-for=Login value="@Model.Login" />
 <input type="hidden" asp-for=Password value="@Model.Password" />
+<input type="hidden" asp-for=Profile value="@Model.Profile" />
 <input type="hidden" asp-for=Cookie value="@Model.Cookie" />
 <input type="hidden" asp-for=RequestVerificationToken value="@Model.RequestVerificationToken" />
 <input type="hidden" asp-for=JwtToken value="@Model.JwtToken" />
@@ -31,6 +32,7 @@
                     <th scope="col"><div data-toggle="tooltip" data-placement="top" title="min 8 chars">Password</div></th>
                     <th scope="col"><div data-toggle="tooltip" data-placement="top" title="not before today">@localizer["ExpirationDate"]</div></th>
                     <th scope="col">@localizer["Status"]</th>
+                    <th scope="col">@localizer["Profile"]</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,9 +51,19 @@
                             <div class="dropdown">
                                 <a class="btn dropdown-toggle" type="button" role="button" href="#" data-toggle="dropdown" data-itemid="@Convert.ToByte(a.Status)" aria-haspopup="true" aria-expanded="false">@a.Status</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#" data-itemid="1">Inactive</a></li>
-                                    <li><a class="dropdown-item" href="#" data-itemid="2">Active</a></li>
-                                    <li><a class="dropdown-item" href="#" data-itemid="3">ChangePassword</a></li>
+                                    <li><a class="dropdown-item" href="#" data-itemid="0">Inactive</a></li>
+                                    <li><a class="dropdown-item" href="#" data-itemid="1">Active</a></li>
+                                    <li><a class="dropdown-item" href="#" data-itemid="2">ChangePassword</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="midInputText">
+                            <div class="dropdown">
+                                <a class="btn dropdown-toggle" type="button" role="button" href="#" data-toggle="dropdown" data-itemid="@Convert.ToByte(a.Profile)" aria-haspopup="true" aria-expanded="false">@a.Profile</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" data-itemid="0">Administrator</a></li>
+                                    <li><a class="dropdown-item" href="#" data-itemid="1">Power User</a></li>
+                                    <li><a class="dropdown-item" href="#" data-itemid="2">User</a></li>
                                 </ul>
                             </div>
                         </td>
@@ -71,7 +83,7 @@
             $(this).parent()
                    .toggleClass('rowSelected')
                    .find('td').each(function (index) {
-                        if (index <= 0 || index >= 7) return;
+                        if (index <= 0 || index >= 8) return;
                         let e = $(this).find("input");
                         let l = ["inputText", "inputText", "midInputText", "slimInputText", "inputText", "slimInputText"];
                         let p = ["Name", "Surname", "Fiscale Code", "Age", "Password", "Expiration Date"];
@@ -143,6 +155,14 @@
                             '<li><a class="dropdown-item" href = "#">ChangePassword</a></li>' +
                         '</ul>' +
                     '</div>';
+        let profile = '<div class="dropdown">' +
+                        '<a class="btn dropdown-toggle" type = "button" role = "button" href = "#" data-toggle="dropdown" data-itemid="" aria-haspopup="true" aria-expanded="false">Administrator</a>' +
+                        '<ul class="dropdown-menu">' +
+                        '<li><a class="dropdown-item" href = "#">Administrator</a></li>' +
+                        '<li><a class="dropdown-item" href = "#">Power User</a></li>' +
+                        '<li><a class="dropdown-item" href = "#">User</a></li>' +
+                        '</ul>' +
+                        '</div>';
         $('table > tbody:last-child').append('<tr class="rowSelected">                                  \
                                                 <th scope="row">' + index + '</th>                      \
                                                 <td class="hugeInputText">' + email + '</td>            \
@@ -153,6 +173,7 @@
                                                 <td class="inputText">' + password + '</td>             \
                                                 <td class="slimInputText">' + expirationDate + '</td>   \
                                                 <td class="midInputText">' + status + '</td>            \
+                                                <td class="midInputText">' + profile + '</td>           \
                                               </tr>');
         $("table").fadeIn("slow");
         return true;
@@ -165,6 +186,7 @@
         let accountsDto = {
             Login: "@Model.Login",
             Password: "@Model.Password",
+            Profile: "@Model.Profile",
             RequestVerificationToken: "@Model.RequestVerificationToken",
             Cookie: "@Model.Cookie",
             JwtToken: "@Model.JwtToken",
@@ -181,7 +203,8 @@
                 FC: '',
                 Age: 0,
                 Password: '',
-                ExpirationDate: ''
+                ExpirationDate: '',
+                Profile: 0
             };
             if ($(this).find('td input').length == 7) {
                 // Add
@@ -203,6 +226,11 @@
                             break;
                     }
                 });
+                text = $(this).find('td div > a:first-child').html();
+                $.each($(this).find('td div > ul li a'), function (index, item) {
+                    if (item.innerHTML == text) accountDto.Status = parseInt(index) + 1;
+                });
+
                 text = $(this).find('td div > a').html();
                 $.each($(this).find('td div > ul li a'), function (index, item) {
                     if (item.innerHTML == text) accountDto.Status = parseInt(index) + 1;
@@ -228,6 +256,11 @@
                             break;
                     }
                 });
+                text = $(this).find('td div > a:first-child').html();
+                $.each($(this).find('td div > ul li a'), function (index, item) {
+                    if (item.innerHTML == text) accountDto.Status = parseInt(index) + 1;
+                });
+
                 text = $(this).find('td div > a').html();
                 $.each($(this).find('td div > ul li a'), function (index, item) {
                     if (item.innerHTML == text) accountDto.Status = parseInt(index) + 1;

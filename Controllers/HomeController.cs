@@ -6,6 +6,7 @@ using System.Net;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.Infrastructure.Models;
+using WebAPP.Infrastructure.Models.enums;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Utilities;
 
@@ -18,10 +19,11 @@ namespace WebAPP.Controllers
         private readonly IMapper _mapper;
         private readonly Dictionary<string, object> _configLogger;
         private readonly IStringLocalizer<HomeController> _localizer;
-        private readonly Tokens _initialToken = new ()
+        private readonly Tokens _initialToken = new()
         {
             Login = string.Empty,
-            Password = string.Empty
+            Password = string.Empty,
+            Profile = ProfileItems.User
         };
 
         public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<HomeController> localizer)

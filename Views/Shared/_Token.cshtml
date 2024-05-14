@@ -1,14 +1,25 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebAPP.Infrastructure.Models.enums
 @inject IViewLocalizer localizer
-
 @model WebAPP.Infrastructure.Models.Tokens
+
 <div class="navbar-text">
     <div class="dropdown">
         <a class="btn dropdown-toggle" type="button" role="button" href="#" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@Model.Login</a>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuButton">
-            <li><button type="submit" class="dropdown-item" asp-controller="Administrator" asp-action="Accounts">@localizer["Administrator"]</button></li>
-            <li><button type="submit" class="dropdown-item" asp-controller="PowerUser" asp-action="Index">@localizer["PowerUser"]</button></li>
-            <li><button type="submit" class="dropdown-item" asp-controller="User" asp-action="Texts">@localizer["User"]</button></li>
+            @if(Model.Profile == ProfileItems.Administrator)
+            {
+                <li><button type="submit" class="dropdown-item" asp-controller="Administrator" asp-action="Accounts">@localizer["Administrator"]</button></li>
+            }
+            @if (Model.Profile == ProfileItems.Administrator || Model.Profile == ProfileItems.PowerUser)
+            {
+                <li><button type="submit" class="dropdown-item" asp-controller="User" asp-action="Texts">@localizer["PowerUser"]</button></li>
+            }
+            @if (Model.Profile == ProfileItems.User)
+            {
+                <li><button type="submit" class="dropdown-item" asp-controller="User" asp-action="Texts">@localizer["User"]</button></li>
+            }
+            
             <li><hr class="dropdown-divider"></li>
             <li><button type="submit" class="dropdown-item" asp-controller="Home" asp-action="Logoff">@localizer["Logoff"]</button></li>
         </ul>
