@@ -123,8 +123,8 @@
   <data name="Logoff" xml:space="preserve">
     <value>Logoff</value>
   </data>
-  <data name="PowerUser" xml:space="preserve">
-    <value>Power User</value>
+  <data name="Operator" xml:space="preserve">
+    <value>Operator</value>
   </data>
   <data name="User" xml:space="preserve">
     <value>User</value>

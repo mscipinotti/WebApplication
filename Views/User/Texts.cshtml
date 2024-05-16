@@ -16,7 +16,7 @@
 
 <div style="display: flex">
     <nav class="nav flex-column">
-        @if (Model.Profile == ProfileItems.Administrator || Model.Profile == ProfileItems.PowerUser)
+        @if (Model.Profile == ProfileItems.Administrator || Model.Profile == ProfileItems.Operator)
         {
             <a class="nav-link active" href="#" onclick="addRow();">@localizer["Add"]</a>
             <a id="delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest">@localizer["Delete"]</a>

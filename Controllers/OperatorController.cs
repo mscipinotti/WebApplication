@@ -5,10 +5,10 @@ using WebAPP.MiddlewareFactory;
 
 namespace WebAPP.Infrastructure.Controllers
 {
-    public class PowerUserController : Controller
+    public class OperatorController : Controller
     {
         private readonly HttpClient _httpClient;
-        public PowerUserController(HttpClientFactory httpClientFactory)
+        public OperatorController(HttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.Client;
         }

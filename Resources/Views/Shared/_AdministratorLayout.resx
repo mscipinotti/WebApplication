@@ -129,6 +129,6 @@ Click on the &lt;i&gt;Email&lt;/i&gt; column when the cursor changes to the size
     <value>Help Page</value>
   </data>
   <data name="Modify" xml:space="preserve">
-    <value>&lt;b&gt;Modify&lt;/b&gt;. To edit an administrator's data, click on the &lt;i&gt;Email&lt;/i&gt; column when the cursor changes to a hand format. The row changes to a green background and the fields are all editable. NB. If you need to change the email, you must delete the administrator's line in its entirety and recreate it.</value>
+    <value>&lt;b&gt;Modify&lt;/b&gt;. To edit an administrator's data, click on the &lt;i&gt;Email&lt;/i&gt; column when the cursor changes to a hand format. The row changes to a green background and the fields are all editable. When you're done, type &lt;i&gt;ENTER&lt;/i&gt; on any edited field.&lt;br&gt;NB. If you need to change the email, you must delete the line in its entirety and recreate it.</value>
   </data>
 </root>

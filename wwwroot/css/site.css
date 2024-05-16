@@ -18,6 +18,16 @@ body {
   margin-bottom: 60px;
 }
 
+/*.container {
+    width:90vw;
+}*/
+
+@media (min-width: 2600px) {
+    .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
+        max-width: 2534px;
+    }
+}
+
 /* Le seguenti 2 proprietà non vengono applicate se non si sovrascrive bootstrap con .rowSelected sulla riga ove si è fatto click */
     tr:nth-child(odd) {
         background-color:lightgreen;
