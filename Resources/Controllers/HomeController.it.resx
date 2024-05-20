@@ -120,4 +120,10 @@
   <data name="GDA" xml:space="preserve">
     <value>Algortmi per il Disegno di Grafi</value>
   </data>
+  <data name="InactiveUser" xml:space="preserve">
+    <value>Utente non attivo</value>
+  </data>
+  <data name="UnpredictableError" xml:space="preserve">
+    <value>Errore non gestito</value>
+  </data>
 </root>

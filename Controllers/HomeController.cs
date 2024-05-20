@@ -9,6 +9,7 @@ using WebAPP.Infrastructure.Models;
 using WebAPP.Infrastructure.Models.enums;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Utilities;
+using System.Text.Json;
 
 namespace WebAPP.Controllers
 {
@@ -49,26 +50,66 @@ namespace WebAPP.Controllers
             {
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", token);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
+                switch(httpResponseMessage.StatusCode)
                 {
-                    var responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
-                    if (responseAccount is not null)
-                    {
-                        var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
-                        responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        responseAccount.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
-                                                                          .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
-                                                                          .Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        _httpClient.SetTokens(responseAccount);
-                        return View("Views/Dashboard/Dashboard.cshtml", responseAccount);
-                    }
+                    case HttpStatusCode.BadRequest:
+                    case HttpStatusCode.InternalServerError: throw new BadHttpRequestException(await httpResponseMessage.Content.ReadAsStringAsync());
+                    case HttpStatusCode.OK:
+                        var responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
+                        if (responseAccount is not null)
+                        {
+                            var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
+                            responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                            responseAccount.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
+                                                                              .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
+                                                                              .Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                            _httpClient.SetTokens(responseAccount);
+                            if (responseAccount.Status == StatusItems.ChangePassword) return View("Views/Home/ChangePassword.cshtml", responseAccount);
+                            return View("Views/Dashboard/Dashboard.cshtml", responseAccount);
+                        }
+                        break;
                 }
-                token.Errors = [httpResponseMessage.StatusCode.ToString()];
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
-                token.Errors = [ex.Message];
+                // json per eliminare gli apici doppi nella stringa ritornata
+                token.Errors = [ _localizer[JsonSerializer.Deserialize<string>(ex.Message) ?? "UnpredictableError"] ];
+            }
+            return View($"Index", token);
+        }
+
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePasswordAsync(Tokens token)
+        {
+            try
+            {
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/ChangePassword", token);
+                switch (httpResponseMessage.StatusCode)
+                {
+                    case HttpStatusCode.BadRequest:
+                    case HttpStatusCode.InternalServerError: throw new BadHttpRequestException(await httpResponseMessage.Content.ReadAsStringAsync());
+                    case HttpStatusCode.OK:
+                        var responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
+                        if (responseAccount is not null)
+                        {
+                            var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
+                            responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                            responseAccount.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
+                                                                              .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
+                                                                              .Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                            _httpClient.SetTokens(responseAccount);
+                            if (responseAccount.Status == StatusItems.ChangePassword) return View("Views/Home/ChangePassword.cshtml", responseAccount);
+                            return View("Views/Dashboard/Dashboard.cshtml", responseAccount);
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
+                // json per eliminare gli apici doppi nella stringa ritornata
+                token.Errors = [_localizer[JsonSerializer.Deserialize<string>(ex.Message) ?? "UnpredictableError"]];
             }
             return View($"Index", token);
         }

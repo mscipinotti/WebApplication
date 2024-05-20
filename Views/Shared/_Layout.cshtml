@@ -9,7 +9,7 @@
 
     <body class="d-flex align-items-center py-4 bg-body-tertiary text-center">
         <main class="form-signin w-100 m-auto">
-            <form method="post" asp-controller="Home" asp-action="Logon">
+        <form method="post" asp-controller="Home" onsubmit="return checkPassword()">
                 @RenderBody()
             </form>
             <partial name="_Footer" />
@@ -17,3 +17,25 @@
         </main>
     </body>
 </html>
+
+<script type="text/javascript">
+    function checkPassword()
+    {
+        if (!document.getElementById("retype")) return true;
+        // At least 8 - 16 characters,
+        // must contain at least 1 uppercase letter,
+        // must contain at least 1 lowercase letter,
+        // and 1 number.
+        // Can contain any of this special characters $ % # * & - .
+        let regex = new RegExp("^(?=.*\d)(?=.*[a-zA-Z])(?=.*[A-Z])(?=.*[-\#\$\.\%\&\*])(?=.*[a-zA-Z]).{8,16}$");
+        if (!regex.test(password.val() {
+            $(".warningMessage").html("password does not respect constraints requested. Please click help for details");
+            return false;
+        }
+        if ($("#password").val() != $("#retype").val()) {
+            $(".warningMessage").html("password and retype password fields are not equal");
+            return false;
+        }
+        return true;
+    }
+</script>
