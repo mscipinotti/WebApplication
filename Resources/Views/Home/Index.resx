@@ -123,6 +123,15 @@
   <data name="GDA" xml:space="preserve">
     <value>Graph Drawing Algorithms</value>
   </data>
+  <data name="InactiveUser" xml:space="preserve">
+    <value>Inactive user</value>
+  </data>
+  <data name="IncorrectMailPassword" xml:space="preserve">
+    <value>Incorrect mail and/or password</value>
+  </data>
+  <data name="SessionEnded" xml:space="preserve">
+    <value>Session ended</value>
+  </data>
   <data name="SignIn" xml:space="preserve">
     <value>Sign In</value>
   </data>

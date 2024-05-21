@@ -48,23 +48,28 @@ namespace WebAPP.Controllers
         {
             try
             {
+                AccountDto? responseAccount = null;
                 // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/Logon", token);
-                switch(httpResponseMessage.StatusCode)
+                switch (httpResponseMessage.StatusCode)
                 {
                     case HttpStatusCode.BadRequest:
                     case HttpStatusCode.InternalServerError: throw new BadHttpRequestException(await httpResponseMessage.Content.ReadAsStringAsync());
+                    case HttpStatusCode.Unauthorized:
+                        responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
+                        if (responseAccount is not null) token.Errors = responseAccount.Errors;
+                        break;
                     case HttpStatusCode.OK:
-                        var responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
+                        responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
                         if (responseAccount is not null)
                         {
+                            if (responseAccount.Status == StatusItems.ChangePassword) return View("Views/Home/ChangePassword.cshtml", responseAccount);
                             var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
                             responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
                             responseAccount.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
                                                                               .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
                                                                               .Split(new string[] { "; " }, StringSplitOptions.None)[0];
                             _httpClient.SetTokens(responseAccount);
-                            if (responseAccount.Status == StatusItems.ChangePassword) return View("Views/Home/ChangePassword.cshtml", responseAccount);
                             return View("Views/Dashboard/Dashboard.cshtml", responseAccount);
                         }
                         break;

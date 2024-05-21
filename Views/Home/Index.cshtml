@@ -27,6 +27,6 @@
             string message = string.Empty;
             if (Model.Errors is not null) message = Model.Errors[0];
         }
-        $(".warningMessage").html("@message" != "" ? "@message" : params.get("Error"));
+            $(".warningMessage").html("@message" != "" ? "@localizer[message]" : params.get("Error"));
     })
 </script>
