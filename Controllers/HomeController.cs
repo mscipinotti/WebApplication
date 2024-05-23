@@ -79,7 +79,8 @@ namespace WebAPP.Controllers
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
                 // json per eliminare gli apici doppi nella stringa ritornata
-                token.Errors = [ _localizer[JsonSerializer.Deserialize<string>(ex.Message) ?? "UnpredictableError"] ];
+                //token.Errors = [ _localizer[JsonSerializer.Deserialize<string>(ex.Message) ?? "UnpredictableError"] ];
+                token.Errors = [ _localizer[ex.Message ?? "UnpredictableError" ] ];
             }
             return View($"Index", token);
         }

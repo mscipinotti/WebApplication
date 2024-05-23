@@ -45,7 +45,9 @@
                         <td class="inputText">@a.Surname</td>
                         <td class="midInputText">@a.FC</td>
                         <td class="slimInputText">@a.Age</td>
-                        <td class="inputText">********</td>
+                        <td class="inputText">********
+                            <input type="hidden" id="@a.Email" value="@a.Password" />
+                        </td>
                         <td class="slimInputText">@a.ExpirationDate</td>
                         <td class="midInputText">
                             <div class="dropdown">
@@ -84,11 +86,11 @@
                    .toggleClass('rowSelected')
                    .find('td').each(function (index) {
                         if (index <= 0 || index >= 7) return;
-                        let e = $(this).find("input");
+                        let e = $(this).find("input").not(':input[type=hidden]');
                         let l = ["inputText", "inputText", "midInputText", "slimInputText", "inputText", "slimInputText"];
                         let p = ["Name", "Surname", "Fiscale Code", "Age", "Password", "Expiration Date"];
-                        let t = ["text", "text", "text", "number", "password", "date"];
-                        let data = $(this).text();
+                        let t = ["text", "text", "text", "number", "text", "date"];
+                        let data = index == 5 ? "********" : $(this).text();
                         let itemid = "";
                         if (index == 6) {
                             // Il formato delle date sul browser deve essere italiano
@@ -100,7 +102,8 @@
                             $(this).html(html);
                         }
                         else {
-                            $(this).html(e.val());
+                            // Ritorno a riga non selezionata
+                            $(this).html(index == 5 ? data : e.val());
                             e.remove();
                         }
                    });
@@ -108,7 +111,8 @@
         });
         
         $("#delete").on('click', function () {
-            $('.modal-body p').html("Cancellare gli account evidenziati?");
+            $('.modal-body p').html("@localizer["DeleteQuestion"]");
+            $('.modal-header h5').html("@localizer["Title"]");
         });
 
         // https://learn.jquery.com/events/event-delegation/
@@ -197,9 +201,9 @@
             waitingDialog.show();
 
             let accountDto = { };
-            if ($(this).find('td input').length == 7) {
+            if ($(this).find('td input').not(':input[type=hidden]').length == 7) {
                 // Add. Il numero dei campi di input sono 7
-                $(this).find('td input').each(function (index) {
+                $(this).find('td input').not(':input[type=hidden]').each(function (index) {
                     switch (index) {
                         case 0: accountDto.Email = $(this).val();
                             break;
@@ -265,7 +269,7 @@
             url: "UpdateAccounts",
             type: 'post',
             dataType: 'json',
-            async: false,
+            async: false,                                           // Non rimuovere, in errore se async = true
             data: JSON.stringify(accountsDto),
             contentType: 'application/json; charset=utf-8'
         }).fail(function (jqXHR) {
@@ -293,6 +297,7 @@
         let accountsDto = {
             Login: "@Model.Login",
             Password: "@Model.Password",
+            Profile: "@Model.Profile",
             RequestVerificationToken: "@Model.RequestVerificationToken",
             Cookie: "@Model.Cookie",
             JwtToken: "@Model.JwtToken",
@@ -302,6 +307,7 @@
         $('table > tbody:last-child > tr.rowSelected').each(function (e) {
             waitingDialog.show();
 
+            let text;
             let accountDto = {
                 Email: $(this).find('td:first').html()
             };
@@ -323,7 +329,17 @@
                             break;
                     }
                 });
-                accountDto.Status = $(this).find('td div > a').data('itemid');
+
+                text = $(this).find('td div:first > a').html();
+                $.each($(this).find('td div:first > ul li a'), function (index, item) {
+                    if (item.innerHTML == text) accountDto.Status = text;
+                });
+
+                text = $(this).find('td div:last > a').html();
+                $.each($(this).find('td div:last > ul li a'), function (index, item) {
+                    if (item.innerHTML == text) accountDto.Profile = text;
+                });
+
                 accountsDto.Accounts.push(accountDto);
                 row = row + 1;
             }
@@ -333,7 +349,6 @@
             url: "DeleteAccounts",
             type: 'post',
             dataType: 'json',
-            async: false,
             data: JSON.stringify(accountsDto),
             contentType: 'application/json; charset=utf-8',
             success: function () {
