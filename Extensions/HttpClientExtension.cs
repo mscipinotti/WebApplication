@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Globalization;
+using System.Net.Http.Headers;
 using WebAPP.Infrastructure.Models;
 
 namespace WebAPP.Extensions
@@ -16,6 +17,9 @@ namespace WebAPP.Extensions
 
             // Jwt token
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
+
+            // Per trasferire al server la scelta della lingua e rispondre con eventuali errori nella lingua specificata
+            client.DefaultRequestHeaders.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
         }
     }
 }

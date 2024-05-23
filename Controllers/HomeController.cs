@@ -139,37 +139,6 @@ namespace WebAPP.Controllers
         }
         #endregion
 
-        #region Singer
-        [HttpPost]
-        public async Task<IActionResult> AddSinger(Tokens? token, SingerDto singer)
-        {
-            try
-            {
-                _httpClient.SetTokens(token);
-                // Il dato di business "account" viene serializzato e converito in array di byte e incapsulato in HttpContent. Per rendere il tutto esplicito usare PostAsync
-                HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}home/AddSinger", token);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.OK)
-                {
-                    token = await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>();
-                    if (token is not null)
-                    {
-                        var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
-                        token.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        token.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
-                                                                      .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
-                                                                      .Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                        return View("Views/Dashboard/Dashboard.cshtml", token);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // da sistemare
-            }
-            return View("Index");
-        }
-        #endregion
-
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             // Questi due metodi permettono di scrivere nel log quando comincia una chiamata e quando termina senza intasare il codice della action stessa e di validare il contesto.Il log è centralizzato

@@ -26,8 +26,8 @@
         // must contain at least 1 uppercase letter,
         // must contain at least 1 lowercase letter,
         // and 1 number.
-        // Can contain any of this special characters $ % # * & - .
-        let regex = new RegExp("^(?=.*\d)(?=.*[a-zA-Z])(?=.*[A-Z])(?=.*[-\#\$\.\%\&\*])(?=.*[a-zA-Z]).{8,16}$");
+        // at least one of any of this special characters $ % # * & - . +
+        let regex = new RegExp("^(?=.*\d)(?=.*[a-zA-Z])(?=.*[-\+\#\$\.\%\&\*]).{8,16}$$");
         if (!regex.test(password.val() {
             $(".warningMessage").html("password does not respect constraints requested. Please click help for details");
             return false;
