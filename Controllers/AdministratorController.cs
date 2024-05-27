@@ -15,7 +15,7 @@ public class AdministratorController : Controller, IActionFilter
     private readonly Dictionary<string, object> _configLogger;
     private readonly CancellationTokenSource _ct;
 
-public AdministratorController(ILogger logger, HttpClientFactory httpClientFactory)
+    public AdministratorController(ILogger logger, HttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _httpClient = httpClientFactory.Client;
@@ -31,10 +31,13 @@ public AdministratorController(ILogger logger, HttpClientFactory httpClientFacto
     {
         try
         {
+            // Action chiamata da un bottone submit (che funziona correttamente senza [fromBody]) e da una ajax call (che fornisce il parametro token correttamente caricato solo se non si specifica stringify e il contentype)
+            // Sembra quindi che, al contrario, se si specifica [fromBody] la chiamata ajax debba specificare il contentType e la funzione stringify nei data.
             _httpClient.SetTokens(token);
             var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/Accounts", token);
             if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
-            return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
+            var prova = await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>();
+            return await Task.Run(async () => View(prova));
         }
         catch(Exception ex)
         {
