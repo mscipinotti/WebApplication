@@ -61,10 +61,14 @@
                                     <td class="slimInputText">@t.Present</td>
                                     <td class="inputText">@t.Archive</td>
                                     <td class="inputText">
-                                        @foreach(var a in t.Authors)
-                                        {
-                                            <a>a.Surname<br /></a>
-                                        }
+                                        <ul class="nav flex-column">
+                                            @foreach(var a in t.Authors)
+                                            {
+                                                <li class="nav-item">
+                                                    <button class="nav-link" asp-controller="User" asp-action="Author">@a.Surname</button>
+                                                </li>
+                                            }
+                                        </ul>
                                     </td>
                                 </tr>
                             }

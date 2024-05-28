@@ -4,18 +4,6 @@
 @model WebAPP.Infrastructure.Models.TextsDto
 
 
-
-<div class="text-center">
-    <h3>@localizer["PageTitle"]</h3>
-</div>
-
-<div style="display: flex">
-    <nav class="nav flex-column">
-        <a class="nav-link active" href="#" onclick="addRow();">@localizer["Add"]</a>
-        <a id="delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest">@localizer["Delete"]</a>
-    </nav>
-</div>
-
 <script type="text/javascript">
     $(function () {
         waitingDialog.show();
