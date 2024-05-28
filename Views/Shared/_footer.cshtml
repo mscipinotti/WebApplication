@@ -1,4 +1,13 @@
-﻿<footer class="border-top footer text-muted fixed-bottom">
+﻿@model WebAPP.Infrastructure.Models.Tokens
+
+<input type="hidden" asp-for=Login value="@Model.Login" />
+<input type="hidden" asp-for=Password value="@Model.Password" />
+<input type="hidden" asp-for=Profile value="@Model.Profile" />
+<input type="hidden" asp-for=Cookie value="@Model.Cookie" />
+<input type="hidden" asp-for=RequestVerificationToken value="@Model.RequestVerificationToken" />
+<input type="hidden" asp-for=JwtToken value="@Model.JwtToken" />
+
+<footer class="border-top footer text-muted fixed-bottom">
     <div class="container border-top-width: 50px;" style="text-align: center">
         &copy; 2023 - Graph Drawing Algorithms Archive - <a asp-area="" asp-page="/Privacy">Privacy</a>
     </div>

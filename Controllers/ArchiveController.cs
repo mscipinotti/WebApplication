@@ -5,7 +5,7 @@ using WebAPP.Infrastructure.Models;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Utilities;
 
-namespace WebAPP.Infrastructure.Controllers
+namespace WebAPP.Controllers
 {
     public class ArchiveController : Controller
     {

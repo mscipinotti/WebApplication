@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebAPP.Infrastructure.Models.enums;
+@inject IViewLocalizer localizer
+@model WebAPP.Infrastructure.Models.Tokens
+
+<!doctype html>
+<html>
+<head>
+    <partial name="_Head" />
+</head>
+<body>
+    <form method="post" style="width:100vw">
+        <partial name="_Header" />
+        <div class="container">
+            <main role="main" class="pb-3">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <button class="nav-link" asp-controller="Home" asp-action="News">Home</button>
+                    </li>
+                    @if (Model.Profile == ProfileItems.Administrator)
+                    {
+                        <li class="nav-item">
+                            <button class="nav-link" asp-controller="Administrator" asp-action="Accounts">@localizer["Administrator"]</button>
+                        </li>
+                    }
+                    @if (Model.Profile == ProfileItems.Administrator || Model.Profile == ProfileItems.Operator)
+                    {
+                        <li class="nav-item">
+                            <button class="nav-link" asp-controller="Operator" asp-action="Index">@localizer["Operator"]</button>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <button class="nav-link" asp-controller="User" asp-action="Index">@localizer["User"]</button>
+                    </li>
+                </ul>
+
+                <div class="text-center">
+                    <h3>@localizer["PageTitle"]</h3>
+                </div>
+                <article>
+                    
+                    
+                    
+                    <p><h1>News</h1></p>
+
+
+
+                    <p class="warningMessage"></p>
+                </article>
+                @RenderBody()
+                <partial name="_Footer" model="@Model" />
+            </main>
+        </div>
+    </form>
+</body>
+</html>
+
+

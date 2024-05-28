@@ -65,6 +65,11 @@ tbody tr:hover {
     width: 150px;
 }
 
+.ultraSlimInputText {
+    border-width: 0px;
+    width: 15px;
+}
+
 .warningMessage {
     color: red;
 }

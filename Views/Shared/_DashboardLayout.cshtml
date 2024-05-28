@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebAPP.Infrastructure.Models.enums;
 @inject IViewLocalizer localizer
+@model WebAPP.Infrastructure.Models.Tokens
 
 <!doctype html>
 <html>
@@ -13,13 +15,22 @@
                 <main role="main" class="pb-3">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
-                            <a id="Home" class="nav-link" href="#">Home</a>
+                            <button class="nav-link" asp-controller="News" asp-action="Index">Home</button>
                         </li>
+                        @if (Model.Profile == ProfileItems.Administrator)
+                        {
+                            <li class="nav-item">
+                                <button id="Administrator" class="nav-link" asp-controller="Administrator" asp-action="Accounts">@localizer["Administrator"]</button>
+                            </li>
+                        }
+                        @if (Model.Profile == ProfileItems.Administrator || Model.Profile == ProfileItems.Operator)
+                        {
+                            <li class="nav-item">
+                                <button id="Operator" class="nav-link" asp-controller="Operator" asp-action="Index">@localizer["Operator"]</button>
+                            </li>
+                        }
                         <li class="nav-item">
-                            <button type="submit" class="nav-link" asp-controller="Administrator" asp-action="Accounts">@localizer["Administrator"]</button>
-                        </li>
-                        <li class="nav-item">
-                            <a id="Users" class="nav-link" href="#">Users</a>
+                            <button id="User" class="nav-link" asp-controller="User" asp-action="Index">@localizer["User"]</button>
                         </li>
                     </ul>
                     @RenderBody()

@@ -12,6 +12,7 @@
             <div class="border-end bg-white" id="sidebar-wrapper">
                 <div class="sidebar-heading border-bottom bg-light">@localizer["HelpPage"]</div>
                 <div class="list-group list-group-flush">
+                    <p>@localizer["Search"]</p>
                     <p>@localizer["Add"]</p>
                     <p>@localizer["Modify"]</p>
                     <p>@localizer["Delete"]</p>
@@ -23,13 +24,16 @@
                     <main role="main" class="pb-3">
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
-                                <a id="Home" class="nav-link" href="#">Home</a>
+                                <button class="nav-link" asp-controller="News" asp-action="Index">Home</button>
                             </li>
                             <li class="nav-item">
-                                <button type="submit" class="nav-link" asp-controller="Administrator" asp-action="Accounts">@localizer["Administrator"]</button>
+                                <button id="Administrator" type="submit" class="nav-link" asp-controller="Administrator" asp-action="Accounts">@localizer["Administrator"]</button>
                             </li>
                             <li class="nav-item">
-                                <a id="Users" class="nav-link" href="#">Users</a>
+                                <button id="Operator" type="submit" class="nav-link" asp-controller="Operator" asp-action="Index">@localizer["Operator"]</button>
+                            </li>
+                            <li class="nav-item">
+                                <button id="User" type="submit" class="nav-link" asp-controller="User" asp-action="Index">@localizer["User"]</button>
                             </li>
                         </ul>
                         @RenderBody()

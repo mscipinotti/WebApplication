@@ -1,0 +1,13 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebAPP.Infrastructure.Models.enums
+@inject IViewLocalizer localizer
+@model WebAPP.Infrastructure.Models.TextsDto
+
+<script type="text/javascript">
+    $(function () {
+        waitingDialog.show();
+
+        $("#User").tab('show');
+        setTimeout(function () { waitingDialog.hide(); }, 2000);
+    });
+</script>

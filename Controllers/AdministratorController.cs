@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using WebAPP.Extensions;
+using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.Infrastructure.Models;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Utilities;
 
-namespace WebAPP.Infrastructure.Controllers;
+namespace WebAPP.Controllers;
 
+[Route("[Controller]")]
 public class AdministratorController : Controller, IActionFilter
 {
     private readonly ILogger _logger;
@@ -34,10 +36,9 @@ public class AdministratorController : Controller, IActionFilter
             // Action chiamata da un bottone submit (che funziona correttamente senza [fromBody]) e da una ajax call (che fornisce il parametro token correttamente caricato solo se non si specifica stringify e il contentype)
             // Sembra quindi che, al contrario, se si specifica [fromBody] la chiamata ajax debba specificare il contentType e la funzione stringify nei data.
             _httpClient.SetTokens(token);
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/Accounts", token);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/Accounts", token);
             if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
-            var prova = await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>();
-            return await Task.Run(async () => View(prova));
+            return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>()));
         }
         catch(Exception ex)
         {
@@ -53,7 +54,7 @@ public class AdministratorController : Controller, IActionFilter
         try
         {
             _httpClient.SetTokens(accountsDto);
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/UpdateAccounts", accountsDto, _ct.Token);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/UpdateAccounts", accountsDto, _ct.Token);
             if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest)
             {
                 accountsDto.Errors = (await httpResponseMessage!.Content.ReadFromJsonAsync<AccountsDto>())!.Errors;
@@ -76,7 +77,7 @@ public class AdministratorController : Controller, IActionFilter
         try
         {
             _httpClient.SetTokens(accountsDto);
-            var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/DeleteAccounts", accountsDto, _ct.Token);
+            var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/DeleteAccounts", accountsDto, _ct.Token);
             if (httpResponseMessage.StatusCode != HttpStatusCode.OK) return BadRequest(await httpResponseMessage.Content.ReadFromJsonAsync<AccountsDto>());
         }
         catch (Exception ex)

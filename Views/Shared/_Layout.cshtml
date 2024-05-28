@@ -15,27 +15,27 @@
             <partial name="_Footer" />
             <partial name="_Culture" />
         </main>
+
+        <script type="text/javascript">
+            function checkPassword()
+            {
+                if (!document.getElementById("retype")) return true;
+                // At least 8 - 16 characters,
+                // must contain at least 1 uppercase letter,
+                // must contain at least 1 lowercase letter,
+                // and 1 number.
+                // at least one of any of this special characters $ % # * & - . +
+                let regex = new RegExp("^(?=.*\d)(?=.*[a-zA-Z])(?=.*[-\+\#\$\.\%\&\*]).{8,16}$$");
+                if (!regex.test(password.val())) {
+                    $(".warningMessage").html("password does not respect constraints requested. Please click help for details");
+                    return false;
+                }
+                if ($("#password").val() != $("#retype").val()) {
+                    $(".warningMessage").html("password and retype password fields are not equal");
+                    return false;
+                }
+                return true;
+            }
+        </script>
     </body>
 </html>
-
-<script type="text/javascript">
-    function checkPassword()
-    {
-        if (!document.getElementById("retype")) return true;
-        // At least 8 - 16 characters,
-        // must contain at least 1 uppercase letter,
-        // must contain at least 1 lowercase letter,
-        // and 1 number.
-        // at least one of any of this special characters $ % # * & - . +
-        let regex = new RegExp("^(?=.*\d)(?=.*[a-zA-Z])(?=.*[-\+\#\$\.\%\&\*]).{8,16}$$");
-        if (!regex.test(password.val() {
-            $(".warningMessage").html("password does not respect constraints requested. Please click help for details");
-            return false;
-        }
-        if ($("#password").val() != $("#retype").val()) {
-            $(".warningMessage").html("password and retype password fields are not equal");
-            return false;
-        }
-        return true;
-    }
-</script>

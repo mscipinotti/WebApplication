@@ -3,13 +3,6 @@
 @inject IConfiguration Config
 @model WebAPP.Infrastructure.Models.AccountsDto
 
-<input type="hidden" asp-for=Login value="@Model.Login" />
-<input type="hidden" asp-for=Password value="@Model.Password" />
-<input type="hidden" asp-for=Profile value="@Model.Profile" />
-<input type="hidden" asp-for=Cookie value="@Model.Cookie" />
-<input type="hidden" asp-for=RequestVerificationToken value="@Model.RequestVerificationToken" />
-<input type="hidden" asp-for=JwtToken value="@Model.JwtToken" />
-
 <div class="text-center">
     <h3>@localizer["PageTitle"]</h3>
 </div>
@@ -117,40 +110,6 @@
             $('.modal-header h5').html("@localizer["Title"]");
         });
 
-        // $("a[data-tab='administrator']").on("click", function (e) {
-        //     let accounts = true;
-        //     let tokens = {
-        //         Login: "@Model.Login",
-        //         Password: "@Model.Password",
-        //         Profile: "@Model.Profile",
-        //         RequestVerificationToken: "@Model.RequestVerificationToken",
-        //         Cookie: "@Model.Cookie",
-        //         JwtToken: "@Model.JwtToken",
-        //         Status: "@Model.Status"
-        //     };
-
-        //     waitingDialog.show();
-        //     e.preventDefault(); // cancel the anchor itself
-        //     $.ajax({
-        //         url: "Accounts",
-        //         type: 'post',
-        //         dataType: 'json',
-        //         async: false,                                           // Non rimuovere, in errore se async = true
-        //         data: tokens
-        //     }).fail(function (jqXHR) {
-        //         let accountsDto = $.parseJSON(jqXHR.responseText);
-        //         let message = "";
-        //         jQuery.each(accountsDto.errors, function (i, val) {
-        //             i = parseInt(i + 1);
-        //             message = message + i + ". " + val + "<br>";
-        //         });
-        //         $(".warningMessage").html(message);
-        //         accounts = false;
-        //     });
-        //     setTimeout(function () { waitingDialog.hide(); }, 2000);
-        //     return accounts;
-        // });
-
         // https://learn.jquery.com/events/event-delegation/
         // Event delegation. Problema: aggiungere il click event alla riga dinamicamente creata. Si usa
         // $("selector 1").on("click", "selector 2", function)
@@ -173,7 +132,7 @@
         }
         $(".warningMessage").html("@message" != "" ? "@message" : params.get("Error"));
 
-        $("#Administrators").tab('show');
+        $("#Administrator").tab('show');
         setTimeout(function () { waitingDialog.hide(); }, 2000);
     });
 

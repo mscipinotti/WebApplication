@@ -13,6 +13,7 @@ using System.Text.Json;
 
 namespace WebAPP.Controllers
 {
+    // Senza routing. Ciò vuold dire che se non specificato il controller è HomeController.
     public class HomeController : Controller, IActionFilter
     {
         private readonly ILogger _logger;

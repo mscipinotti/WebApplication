@@ -13,13 +13,9 @@
             }
             @if (Model.Profile == ProfileItems.Administrator || Model.Profile == ProfileItems.Operator)
             {
-                <li><button type="submit" class="dropdown-item" asp-controller="User" asp-action="Texts">@localizer["Operator"]</button></li>
+                <li><button type="submit" class="dropdown-item" asp-controller="Operator" asp-action="Index">@localizer["Operator"]</button></li>
             }
-            @if (Model.Profile == ProfileItems.User)
-            {
-                <li><button type="submit" class="dropdown-item" asp-controller="User" asp-action="Texts">@localizer["User"]</button></li>
-            }
-            
+            <li><button type="submit" class="dropdown-item" asp-controller="User" asp-action="Index">@localizer["User"]</button></li>
             <li><hr class="dropdown-divider"></li>
             <li><button type="submit" class="dropdown-item" asp-controller="Home" asp-action="Logoff">@localizer["Logoff"]</button></li>
         </ul>

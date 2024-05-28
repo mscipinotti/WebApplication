@@ -13,7 +13,7 @@ namespace WebAPP.Controllers
 {
     // Il routing è indispensabile per i bottoni che specificano asp-controller. Se non fosse presente l'interpretazione in HTML5 sarebbe con la action ma senza il controller andando a puntare quindi in HomeController e restituendo un NotFound.
     [Route("[Controller]")]
-    public class UserController : Controller, IActionFilter
+    public class NewsController : Controller, IActionFilter
     {
         private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
@@ -22,7 +22,7 @@ namespace WebAPP.Controllers
         private readonly IStringLocalizer<HomeController> _localizer;
         private readonly CancellationTokenSource _ct;
 
-    public UserController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<HomeController> localizer)
+        public NewsController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<HomeController> localizer)
         {
             _logger = logger;
             _httpClient = httpClientFactory.Client;
@@ -40,10 +40,7 @@ namespace WebAPP.Controllers
         {
             try
             {
-                _httpClient.SetTokens(token);
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Texts", token);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
-                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<TextsDto>()));
+                return await Task.Run(() => View(token));
             }
             catch(Exception ex)
             {
