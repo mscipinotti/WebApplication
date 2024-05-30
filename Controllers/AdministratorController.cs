@@ -34,7 +34,7 @@ public class AdministratorController : Controller, IActionFilter
         try
         {
             // Action chiamata da un bottone submit (che funziona correttamente senza [fromBody]) e da una ajax call (che fornisce il parametro token correttamente caricato solo se non si specifica stringify e il contentype)
-            // Sembra quindi che, al contrario, se si specifica [fromBody] la chiamata ajax debba specificare il contentType e la funzione stringify nei data.
+            // Sembra quindi che, al contrario, se si specifica [fromBody] la chiamata ajax debba specificare il contentType e la funzione stringify nei data. Verificato nella chiamata alla action User/Biography dalla ajax inUser/Index.cshtml.
             _httpClient.SetTokens(token);
             var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}Administrator/Accounts", token);
             if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);

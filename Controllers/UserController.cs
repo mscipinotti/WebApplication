@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 using System.Net;
+using WebApp.Infrastructure.Models;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.Infrastructure.Models;
@@ -50,6 +51,24 @@ namespace WebAPP.Controllers
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
                 token.Errors = [ex.Message];
                 return View(token);
+            }
+        }
+
+        [HttpPost("Biography")]
+        public async Task<IActionResult> BiographyAsync(BiographyDto biography)
+        {
+            try
+            {
+                _httpClient.SetTokens(biography);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Biography", biography);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
+                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>()));
+            }
+            catch (Exception ex)
+            {
+                WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
+                biography.Errors = [ex.Message];
+                return View(biography);
             }
         }
 

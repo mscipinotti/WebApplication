@@ -3,6 +3,51 @@
 @inject IViewLocalizer localizer
 @model WebAPP.Infrastructure.Models.TextsDto
 
+<div class="text-center">
+    <h3>@localizer["PageTitle"]</h3>
+</div>
+<article>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col" class="ultraSlimInputText">#</th>
+                <th scope="col" class="hugeInputText">Title</th>
+                <th scope="col"><div data-placement="top">@localizer["ISBN"]</div></th>
+                <th scope="col"><div data-placement="top">@localizer["Published"]</div></th>
+                <th scope="col"><div data-placement="top">@localizer["Present"]</div></th>
+                <th scope="col"><div data-placement="top">@localizer["Archive"]</div></th>
+                <th scope="col"><div data-placement="top">@localizer["Authors"]</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in Model.Texts)
+            {
+                <tr>
+                    <th scope="row">@(Model.Texts.IndexOf(t) + 1)</th>
+                    <td class="hugeInputText" style="cursor:grab">@t.Title</td>
+                    <td class="inputText">@t.ISBN</td>
+                    <td class="slimInputText">@t.Published</td>
+                    <td class="slimInputText">@t.Present</td>
+                    <td class="inputText">@t.Archive</td>
+                    <td class="inputText">
+                        <ul class="nav flex-column">
+                            @foreach (var a in t.Authors)
+                            {
+                                <li class="nav-item">
+                                    @* 1. Il bottone chiama una action che ha per parametro-oggetto un modello diverso da quello di questa pagina.
+                                       2. Inoltre nell'oggetto è iniettato nella proprietà Author (di BiographyDto) il valore presente in asp-route-Author. *@
+                                    <button class="nav-link" asp-controller="User" asp-action="Biography" asp-route-Author="@a.Id">@(string.IsNullOrEmpty(a.Name) ? a.Surname : $"{a.Name!.Substring(0, 1)}. {a.Surname}")</button>
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p class="warningMessage"></p>
+</article>
+
 <script type="text/javascript">
     $(function () {
         waitingDialog.show();
@@ -10,4 +55,37 @@
         $("#User").tab('show');
         setTimeout(function () { waitingDialog.hide(); }, 2000);
     });
+
+    $("a.nav-link").on("click", function (event) {
+        event.preventDefault();
+        let biographyDto = {
+            Login: "@Model.Login",
+            Password: "@Model.Password",
+            Profile: "@Model.Profile",
+            RequestVerificationToken: "@Model.RequestVerificationToken",
+            Cookie: "@Model.Cookie",
+            JwtToken: "@Model.JwtToken",
+            Accounts: [],
+            Author: $(this).data("id"),
+            Text: ""
+        };
+
+        $.ajax({
+            url: "Biography",
+            type: 'post',
+            dataType: 'json',
+            async: false,                                           // Non rimuovere, in errore se async = true
+            data: biographyDto
+        }).fail(function (jqXHR) {
+            let biographyDto = $.parseJSON(jqXHR.responseText);
+            let message = "";
+            jQuery.each(biographyDto.errors, function (i, val) {
+                i = parseInt(i + 1);
+                message = message + i + ". " + val + "<br>";
+            });
+            $(".warningMessage").html(message);
+            return false;
+        });
+        return true;
+    })
 </script>
