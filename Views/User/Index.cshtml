@@ -34,8 +34,8 @@
                             @foreach (var a in t.Authors)
                             {
                                 <li class="nav-item">
-                                    @* 1. Il bottone chiama una action che ha per parametro-oggetto un modello diverso da quello di questa pagina.
-                                       2. Inoltre nell'oggetto è iniettato nella proprietà Author (di BiographyDto) il valore presente in asp-route-Author. *@
+                                    @* 1. Il bottone chiama una action che ha per parametro-oggetto un modello diverso da quello di questa pagina ma le proprietà in comune, quelle di Tokens, sono inviate alla action.
+                                       2. Nel parametro-oggetto è iniettato nella proprietà Author (di BiographyDto) il valore presente in asp-route-Author. *@
                                     <button class="nav-link" asp-controller="User" asp-action="Biography" asp-route-Author="@a.Id">@(string.IsNullOrEmpty(a.Name) ? a.Surname : $"{a.Name!.Substring(0, 1)}. {a.Surname}")</button>
                                 </li>
                             }
@@ -56,36 +56,4 @@
         setTimeout(function () { waitingDialog.hide(); }, 2000);
     });
 
-    $("a.nav-link").on("click", function (event) {
-        event.preventDefault();
-        let biographyDto = {
-            Login: "@Model.Login",
-            Password: "@Model.Password",
-            Profile: "@Model.Profile",
-            RequestVerificationToken: "@Model.RequestVerificationToken",
-            Cookie: "@Model.Cookie",
-            JwtToken: "@Model.JwtToken",
-            Accounts: [],
-            Author: $(this).data("id"),
-            Text: ""
-        };
-
-        $.ajax({
-            url: "Biography",
-            type: 'post',
-            dataType: 'json',
-            async: false,                                           // Non rimuovere, in errore se async = true
-            data: biographyDto
-        }).fail(function (jqXHR) {
-            let biographyDto = $.parseJSON(jqXHR.responseText);
-            let message = "";
-            jQuery.each(biographyDto.errors, function (i, val) {
-                i = parseInt(i + 1);
-                message = message + i + ". " + val + "<br>";
-            });
-            $(".warningMessage").html(message);
-            return false;
-        });
-        return true;
-    })
 </script>

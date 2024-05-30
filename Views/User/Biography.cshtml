@@ -2,22 +2,28 @@
 @inject IViewLocalizer localizer
 @model WebAPP.Infrastructure.Models.BiographyDto
 
-<div class="d-flex flex-row">
-    <div class="p-2"><img src="~/Images/leaves.jpg" alt="Immagine dell'autore" /></div>
+<article>
+    <div class="d-flex flex-row">
+        <div class="p-2"><img src="~/Images/leaves.jpg" alt="Immagine dell'autore" /></div>
+        <div class="d-flex flex-column">
+            <div class="p-2">@Model.Text</div>
+            <div class="p-2"><h4>@localizer["Works"]</h4></div>
+            <div class="p-2"> 
+                <ol>@foreach (var t in Model.Texts)
+                    {
+                        <li>@(t.ISBN == null ? localizer["missingISBN"] : t.ISBN). @t.Title. (Published in @(t.Published == null ? localizer["missingPublished"] : t.Published))"</li>
+                    }
+                </ol>
+            </div>
+        </div>
+        <div class="d-flex flex-row"></div>
+    </div>
     <div class="d-flex flex-column">
-        <div class="p-2">@Model.Text</div>
+        <div class="p-2">Flex item 1</div>
         <div class="p-2">Flex item 2</div>
         <div class="p-2">Flex item 3</div>
         <div class="p-2">Flex item 4</div>
         <div class="p-2">Flex item 5</div>
     </div>
-    <div class="d-flex flex-row"></div>
-</div>
-<div class="d-flex flex-column">
-    <div class="p-2">Flex item 1</div>
-    <div class="p-2">Flex item 2</div>
-    <div class="p-2">Flex item 3</div>
-    <div class="p-2">Flex item 4</div>
-    <div class="p-2">Flex item 5</div>
-</div>
-
+    <p class="warningMessage">@(Model.Errors == null ? string.Empty : Model.Errors[0])</p>
+</article>

@@ -61,13 +61,12 @@ namespace WebAPP.Controllers
             {
                 _httpClient.SetTokens(biography);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Biography", biography);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.NotFound) throw new BadHttpRequestException((await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>())!.Errors![0]);
                 return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>()));
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
-                biography.Errors = [ex.Message];
                 return View(biography);
             }
         }
