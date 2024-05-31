@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using NLog;
 using NLog.Web;
@@ -89,7 +90,16 @@ public class Program
             }
 
             app.UseHttpsRedirection()
-               .UseStaticFiles()
+               // wwwroot folder
+                .UseStaticFiles()
+                // repository documents folder
+                .UseStaticFiles(new StaticFileOptions
+                {
+                    // physical directory
+                    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "documents")),
+                    // virtual public directory
+                    RequestPath = "/StaticFiles"
+                })
                .UseRouting()
                .UseAuthentication()
                .UseAuthorization()
