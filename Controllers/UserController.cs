@@ -57,6 +57,7 @@ namespace WebAPP.Controllers
         [HttpPost("Biography")]
         public async Task<IActionResult> BiographyAsync(BiographyDto biographyDto, int Author)
         {
+            // Con asp-route- è possibile passare solo tipi primitivi
             try
             {
                 biographyDto.Author = new()
@@ -66,7 +67,7 @@ namespace WebAPP.Controllers
                 biographyDto.Texts = [];
                 _httpClient.SetTokens(biographyDto);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Biography", biographyDto);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException((await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>())!.Errors![0]);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.NotFound) throw new BadHttpRequestException((await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>())!.Errors![0]);
                 return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>()));
             }
             catch (Exception ex)

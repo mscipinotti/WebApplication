@@ -38,7 +38,7 @@
                         <td class="inputText">@a.Name</td>
                         <td class="inputText">@a.Surname</td>
                         <td class="midInputText">@a.FC</td>
-                        <td class="slimInputText">@a.Age</td>
+                        <td class="slimInputText">@a.BirthDay</td>
                         <td class="inputText">********
                             <input type="hidden" id="@a.Email" value="@a.Password" />
                         </td>
@@ -146,7 +146,7 @@
         let name = '<input type="text" class="inputText" placeholder="Nome" />';
         let surname = '<input type="text" class="inputText" placeholder="Cognome" />';
         let fiscalCode = '<input type="text" class="midInputText" placeholder="codice fiscale" />';
-        let age = '<input type="text" class="slimInputText" placeholder="età" />';
+        let birthDay = '<input type="text" class="slimInputText" placeholder="età" />';
         let password = '<input type="password" class="inputText" placeholder="password" />';
         let expirationDate = '<input type="date" class="slimInputText" value="expirationDate" />';
         let status = '<div class="dropdown">' +
@@ -171,7 +171,7 @@
                                                 <td class="inputText">' + name + '</td>                 \
                                                 <td class="inputText">' + surname + '</td>              \
                                                 <td class="midInputText">' + fiscalCode + '</td>        \
-                                                <td class="slimInputText">' + age + '</td>              \
+                                                <td class="slimInputText">' + birthDay + '</td>              \
                                                 <td class="inputText">' + password + '</td>             \
                                                 <td class="slimInputText">' + expirationDate + '</td>   \
                                                 <td class="midInputText">' + status + '</td>            \
@@ -211,7 +211,7 @@
                             break;
                         case 3: accountDto.FC = $(this).val();
                             break;
-                        case 4: accountDto.Age = $(this).val();
+                        case 4: accountDto.BirthDay = $(this).val();
                             break;
                         case 5: accountDto.Password = $(this).val();
                             break;
@@ -241,7 +241,7 @@
                             break;
                         case 2: accountDto.FC = $(this).val();
                             break;
-                        case 3: accountDto.Age = $(this).val();
+                        case 3: accountDto.BirthDay = $(this).val();
                             break;
                         case 4: accountDto.Password = $(this).val();
                             break;
@@ -319,7 +319,7 @@
                             break;
                         case 2: accountDto.FC = $(this).val();
                             break;
-                        case 3: accountDto.Age = $(this).val();
+                        case 3: accountDto.BirthDay = $(this).val();
                             break;
                         case 4: accountDto.Password = $(this).val();
                             break;
