@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 using System.Net;
 using WebApp.Infrastructure.Models;
+using WebApp.Infrastructure.Models.dto;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.GlobalParameters;
-using WebAPP.Infrastructure.Models;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Utilities;
 
@@ -37,14 +37,14 @@ namespace WebAPP.Controllers
         }
 
         [HttpPost("Index")]
-        public async Task<IActionResult> IndexAsync(Tokens token)
+        public async Task<IActionResult> IndexAsync(Tokens token, CancellationToken ct)
         {
             try
             {
                 _httpClient.SetTokens(token);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Index", token);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
-                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<TextsDto>()));
+                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<LibraryDto>(ct)));
             }
             catch(Exception ex)
             {
@@ -55,19 +55,24 @@ namespace WebAPP.Controllers
         }
 
         [HttpPost("Biography")]
-        public async Task<IActionResult> BiographyAsync(BiographyDto biography)
+        public async Task<IActionResult> BiographyAsync(BiographyDto biographyDto, int Author)
         {
             try
             {
-                _httpClient.SetTokens(biography);
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Biography", biography);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.NotFound) throw new BadHttpRequestException((await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>())!.Errors![0]);
+                biographyDto.Author = new()
+                {
+                    Id = Author
+                };
+                biographyDto.Texts = [];
+                _httpClient.SetTokens(biographyDto);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Biography", biographyDto);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException((await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>())!.Errors![0]);
                 return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>()));
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
-                return View(biography);
+                return View(biographyDto);
             }
         }
 

@@ -1,18 +1,21 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using WebAPP.Infrastructure.GlobalParameters
+@using WebApp.Infrastructure.Models.dto
 @inject IViewLocalizer localizer
-@model WebAPP.Infrastructure.Models.BiographyDto
+@model BiographyDto
 
 <article>
     <div class="d-flex flex-row">
         <div class="p-2"><img src="~/Images/leaves.jpg" alt="Immagine dell'autore" /></div>
         <div class="d-flex flex-column w-100">
+            <div class="p-2"><h3>@Model.Author.Name @Model.Author.Surname</h3></div>
             <div class="p-2">@Model.Text</div>
             <div class="p-2"><h4>@localizer["Works"]</h4></div>
             <div class="w-100 p-2">
-                <ol class="nav">@foreach (var t in Model.Texts)
+                <ol class="nav list-group list-group-numbered">
+                    @foreach (var t in Model.Texts)
                     {
-                        <li class="w-100 d-flex flex-row" nav-item><a href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>.&nbsp;@(string.IsNullOrEmpty(t.ISBN) ? string.Empty : $"{t.ISBN}.") @(t.Published is null ? string.Empty : $"{t.Published.ToString()}.")</li>
+                        <li class="w-100 d-flex flex-row list-group-item"><a class="px-2" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>.&nbsp;@(string.IsNullOrEmpty(t.ISBN) ? string.Empty : $"{t.ISBN}.") @(t.Published is null ? string.Empty : $"{t.Published.ToString()}.")</li>
                     }
                 </ol>
             </div>

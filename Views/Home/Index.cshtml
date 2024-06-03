@@ -1,5 +1,6 @@
-﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
-@model WebAPP.Infrastructure.Models.Tokens
+﻿@using WebApp.Infrastructure.Models.dto
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@model Tokens
 
 @{
     Version? v = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;

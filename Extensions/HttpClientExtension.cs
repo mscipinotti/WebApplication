@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Net.Http.Headers;
-using WebAPP.Infrastructure.Models;
+using WebApp.Infrastructure.Models.dto;
 
 namespace WebAPP.Extensions
 {

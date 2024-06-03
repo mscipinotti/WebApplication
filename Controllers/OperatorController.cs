@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using WebApp.Infrastructure.Models.dto;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.GlobalParameters;
-using WebAPP.Infrastructure.Models;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Utilities;
 
@@ -34,7 +34,7 @@ namespace WebAPP.Controllers
                 _httpClient.SetTokens(token);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Index", token);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
-                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<TextsDto>()));
+                return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<List<TextDto>>()));
             }
             catch (Exception ex)
             {

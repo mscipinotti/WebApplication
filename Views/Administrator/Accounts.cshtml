@@ -1,7 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebApp.Infrastructure.Models.dto
 @inject IViewLocalizer localizer
 @inject IConfiguration Config
-@model WebAPP.Infrastructure.Models.AccountsDto
+@model AccountsDto
 
 <div class="text-center">
     <h3>@localizer["PageTitle"]</h3>
