@@ -18,7 +18,7 @@ namespace WebAPP.Extensions
             // Jwt token
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.JwtToken);
 
-            // Per trasferire al server la scelta della lingua e rispondre con eventuali errori nella lingua specificata
+            // Per trasferire al server la scelta della lingua e rispondere con eventuali errori nella lingua specificata
             client.DefaultRequestHeaders.Add("Accept-Language", CultureInfo.CurrentCulture.Name);
         }
     }

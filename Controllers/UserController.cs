@@ -20,10 +20,10 @@ namespace WebAPP.Controllers
         private readonly HttpClient _httpClient;
         private readonly IMapper _mapper;
         private readonly Dictionary<string, object> _configLogger;
-        private readonly IStringLocalizer<HomeController> _localizer;
+        private readonly IStringLocalizer<UserController> _localizer;
         private readonly CancellationTokenSource _ct;
 
-    public UserController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<HomeController> localizer)
+    public UserController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<UserController> localizer)
         {
             _logger = logger;
             _httpClient = httpClientFactory.Client;
