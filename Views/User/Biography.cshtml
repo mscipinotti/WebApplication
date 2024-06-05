@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @using WebAPP.Infrastructure.GlobalParameters
 @using WebApp.Infrastructure.Models.dto
+@using WebAPP.Infrastructure.Models.enums
 @inject IViewLocalizer localizer
 @model BiographyDto
 
@@ -17,17 +18,23 @@
             </div>
         </div>
         <div class="d-flex flex-column w-100">
-            <div class="p-2"><h3>@Model.Author.Title @Model.Author.Name @Model.Author.Surname</h3></div>
+            <div class="p-2"><h3>@(Model.Author.Title is null ? string.Empty : Model.Author.Title!.Description) @Model.Author.Name @Model.Author.Surname</h3></div>
             <div class="p-2">
                 @* .AspNetCore.Culture è il nome di default assegnato al cookie del locale scelto *@
                 @(Context.Request.Cookies[".AspNetCore.Culture"] == null || Context.Request.Cookies[".AspNetCore.Culture"]! == "c=en|uic=en" ? Model.Text : Model.TextIt)
+                @if(Model.Profile != ProfileItems.User)
+                {
+                    <div class="d-flex flex-row-reverse"><button type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
+                }
             </div>
             <div class="p-2"><h4>@localizer["Works"]</h4></div>
             <div class="w-100 p-2">
                 <ol class="nav list-group list-group-numbered">
                     @foreach (var t in Model.Texts)
                     {
-                        <li class="w-100 d-flex flex-row list-group-item"><a class="px-2" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>.&nbsp;@(string.IsNullOrEmpty(t.ISBN) ? string.Empty : $"{t.ISBN}.") @(t.Published is null ? string.Empty : $"{t.Published.ToString()}.")</li>
+                        <li class="w-100 d-flex flex-row list-group-item">
+                            <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>.&nbsp;@(string.IsNullOrEmpty(t.ISBN) ? string.Empty : $"{t.ISBN}.") @(t.Published is null ? string.Empty : $"{t.Published.ToString()}.")
+                        </li>
                     }
                 </ol>
             </div>

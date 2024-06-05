@@ -126,6 +126,9 @@
   <data name="missingPublished" xml:space="preserve">
     <value>Publish date missing</value>
   </data>
+  <data name="Modify" xml:space="preserve">
+    <value>Modify</value>
+  </data>
   <data name="Nationality" xml:space="preserve">
     <value>Nationality</value>
   </data>
