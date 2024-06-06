@@ -132,6 +132,9 @@
   <data name="Nationality" xml:space="preserve">
     <value>Nazionalità</value>
   </data>
+  <data name="Responsibility" xml:space="preserve">
+    <value>Incarichi</value>
+  </data>
   <data name="WorkAddress" xml:space="preserve">
     <value>Indirizzo di lavoro</value>
   </data>

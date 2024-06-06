@@ -2,6 +2,7 @@
 @using WebAPP.Infrastructure.GlobalParameters
 @using WebApp.Infrastructure.Models.dto
 @using WebAPP.Infrastructure.Models.enums
+@using System.Globalization
 @inject IViewLocalizer localizer
 @model BiographyDto
 
@@ -27,6 +28,24 @@
                     <div class="d-flex flex-row-reverse"><button type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
                 }
             </div>
+
+            <div class="p-2"><h4>@localizer["Responsibility"]</h4></div>
+            <div class="w-100 p-2">
+                <ol class="nav list-group list-group-numbered">
+                    @foreach (var r in Model.Responsibilities)
+                    {
+                        <li class="w-100 d-flex flex-row list-group-item">
+                            @if (r.From is not null)
+                                {
+                                <p class="px-2">
+                                    @(r.From.Value.ToString("yyyy")) - @(r.To is not null ? $"{r.To.Value.ToString("yyyy")}." : "... .")
+                                </p>
+                                }
+                                @(Context.Request.Cookies[".AspNetCore.Culture"] == null || Context.Request.Cookies[".AspNetCore.Culture"]! == "c=en|uic=en" ? r.Description : r.DescriptionIt)
+                        </li>
+                    }
+                </ol>
+
             <div class="p-2"><h4>@localizer["Works"]</h4></div>
             <div class="w-100 p-2">
                 <ol class="nav list-group list-group-numbered">

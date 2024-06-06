@@ -132,6 +132,9 @@
   <data name="Nationality" xml:space="preserve">
     <value>Nationality</value>
   </data>
+  <data name="Responsibility" xml:space="preserve">
+    <value>Responsibilities</value>
+  </data>
   <data name="WorkAddress" xml:space="preserve">
     <value>Work address</value>
   </data>
