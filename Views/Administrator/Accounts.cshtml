@@ -113,7 +113,7 @@
 
         // https://learn.jquery.com/events/event-delegation/
         // Event delegation. Problema: aggiungere il click event alla riga dinamicamente creata. Si usa
-        // $("selector 1").on("click", "selector 2", function)
+        // $("selector 1").on("click", "selector 2", function() { ... })
         // Il selector 1 deve esistere sempre (già prima della aggiunta dinamica). Il selector 2 deve essere figlio del primo e dinamicamente creato.
         $("tbody").on('click', 'tr.rowSelected .dropdown-menu .dropdown-item', function () {
             $(this).closest(".dropdown")

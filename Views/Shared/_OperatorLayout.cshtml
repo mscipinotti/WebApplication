@@ -2,7 +2,9 @@
 @using WebAPP.Infrastructure.Models.enums;
 @using WebApp.Infrastructure.Models.dto;
 @inject IViewLocalizer localizer
-@model LibraryDto
+@inject IConfiguration Config
+@* Tenere basso il model in modo che il layout possa essere condiviso facilmente dalle pagine *@
+@model Tokens
 
 <!doctype html>
 <html>
@@ -10,7 +12,7 @@
     <partial name="_Head" />
 </head>
 <body>
-    <form method="post" style="width:100vw">
+    <form method="post" class="w-100">
         <partial name="_Header" />
         <div class="container">
             <main role="main" class="pb-3">
@@ -43,52 +45,11 @@
                         <a class="nav-link active" href="#" onclick="addRow();">@localizer["Add"]</a>
                         <a id="delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest">@localizer["Delete"]</a>
                     </nav>
-                    <article>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="ultraSlimInputText">#</th>
-                                    <th scope="col" class="hugeInputText">Title</th>
-                                    <th scope="col"><div data-placement="top">@localizer["ISBN"]</div></th>
-                                    <th scope="col"><div data-placement="top">@localizer["Published"]</div></th>
-                                    <th scope="col"><div data-placement="top">@localizer["Present"]</div></th>
-                                    <th scope="col"><div data-placement="top">@localizer["Archive"]</div></th>
-                                    <th scope="col"><div data-placement="top">@localizer["Authors"]</div></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var t in Model.Texts)
-                                {
-                                    <tr>
-                                        <th scope="row">@(Model.Texts.IndexOf(t) + 1)</th>
-                                        <td class="hugeInputText" style="cursor:grab">@t.Title</td>
-                                        <td class="inputText">@t.ISBN</td>
-                                        <td class="slimInputText">@t.Published</td>
-                                        <td class="slimInputText">@t.Present</td>
-                                        <td class="inputText">@t.Archive</td>
-                                        <td class="inputText">
-                                            <ul class="nav flex-column">
-                                                @foreach (var a in t.Authors)
-                                                {
-                                                    <li class="nav-item">
-                                                        <button class="nav-link" asp-controller="User" asp-action="Author">@a.Surname</button>
-                                                    </li>
-                                                }
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                        <p class="warningMessage"></p>
-                    </article>
+                    @RenderBody()
                 </div>
-                @RenderBody()
                 <partial name="_Footer" />
             </main>
         </div>
     </form>
 </body>
 </html>
-
-

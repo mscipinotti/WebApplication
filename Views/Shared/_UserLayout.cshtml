@@ -11,7 +11,7 @@
     <partial name="_Head" />
 </head>
 <body>
-    <form method="post" style="width:100vw">
+    <form method="post" class="w-100">
         <partial name="_Header" />
         <div class="container">
             <main role="main" class="pb-3">
@@ -35,6 +35,7 @@
                         <button class="nav-link" asp-controller="User" asp-action="Index">@localizer["User"]</button>
                     </li>
                 </ul>
+
                 @RenderBody()
                 <partial name="_Footer" />
             </main>

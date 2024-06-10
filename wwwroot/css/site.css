@@ -41,8 +41,17 @@ body {
         --bs-table-bg: "";
     }
 
+.filedSelected {
+    background-color: lightgreen;
+}
+
 tbody tr:hover {
     outline: thin solid;
+}
+
+.maxInputText {
+    border-width: 0px;
+    width: 100vw;
 }
 
 .hugeInputText {
@@ -63,6 +72,11 @@ tbody tr:hover {
 .slimInputText {
     border-width: 0px;
     width: 150px;
+}
+
+.superSlimInputText {
+    border-width: 0px;
+    width: 50px;
 }
 
 .ultraSlimInputText {

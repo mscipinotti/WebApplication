@@ -1,0 +1,216 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WebAPP.Infrastructure.GlobalParameters
+@using WebApp.Infrastructure.Models.dto
+@using WebAPP.Infrastructure.Models.enums
+@using System.Globalization
+@inject IViewLocalizer localizer
+@inject IConfiguration Config
+@model BiographyDto
+
+<article>
+    @{
+        var language = Context.Request.Cookies[".AspNetCore.Culture"] == null || Context.Request.Cookies[".AspNetCore.Culture"]! == "c=en|uic=en" ? "en" : "it";
+    }
+    <div class="d-flex flex-row">
+        <div class="p-2 d-flex flex-column">
+            <img src="~/Images/leaves.jpg" alt="Immagine dell'autore" />
+            <div>
+                <div><b>@localizer["BirthDay"]</b><br />@Model.Author.BirthDay</div>
+                <div><b>Email</b><br />@Model.Author.Email</div>
+                <div><b>@localizer["WorkPlace"]</b><br />@Model.Author.WorkPlace</div>
+                <div><b>@localizer["WorkAddress"]</b><br />@Model.Author.WorkAddress</div>
+                <div><b>@localizer["Nationality"]</b><br />@Model.Author.Nationality</div>
+            </div>
+        </div>
+        <div class="d-flex flex-column w-100">
+            <div class="p-2"><h3>@(Model.Author.Title is null ? string.Empty : Model.Author.Title!.Description) @Model.Author.Name @Model.Author.Surname</h3></div>
+            <div class="p-2">
+                @* .AspNetCore.Culture è il nome di default assegnato al cookie del locale scelto *@
+                <p id="pText">@(language == "en" ? Model.Text : Model.TextIt)</p>
+                @if(Model.Profile != ProfileItems.User)
+                {
+                    <div class="d-flex flex-row-reverse"><button id="btnText" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
+                }
+            </div>
+
+            <div class="p-2"><h4>@localizer["Responsibility"]</h4></div>
+            <div class="w-100 p-2">
+                <ol id="oResponsibility" class="nav list-group list-group-numbered">
+                    @foreach (var r in Model.Responsibilities)
+                    {
+                        <li class="w-100 d-flex flex-row list-group-item">
+                            @if (r.From is not null)
+                                {
+                                    <p class="px-2">@(r.From.Value.ToString("yyyy"))</p>
+                                    <p>&nbsp;-&nbsp;</p>
+                                    <p class="px-2">@(r.To is not null ? $"{r.To.Value.ToString("yyyy")}. " : "... . ")</p>
+                                    <p class="px-2 w-100">@(language == "en" ? r.Description : r.DescriptionIt)</p>
+                                }
+                        </li>
+                    }
+                </ol>
+                @if (Model.Profile != ProfileItems.User)
+                {
+                    <div class="d-flex flex-row-reverse"><button id="btnResponsibility" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
+                }
+            </div>
+            <div class="p-2"><h4>@localizer["Works"]</h4></div>
+            <div class="w-100 p-2">
+                <ol id="oWorks" class="nav list-group list-group-numbered">
+                    @foreach (var t in Model.Texts)
+                    {
+                        <li class="w-100 d-flex flex-row list-group-item">
+                            <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>.&nbsp;
+                            <p>@(string.IsNullOrEmpty(t.ISBN) ? string.Empty : $"{t.ISBN}.")</p>
+                            <p>&nbsp;Present in database from:&nbsp;</p>
+                            <p>@(t.Present.ToString())</p>
+                            <p>&nbsp;Publish date:&nbsp;</p>
+                            <p>@(t.Published is null ? string.Empty : $"{t.Published.ToString()}.")</p>
+                        </li>
+                    }
+                </ol>
+                @if (Model.Profile != ProfileItems.User)
+                {
+                    <div class="d-flex flex-row-reverse"><button id="btnWorks" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
+                }
+            </div>
+        </div>
+        <div class="d-flex flex-row"></div>
+    </div>
+
+    <p class="warningMessage">@(Model.Errors == null ? string.Empty : Model.Errors[0])</p>
+</article>
+
+<script type="text/javascript">
+    $(function () {
+        waitingDialog.show();
+
+        $("#btnText").on('click', function () {
+            $("#pText").toggleClass('filedSelected');
+
+            $("#pText").hide();
+            let text = $("#pText").text();
+            let html = '<textarea id="tText" style="margin:5px" cols=160 rows=20>' + text + '</textarea>'
+            $("#pText").html(html);
+            $("#pText").show("slow");
+        });
+
+        $("#btnResponsibility").on('click', function () {
+            $('#oResponsibility li').each(function (e) {
+                $(this).toggleClass('filedSelected');
+
+                $(this).find('p:first').hide();
+                let text = $(this).find('p:first').text();
+                let html = '<input type="text" class="superSlimInputText" placeholder="From" value="' + text + '"></input>';
+                $(this).find('p:first').html(html);
+                $(this).find('p:first').show('slow');
+               
+                $(this).find('p:nth-child(3)').hide();
+                text = $(this).find('p:nth-child(3)').text();
+                html = '<input type="text" class="superSlimInputText" placeholder="From" value="' + text + '"></input>';
+                $(this).find('p:nth-child(3)').html(html);
+                $(this).find('p:nth-child(3)').show('slow');
+
+                $(this).find('p:last').hide();
+                text = $(this).find('p:last').text();
+                html = '<input type="text" class="w-100" placeholder="From" value="' + text + '"></input>';
+                $(this).find('p:last').html(html);
+                $(this).find('p:last').show('slow');
+
+                $(this).find('p').on("keypress", ":input", function (e) {
+                    if (e.which == 13) return updateBiography();
+                });
+            });
+        });
+
+        $("#btnWorks").on('click', function () {
+            $('#oWorks li').each(function (e) {
+                $(this).toggleClass('filedSelected');
+
+                $(this).find('p:first').hide();
+                let text = $(this).find('p:first').text();
+                let html = '<input type="text" class="w-70" placeholder="From" value="' + text + '"></input>';
+                $(this).find('p:first').html(html);
+                $(this).find('p:first').show('slow');
+            })
+        });
+
+        // $("#pText").on('keypress', function (e) {
+        //     if (e.which == 13) return updateBiography();
+        // });
+
+        // $("selector 1").on("click", "selector 2", function)
+
+        // $('input[type=text]').on('keypress', function (e) {
+        //     if (e.which == 13) return updateBiography();
+        // });
+
+        setTimeout(function () { waitingDialog.hide(); }, 2000);
+    });
+
+    function updateBiography() {
+        let authorDto = {
+            Id: "@Model.Author.Id",
+            Name: "@Model.Author.Name",
+            Surname: "@Model.Author.Surname",
+            Title: "@(Model.Author.Title is not null ? @Model.Author.Title.Id : null)",
+            Email: "@Model.Author.Email",
+            WorkPlace: "@Model.Author.WorkPlace",
+            WorkAddress: "@Model.Author.WorkAddress",
+            Birtday: "@Model.Author.BirthDay",
+            FC: "@Model.Author.FC",
+            Nationality: "@Model.Author.Nationality"
+        };
+        let responsibilityDto = [];
+        let workDto = [];
+        let language = Boolean("@(language == "en")" == "False" ? false : true);
+
+        $('#oResponsibility li').each(function (e) {
+            let responsibility = {
+                Author: "@Model.Author.Id",
+                From: $(this).find('p:first').text(),
+                To: $(this).find('p:nth-child(3)').text().replaceAll('.', '').trim(),
+                Description: language ? $(this).find('p:last').text() : '',
+                DescriptionIt: language ? '' : $(this).find('p:last').text()
+            }
+            responsibilityDto.push(responsibility);
+        });
+
+        $('#oWorks li').each(function (e) {
+            let work = {
+                Title: $(this).find('a').text(),
+                ISBN: $(this).find('p:first').text(),
+                Present: $(this).find('p:nth-child(3)').text().replaceAll('.', '').trim(),
+                Published: $(this).find('p:last').text(),
+            }
+            workDto.push(work);
+        });
+
+        let biographyDto = {
+            Author: authorDto,
+            Responsibilities: responsibilityDto,
+            Works: workDto,
+            Text: language ? $("#tText").val() : "",
+            TextIt: language ? "" : $("#tText").val()
+        };
+
+        $.ajax({
+            url: "UpdateBiography",
+            type: 'post',
+            dataType: 'json',
+            async: false,
+            data: JSON.stringify(biographyDto),
+            contentType: 'application/json; charset=utf-8'
+        }).fail(function (jqXHR) {
+            let biographyDto = $.parseJSON(jqXHR.responseText);
+            let message = "";
+            jQuery.each(biographyDto.errors, function (i, val) {
+                i = parseInt(i + 1);
+                message = message + i + ". " + val + "<br>";
+            });
+            $(".warningMessage").html(message);
+            updateAccountReturn = false;
+        });
+
+    }
+</script>

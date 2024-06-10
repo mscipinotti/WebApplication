@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Localization;
 using System.Net;
-using WebApp.Infrastructure.Models;
 using WebApp.Infrastructure.Models.dto;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.GlobalParameters;
@@ -16,12 +15,12 @@ namespace WebAPP.Controllers
     [Route("[Controller]")]
     public class UserController : Controller, IActionFilter
     {
-        private readonly ILogger _logger;
-        private readonly HttpClient _httpClient;
-        private readonly IMapper _mapper;
-        private readonly Dictionary<string, object> _configLogger;
-        private readonly IStringLocalizer<UserController> _localizer;
-        private readonly CancellationTokenSource _ct;
+        protected readonly ILogger _logger;
+        protected readonly HttpClient _httpClient;
+        protected readonly IMapper _mapper;
+        protected readonly Dictionary<string, object> _configLogger;
+        protected readonly IStringLocalizer<UserController> _localizer;
+        protected readonly CancellationTokenSource _ct;
 
     public UserController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<UserController> localizer)
         {
