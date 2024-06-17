@@ -17,6 +17,7 @@ namespace WebAPP;
 // Preconditions: 1) Il browser deve essere configurato per visualizzare le date nel formato italiano (gg/mm/YYYY).
 public class Program
 {
+    public static string Language { get; set; } = GlobalParameters.Config.GetValue<string>("defaultLanguage")!;
     protected Program() { }
 
     public static void Main(string[] args)
@@ -57,7 +58,7 @@ public class Program
                                     new ("it")
                                 };
                                 // State what the default culture for your application is. This will be used if no specific culture can be determined for a given request.
-                                options.DefaultRequestCulture = new RequestCulture("en");
+                                options.DefaultRequestCulture = new RequestCulture(GlobalParameters.Config.GetValue<string>("defaultLanguage")!);
                                 // You must explicitly state which cultures your application supports.
                                 // These are the cultures the app supports for formatting numbers, dates, etc.
                                 options.SupportedCultures = cultures;

@@ -78,6 +78,7 @@ namespace WebAPP.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
+            //Request.Cookies[".AspNetCore.Culture"]
             // Questi due metodi permettono di scrivere nel log quando comincia una chiamata e quando termina senza intasare il codice della action stessa e di validare il contesto. Il log è centralizzato
             try
             {

@@ -12,6 +12,7 @@ public class CultureController : Controller
             CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
             new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
         );
+        Program.Language = culture;
         return LocalRedirect(returnUrl);
     }
 }

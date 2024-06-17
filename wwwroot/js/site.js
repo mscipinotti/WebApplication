@@ -27,3 +27,12 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 })
+
+function token(login, password, profile, requestVerificationToken, cookie, jwtToken) {
+    this.login = login;
+    this.password = password;
+    this.profile = profile;
+    this.requestVerificationToken = requestVerificationToken;
+    this.cookie = cookie;
+    this.jwtToken = jwtToken;
+}

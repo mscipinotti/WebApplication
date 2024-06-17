@@ -8,9 +8,6 @@
 @model BiographyDto
 
 <article>
-    @{
-        var language = Context.Request.Cookies[".AspNetCore.Culture"] == null || Context.Request.Cookies[".AspNetCore.Culture"]! == "c=en|uic=en" ? "en" : "it";
-    }
     <div class="d-flex flex-row">
         <div class="p-2 d-flex flex-column">
             <img src="~/Images/leaves.jpg" alt="Immagine dell'autore" />
@@ -22,11 +19,11 @@
                 <div><b>@localizer["Nationality"]</b><br />@Model.Author.Nationality</div>
             </div>
         </div>
-        <div class="d-flex flex-column w-100">
+        <div class="d-flex flex-column w-100 form-group">
             <div class="p-2"><h3>@(Model.Author.Title is null ? string.Empty : Model.Author.Title!.Description) @Model.Author.Name @Model.Author.Surname</h3></div>
             <div class="p-2">
                 @* .AspNetCore.Culture è il nome di default assegnato al cookie del locale scelto *@
-                <p id="pText">@(language == "en" ? Model.Text : Model.TextIt)</p>
+                <p id="pText">@(Program.Language == "en" ? Model.Text : Model.TextIt)</p>
                 @if(Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse"><button id="btnText" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
@@ -35,16 +32,17 @@
 
             <div class="p-2"><h4>@localizer["Responsibility"]</h4></div>
             <div class="w-100 p-2">
-                <ol id="oResponsibility" class="nav list-group list-group-numbered">
+                <ol id="oResponsibility" class="nav list-group list-group-numbered input-group date">
                     @foreach (var r in Model.Responsibilities)
                     {
                         <li class="w-100 d-flex flex-row list-group-item">
                             @if (r.From is not null)
                                 {
-                                    <p class="px-2">@(r.From.Value.ToString("yyyy"))</p>
+                                    <input type="hidden" value="@r.Id" />
+                                    <p class="px-2">@(r.From.Value)</p>
                                     <p>&nbsp;-&nbsp;</p>
-                                    <p class="px-2">@(r.To is not null ? $"{r.To.Value.ToString("yyyy")}. " : "... . ")</p>
-                                    <p class="px-2 w-100">@(language == "en" ? r.Description : r.DescriptionIt)</p>
+                                    <p class="px-2">@(r.To is not null ? $"{r.To.Value}. " : "...")</p>
+                                    <p class="px-2 w-100">@(Program.Language == "en" ? r.Description : r.DescriptionIt)</p>
                                 }
                         </li>
                     }
@@ -60,9 +58,10 @@
                     @foreach (var t in Model.Texts)
                     {
                         <li class="w-100 d-flex flex-row list-group-item">
+                            <input type="hidden" value="@t.Id" />
                             <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>.&nbsp;
-                            <p>@(string.IsNullOrEmpty(t.ISBN) ? string.Empty : $"{t.ISBN}.")</p>
-                            <p>&nbsp;Present in database from:&nbsp;</p>
+                            <p>@(string.IsNullOrEmpty(t.ISBN) ? string.Empty : $"{t.ISBN}")</p>
+                            <p>.&nbsp;Present in database from:&nbsp;</p>
                             <p>@(t.Present.ToString())</p>
                             <p>&nbsp;Publish date:&nbsp;</p>
                             <p>@(t.Published is null ? string.Empty : $"{t.Published.ToString()}.")</p>
@@ -73,9 +72,22 @@
                 {
                     <div class="d-flex flex-row-reverse"><button id="btnWorks" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
                 }
+
+                <div class='col-sm-6'>
+                    <div class="form-group">
+                        <div class='input-group date' id='datetimepicker1'>
+                            <input type='text' class="form-control" />
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="d-flex flex-row"></div>
+
+
     </div>
 
     <p class="warningMessage">@(Model.Errors == null ? string.Empty : Model.Errors[0])</p>
@@ -90,7 +102,7 @@
 
             $("#pText").hide();
             let text = $("#pText").text();
-            let html = '<textarea id="tText" style="margin:5px" cols=160 rows=20>' + text + '</textarea>'
+            let html = '<textarea id="tText" class="form-control" style="margin:5px" cols=160 rows=20>' + text + '</textarea>'
             $("#pText").html(html);
             $("#pText").show("slow");
         });
@@ -101,19 +113,19 @@
 
                 $(this).find('p:first').hide();
                 let text = $(this).find('p:first').text();
-                let html = '<input type="text" class="superSlimInputText" placeholder="From" value="' + text + '"></input>';
+                let html = '<input type="text" class="datepicker SlimInputText form-control" placeholder="From" value="' + text + '"></input>';
                 $(this).find('p:first').html(html);
                 $(this).find('p:first').show('slow');
                
                 $(this).find('p:nth-child(3)').hide();
                 text = $(this).find('p:nth-child(3)').text();
-                html = '<input type="text" class="superSlimInputText" placeholder="From" value="' + text + '"></input>';
+                html = '<input type="text" class="datepicker SlimInputText form-control" placeholder="To" value="' + text + '"></input>';
                 $(this).find('p:nth-child(3)').html(html);
                 $(this).find('p:nth-child(3)').show('slow');
 
                 $(this).find('p:last').hide();
                 text = $(this).find('p:last').text();
-                html = '<input type="text" class="w-100" placeholder="From" value="' + text + '"></input>';
+                html = '<input type="text" class="w-100 form-control" placeholder="Description" value="' + text + '"></input>';
                 $(this).find('p:last').html(html);
                 $(this).find('p:last').show('slow');
 
@@ -121,6 +133,7 @@
                     if (e.which == 13) return updateBiography();
                 });
             });
+            $('.datepicker').datepicker($.datepicker.regional["@(Program.Language == "en" ? "" : Program.Language)"]);
         });
 
         $("#btnWorks").on('click', function () {
@@ -132,75 +145,76 @@
                 let html = '<input type="text" class="w-70" placeholder="From" value="' + text + '"></input>';
                 $(this).find('p:first').html(html);
                 $(this).find('p:first').show('slow');
-            })
+            });
         });
-
-        // $("#pText").on('keypress', function (e) {
-        //     if (e.which == 13) return updateBiography();
-        // });
-
-        // $("selector 1").on("click", "selector 2", function)
-
-        // $('input[type=text]').on('keypress', function (e) {
-        //     if (e.which == 13) return updateBiography();
-        // });
 
         setTimeout(function () { waitingDialog.hide(); }, 2000);
     });
 
     function updateBiography() {
+        // Tutta la biografia è caricata anche quelle parti non modificate dall'utente
+        let titleDto = {
+            Id: "@(Model.Author.Title is null ? string.Empty : Model.Author.Title!.Id)",
+            Description: "@(Model.Author.Title is null ? string.Empty : Model.Author.Title!.Description)"
+        };
+
         let authorDto = {
             Id: "@Model.Author.Id",
             Name: "@Model.Author.Name",
             Surname: "@Model.Author.Surname",
-            Title: "@(Model.Author.Title is not null ? @Model.Author.Title.Id : null)",
+            Title: titleDto,
             Email: "@Model.Author.Email",
             WorkPlace: "@Model.Author.WorkPlace",
             WorkAddress: "@Model.Author.WorkAddress",
-            Birtday: "@Model.Author.BirthDay",
+            BirthDay: "@Model.Author.BirthDay",
             FC: "@Model.Author.FC",
             Nationality: "@Model.Author.Nationality"
         };
+        let authors = [];
         let responsibilityDto = [];
-        let workDto = [];
-        let language = Boolean("@(language == "en")" == "False" ? false : true);
+        let textDto = [];
+        let language = Boolean("@(Program.Language == "en")" == "False" ? false : true);
 
-        $('#oResponsibility li').each(function (e) {
+        authors.push(authorDto);
+
+        $('#oResponsibility li').each(function () {
             let responsibility = {
                 Author: "@Model.Author.Id",
-                From: $(this).find('p:first').text(),
-                To: $(this).find('p:nth-child(3)').text().replaceAll('.', '').trim(),
-                Description: language ? $(this).find('p:last').text() : '',
-                DescriptionIt: language ? '' : $(this).find('p:last').text()
+                Id: $(this).find("input[type='hidden']").val(),
+                From: $(this).find("p:first input").length ? $(this).find("p:first input").val() : "@Model.Text",
+                To: $(this).find('p:nth-child(3) input').length ? $(this).find('p:nth-child(3) input').val() : "@Model.Text",
+                Description: (language && $(this).find('p:last input').length) ? $(this).find('p:last input').val() : '',
+                DescriptionIt: (!language && $(this).find('p:last input').length) ? $(this).find('p:last input').val() : ''
             }
             responsibilityDto.push(responsibility);
         });
 
         $('#oWorks li').each(function (e) {
-            let work = {
+            let text = {
+                Id: $(this).find("input[type='hidden']").val(),
                 Title: $(this).find('a').text(),
                 ISBN: $(this).find('p:first').text(),
-                Present: $(this).find('p:nth-child(3)').text().replaceAll('.', '').trim(),
+                Archive: 1,                                                 // da sistemare
+                Present: $(this).find('p:nth-child(4)').text(),
                 Published: $(this).find('p:last').text(),
+                Authors: authors                                            // Eventuali altri autori sono volutamente non caricati
             }
-            workDto.push(work);
+            textDto.push(text);
         });
 
-        let biographyDto = {
-            Author: authorDto,
-            Responsibilities: responsibilityDto,
-            Works: workDto,
-            Text: language ? $("#tText").val() : "",
-            TextIt: language ? "" : $("#tText").val()
-        };
+        let biographyDto = new token("@Model.Login", "@Model.Password", "@Model.Profile", "@Model.RequestVerificationToken", "@Model.Cookie", "@Model.JwtToken"); 
+        biographyDto.Id = "@Model.Id";
+        biographyDto.Author = authorDto;
+        biographyDto.Responsibilities = responsibilityDto;
+        biographyDto.Texts = textDto;
+        biographyDto.Text = (language && $("#tText").length) ? $("#tText").val() : "@Model.Text";
+        biographyDto.TextIt = (!language && $("#tText").length) ? $("#tText").val() : "@Model.TextIt";
 
         $.ajax({
             url: "UpdateBiography",
             type: 'post',
-            dataType: 'json',
             async: false,
-            data: JSON.stringify(biographyDto),
-            contentType: 'application/json; charset=utf-8'
+            data: biographyDto
         }).fail(function (jqXHR) {
             let biographyDto = $.parseJSON(jqXHR.responseText);
             let message = "";

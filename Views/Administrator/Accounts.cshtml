@@ -185,16 +185,9 @@
         let updateAccountReturn = true;
         let row = 0;
         let text;
-        let accountsDto = {
-            Login: "@Model.Login",
-            Password: "@Model.Password",
-            Profile: "@Model.Profile",
-            RequestVerificationToken: "@Model.RequestVerificationToken",
-            Cookie: "@Model.Cookie",
-            JwtToken: "@Model.JwtToken",
-            Accounts: []
-        };
-
+        let accountsDto = new token("@Model.Login", "@Model.Password", "@Model.Profile", "@Model.RequestVerificationToken", "@Model.Cookie", "@Model.JwtToken");
+        
+        accountsDto.Accounts = [];
         $('table > tbody:last-child > tr.rowSelected').each(function (e) {
             waitingDialog.show();
 
