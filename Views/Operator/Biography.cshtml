@@ -41,7 +41,7 @@
                                     <input type="hidden" value="@r.Id" />
                                     <p class="px-2">@(r.From.Value)</p>
                                     <p>&nbsp;-&nbsp;</p>
-                                    <p class="px-2">@(r.To is not null ? $"{r.To.Value}. " : "...")</p>
+                                    <p class="px-2">@(r.To is not null ? $"{r.To.Value} " : "...")</p>
                                     <p class="px-2 w-100">@(Program.Language == "en" ? r.Description : r.DescriptionIt)</p>
                                 }
                         </li>
@@ -117,11 +117,11 @@
                 $(this).find('p:first').html(html);
                 $(this).find('p:first').show('slow');
                
-                $(this).find('p:nth-child(3)').hide();
-                text = $(this).find('p:nth-child(3)').text();
+                $(this).find('p:nth-child(4)').hide();
+                text = $(this).find('p:nth-child(4)').text();
                 html = '<input type="text" class="datepicker SlimInputText form-control" placeholder="To" value="' + text + '"></input>';
-                $(this).find('p:nth-child(3)').html(html);
-                $(this).find('p:nth-child(3)').show('slow');
+                $(this).find('p:nth-child(4)').html(html);
+                $(this).find('p:nth-child(4)').show('slow');
 
                 $(this).find('p:last').hide();
                 text = $(this).find('p:last').text();
@@ -182,7 +182,7 @@
                 Author: "@Model.Author.Id",
                 Id: $(this).find("input[type='hidden']").val(),
                 From: $(this).find("p:first input").length ? $(this).find("p:first input").val() : "@Model.Text",
-                To: $(this).find('p:nth-child(3) input').length ? $(this).find('p:nth-child(3) input').val() : "@Model.Text",
+                To: $(this).find('p:nth-child(4) input').length ? $(this).find('p:nth-child(4) input').val() : "@Model.Text",
                 Description: (language && $(this).find('p:last input').length) ? $(this).find('p:last input').val() : '',
                 DescriptionIt: (!language && $(this).find('p:last input').length) ? $(this).find('p:last input').val() : ''
             }
@@ -195,7 +195,7 @@
                 Title: $(this).find('a').text(),
                 ISBN: $(this).find('p:first').text(),
                 Archive: 1,                                                 // da sistemare
-                Present: $(this).find('p:nth-child(4)').text(),
+                Present: $(this).find('p:nth-child(5)').text(),
                 Published: $(this).find('p:last').text(),
                 Authors: authors                                            // Eventuali altri autori sono volutamente non caricati
             }
