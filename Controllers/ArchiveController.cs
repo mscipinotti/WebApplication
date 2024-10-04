@@ -3,7 +3,7 @@ using System.Net;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.Models;
 using WebAPP.MiddlewareFactory;
-using WebAPP.Utilities;
+using WebAPP.Infrastructure.Utilities;
 
 namespace WebAPP.Controllers
 {

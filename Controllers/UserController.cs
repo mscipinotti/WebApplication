@@ -7,7 +7,8 @@ using WebApp.Infrastructure.Models.dto;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.MiddlewareFactory;
-using WebAPP.Utilities;
+using WebAPP.Services;
+using WebAPP.Infrastructure.Utilities;
 
 namespace WebAPP.Controllers
 {
@@ -21,8 +22,9 @@ namespace WebAPP.Controllers
         protected readonly Dictionary<string, object> _configLogger;
         protected readonly IStringLocalizer<UserController> _localizer;
         protected readonly CancellationTokenSource _ct;
+        protected readonly ILanguage _language;
 
-    public UserController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<UserController> localizer)
+    public UserController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<UserController> localizer, ILanguage language)
         {
             _logger = logger;
             _httpClient = httpClientFactory.Client;
@@ -33,6 +35,7 @@ namespace WebAPP.Controllers
             };
             _ct = new CancellationTokenSource();
             _localizer = localizer;
+            _language = language;
         }
 
         [HttpPost("Index")]
@@ -54,18 +57,21 @@ namespace WebAPP.Controllers
         }
 
         [HttpPost("Biography")]
-        public async Task<IActionResult> BiographyAsync(BiographyDto biographyDto, int Author)
+        public async Task<IActionResult> BiographyAsync(BiographyDto biographyDto, int? Author)
         {
             // Con asp-route- è possibile passare solo tipi primitivi
             try
             {
-                biographyDto.Author = new()
+                if (Author is not null)
                 {
-                    Id = Author
-                };
-                biographyDto.Texts = [];
+                    biographyDto.Author = new()
+                    {
+                        Id = (int)Author
+                    };
+                }
+                biographyDto.Language = _language.UserLanguage;
                 _httpClient.SetTokens(biographyDto);
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Biography", biographyDto);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Biography", biographyDto);  
                 if (httpResponseMessage.StatusCode == HttpStatusCode.NotFound) throw new BadHttpRequestException((await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>())!.Errors![0]);
                 return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>()));
             }

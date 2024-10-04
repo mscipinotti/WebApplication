@@ -7,7 +7,7 @@ using WebAPP.Extensions;
 using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.Infrastructure.Models.enums;
 using WebAPP.MiddlewareFactory;
-using WebAPP.Utilities;
+using WebAPP.Infrastructure.Utilities;
 using System.Text.Json;
 using WebApp.Infrastructure.Models.dto;
 
@@ -25,7 +25,8 @@ namespace WebAPP.Controllers
         {
             Login = string.Empty,
             Password = string.Empty,
-            Profile = ProfileItems.User
+            Profile = ProfileItems.User,
+            Language = GlobalParameters.Config.GetValue<string>("defaultLanguage")!.ToLanguage()
         };
 
         public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<HomeController> localizer)

@@ -41,7 +41,7 @@ body {
         --bs-table-bg: "";
     }
 
-.filedSelected {
+.selected {
     background-color: lightgreen;
 }
 

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using WebAPP.Utilities;
+using WebAPP.Infrastructure.Utilities;
 
 namespace WebAPP.MiddlewareFactory
 {

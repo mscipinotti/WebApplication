@@ -22,7 +22,7 @@
             <div class="p-2"><h3>@(Model.Author.Title is null ? string.Empty : Model.Author.Title!.Description) @Model.Author.Name @Model.Author.Surname</h3></div>
             <div class="p-2">
                 @* .AspNetCore.Culture è il nome di default assegnato al cookie del locale scelto *@
-                @(Context.Request.Cookies[".AspNetCore.Culture"] == null || Context.Request.Cookies[".AspNetCore.Culture"]! == "c=en|uic=en" ? Model.Text : Model.TextIt)
+                @(Context.Request.Cookies[".AspNetCore.Culture"] == null || Context.Request.Cookies[".AspNetCore.Culture"]! == Model.Text)
                 @if(Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse"><button type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
@@ -41,7 +41,7 @@
                                     @(r.From.Value.ToString("yyyy")) - @(r.To is not null ? $"{r.To.Value.ToString("yyyy")}." : "... .")
                                 </p>
                                 }
-                                @(Context.Request.Cookies[".AspNetCore.Culture"] == null || Context.Request.Cookies[".AspNetCore.Culture"]! == "c=en|uic=en" ? r.Description : r.DescriptionIt)
+                                @(Context.Request.Cookies[".AspNetCore.Culture"] == null || Context.Request.Cookies[".AspNetCore.Culture"]! == r.Description)
                         </li>
                     }
                 </ol>

@@ -10,14 +10,17 @@ using WebAPP.Controllers;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.DBContext;
 using WebAPP.Infrastructure.GlobalParameters;
+using WebAPP.Infrastructure.Models.enums;
 using WebAPP.Infrastructure.Models.Validation;
+using WebAPP.Infrastructure.Utilities;
 using WebAPP.MiddlewareFactory;
+using WebAPP.Services;
 
 namespace WebAPP;
 // Preconditions: 1) Il browser deve essere configurato per visualizzare le date nel formato italiano (gg/mm/YYYY).
 public class Program
 {
-    public static string Language { get; set; } = GlobalParameters.Config.GetValue<string>("defaultLanguage")!;
+    public static Languages Language { get; set; }
     protected Program() { }
 
     public static void Main(string[] args)
@@ -48,6 +51,7 @@ public class Program
                             .AddScoped<Microsoft.Extensions.Logging.ILogger>(s => s.GetRequiredService<ILogger<OperatorController>>())
                             .AddScoped<Microsoft.Extensions.Logging.ILogger>(s => s.GetRequiredService<ILogger<UserController>>())
                             .AddScoped<Microsoft.Extensions.Logging.ILogger>(s => s.GetRequiredService<ILogger<NewsController>>())
+                            .AddScoped<ILanguage, Language>()
                             .AddScoped<HttpClientFactory>()
                             .AddDbContext<GDAContext>(options => options.UseSqlServer(GlobalParameters.Config.GetConnectionString("GDA")))
                             .AddLocalization(options => options.ResourcesPath = "Resources")
@@ -71,6 +75,7 @@ public class Program
                                 // - QueryStringRequestCultureProvider, sets culture via "culture" and "ui-culture" query string values, useful for testing
                                 // - CookieRequestCultureProvider, sets culture via "ASPNET_CULTURE" cookie
                                 // - AcceptLanguageHeaderRequestCultureProvider, sets culture via the "Accept-Language" request header
+                                // Questa configurazione, assieme ad app.UseRequestLocalization evita anche la perdita del separatore decimale per i campi numerici 
                             })
                             .ValidationServices()
                             .AddControllersWithViews();

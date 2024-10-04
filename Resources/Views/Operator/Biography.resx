@@ -135,6 +135,9 @@
   <data name="Responsibility" xml:space="preserve">
     <value>Responsibilities</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
   <data name="WorkAddress" xml:space="preserve">
     <value>Work address</value>
   </data>

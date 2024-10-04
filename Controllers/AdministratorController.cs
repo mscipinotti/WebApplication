@@ -5,7 +5,7 @@ using WebApp.Infrastructure.Models.dto;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.MiddlewareFactory;
-using WebAPP.Utilities;
+using WebAPP.Infrastructure.Utilities;
 
 namespace WebAPP.Controllers;
 

@@ -9,12 +9,16 @@
 
   <ItemGroup>
     <Compile Remove="Resources\Views\Shared\_Culture\**" />
+    <Compile Remove="Utilities\**" />
     <Compile Remove="Views\Home\Index\**" />
     <Content Remove="Resources\Views\Shared\_Culture\**" />
+    <Content Remove="Utilities\**" />
     <Content Remove="Views\Home\Index\**" />
     <EmbeddedResource Remove="Resources\Views\Shared\_Culture\**" />
+    <EmbeddedResource Remove="Utilities\**" />
     <EmbeddedResource Remove="Views\Home\Index\**" />
     <None Remove="Resources\Views\Shared\_Culture\**" />
+    <None Remove="Utilities\**" />
     <None Remove="Views\Home\Index\**" />
   </ItemGroup>
 
