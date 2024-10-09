@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using System.Net;
 using WebApp.Infrastructure.Models.dto;
+using WebApp.Infrastructure.Utilities;
 using WebAPP.Extensions;
 using WebAPP.Infrastructure.GlobalParameters;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Services;
-using WebAPP.Infrastructure.Utilities;
 
 namespace WebAPP.Controllers
 {
@@ -32,7 +32,5 @@ namespace WebAPP.Controllers
                 return View(biography);
             }
         }
-
-
     }
 }

@@ -10,6 +10,7 @@ using WebAPP.MiddlewareFactory;
 using WebAPP.Infrastructure.Utilities;
 using System.Text.Json;
 using WebApp.Infrastructure.Models.dto;
+using WebApp.Infrastructure.Utilities;
 
 namespace WebAPP.Controllers
 {
@@ -62,17 +63,25 @@ namespace WebAPP.Controllers
                         if (responseAccount is not null) token.Errors = responseAccount.Errors;
                         break;
                     case HttpStatusCode.OK:
-                        responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
-                        if (responseAccount is not null)
+                        try
                         {
-                            if (responseAccount.Status == StatusItems.ChangePassword) return View("Views/Home/ChangePassword.cshtml", responseAccount);
-                            var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
-                            responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                            responseAccount.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
-                                                                              .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
-                                                                              .Split(new string[] { "; " }, StringSplitOptions.None)[0];
-                            _httpClient.SetTokens(responseAccount);
-                            return View("Views/Dashboard/Dashboard.cshtml", responseAccount);
+                            responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
+                            if (responseAccount is not null)
+                            {
+                                if (responseAccount.Status == StatusItems.ChangePassword) return View("Views/Home/ChangePassword.cshtml", responseAccount);
+                                var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
+                                responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                                responseAccount.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
+                                                                                  .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
+                                                                                  .Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                                _httpClient.SetTokens(responseAccount);
+                                return View("Views/Dashboard/Dashboard.cshtml", responseAccount);
+                            }
+                        }
+                        catch (JsonException ex)
+                        {
+                            WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
+                            token.Errors = [_localizer[ex.Message]];
                         }
                         break;
                 }

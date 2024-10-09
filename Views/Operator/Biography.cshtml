@@ -36,7 +36,7 @@
             </div>
             <div class="p-2">
                 @* .AspNetCore.Culture è il nome di default assegnato al cookie del locale scelto *@
-                <p id="pText"><textarea class="border-0 w-100" asp-for="@Model.Text" readonly value="@Model.Text"></textarea></p>
+                <p id="pText"><textarea class="border-0 w-100" asp-for="@Model.Text" readonly value="@Model.Text" spellcheck="false"></textarea></p>
                 @if(Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse"><button id="btnText" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
@@ -51,27 +51,25 @@
                         int index = 0;
                         foreach (var r in Model.Responsibilities)
                         {
-                                <li class="w-100 d-flex flex-row list-group-item">
-                                    @if (r.From is not null)
-                                    {
-                                        <input type="hidden" asp-for="@Model.Responsibilities[index].Biography" value="@Model.Id" />
-                                        <input type="hidden" asp-for="@Model.Responsibilities[index].Id" value="@r.Id" />
-                                        <p class="px-2"><input asp-for="@Model.Responsibilities[index].From" class="border-0 slimInputText datepicker" style="cursor:grab" readonly value="@r.From" /></p>
-                                        <p>&nbsp;-&nbsp;</p>
-                                        <p class="px-2"><input asp-for="@Model.Responsibilities[index].To" class="border-0 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" /></p>
-                                        <p class="px-2 w-100"><input asp-for="@Model.Responsibilities[index].Description" class="border-0 w-100" style="cursor:grab" readonly value="@r.Description" /></p>
-                                    }
-                                </li>
+                            <li class="w-100 d-flex flex-row list-group-item">
+                                @if (r.From is not null)
+                                {
+                                    <input type="hidden" asp-for="@Model.Responsibilities[index].Biography" value="@Model.Id" />
+                                    <input type="hidden" asp-for="@Model.Responsibilities[index].Id" value="@r.Id" />
+                                    <p class="px-2"><input asp-for="@Model.Responsibilities[index].From" class="border-0 slimInputText datepicker" readonly value="@r.From" /></p>
+                                    <p>&nbsp;-&nbsp;</p>
+                                    <p class="px-2"><input asp-for="@Model.Responsibilities[index].To" class="border-0 slimInputText datepicker" readonly value="@r.To" /></p>
+                                    <p class="px-2 w-100"><input asp-for="@Model.Responsibilities[index].Description" class="border-0 w-100" readonly value="@r.Description" /></p>
+                                }
+                            </li>
                             index++;
                         }
                     }
                 </ol>
                 @if (Model.Profile != ProfileItems.User)
                 {
-                    <div class="d-flex flex-row-reverse">
-                        <button id="btnResponsibility" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
-                        <button type="submit" asp-controller="Operator" asp-action="UpdateBiography" class="btn btn-link text-decoration-none">@localizer["Save"]</button>
-                    </div>
+                    <div class="d-flex flex-row-reverse"><button id="btnResponsibility" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
+                    <div class="d-flex flex-row-reverse"><button id="btnResponsibilitySave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button></div>
                 }
             </div>
             <div class="p-2"><h4>@localizer["Works"]</h4></div>
@@ -122,9 +120,11 @@
             $("#btnTextSave").removeAttr('hidden', 'slow');
         });
 
-        $("ol li").on('click', function (e) {
-            $(this).toggleClass('selected');
-            $(this).find('input').toggleClass('inputText');
+        $("#btnResponsibility").on('click', function (e) {
+            $('#oResponsibility li input:visible').toggleClass('selected');
+            $('#oResponsibility li input:visible:first').focus();
+            $("#btnResponsibility").hide('slow');
+            $("#btnResponsibilitySave").removeAttr('hidden', 'slow');
         });
 
         // if (document.referrer.match("/http://(www.)?index(/)?(.*)?/gi") == false)
@@ -185,7 +185,7 @@
         let authors = [];
         let responsibilityDto = [];
         let textDto = [];
-        let language = Boolean("@(Program.Language == Languages.English)" == "False" ? false : true);
+        let language = Boolean("@(Model.Language == Languages.English)" == "False" ? false : true);
 
         authors.push(authorDto);
 
