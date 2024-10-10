@@ -126,4 +126,7 @@
   <data name="UnpredictableError" xml:space="preserve">
     <value>Errore non gestito</value>
   </data>
+  <data name="UnpredictableLanguage" xml:space="preserve">
+    <value>Lingua indeterminata</value>
+  </data>
 </root>

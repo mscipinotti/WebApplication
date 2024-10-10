@@ -3,6 +3,7 @@
 @using WebApp.Infrastructure.Models.dto
 @using WebAPP.Infrastructure.Models.enums
 @using System.Globalization
+@using WebAPP.Infrastructure.Utilities;
 @inject IViewLocalizer localizer
 @inject IConfiguration Config
 @model BiographyDto
@@ -141,7 +142,7 @@
                     }
                 });
             });
-            $('.datepicker').datepicker($.datepicker.regional["@(Program.Language == Languages.English ? "" : Program.Language.ToString())"]);
+            $('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
         // }
 
         $("#btnWorks").on('click', function () {

@@ -58,8 +58,8 @@ public class Program
                             .Configure<RequestLocalizationOptions>(options =>
                             {
                                 var cultures = new List<CultureInfo> {
-                                    new ("en"),
-                                    new ("it")
+                                    new (Languages.English.ToString(true)),
+                                    new (Languages.Italian.ToString(true))
                                 };
                                 // State what the default culture for your application is. This will be used if no specific culture can be determined for a given request.
                                 options.DefaultRequestCulture = new RequestCulture(GlobalParameters.Config.GetValue<string>("defaultLanguage")!);
