@@ -11,15 +11,23 @@
     <Compile Remove="Resources\Views\Shared\_Culture\**" />
     <Compile Remove="Utilities\**" />
     <Compile Remove="Views\Home\Index\**" />
+    <Compile Remove="wwwroot\lib\bootstrap\**" />
+    <Compile Remove="wwwroot\lib\jquery\dist\ui\node_modules\**" />
     <Content Remove="Resources\Views\Shared\_Culture\**" />
     <Content Remove="Utilities\**" />
     <Content Remove="Views\Home\Index\**" />
+    <Content Remove="wwwroot\lib\bootstrap\**" />
+    <Content Remove="wwwroot\lib\jquery\dist\ui\node_modules\**" />
     <EmbeddedResource Remove="Resources\Views\Shared\_Culture\**" />
     <EmbeddedResource Remove="Utilities\**" />
     <EmbeddedResource Remove="Views\Home\Index\**" />
+    <EmbeddedResource Remove="wwwroot\lib\bootstrap\**" />
+    <EmbeddedResource Remove="wwwroot\lib\jquery\dist\ui\node_modules\**" />
     <None Remove="Resources\Views\Shared\_Culture\**" />
     <None Remove="Utilities\**" />
     <None Remove="Views\Home\Index\**" />
+    <None Remove="wwwroot\lib\bootstrap\**" />
+    <None Remove="wwwroot\lib\jquery\dist\ui\node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,12 +36,10 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Prova.cshtml" />
-    <Content Remove="wwwroot\lib\bootstrap\bootstrap.css" />
-    <Content Remove="wwwroot\lib\bootstrap\bootstrap.css.map" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\droplet.png">
+    <None Include="wwwroot\lib\images\droplet.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
@@ -54,8 +60,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
-    <Folder Include="wwwroot\lib\bootstrap\dist\css\" />
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
   <ItemGroup>
