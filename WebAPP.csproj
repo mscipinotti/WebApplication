@@ -36,14 +36,11 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Prova.cshtml" />
+    <Content Remove="wwwroot\lib\images\leaves.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\lib\images\droplet.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="wwwroot\Images\leaves.jpg" />
+    <None Include="wwwroot\lib\images\leaves.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,7 +57,10 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\css\images\" />
+    <Folder Include="wwwroot\images\favicons\" />
     <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\lib\custom\css\" />
+    <Folder Include="wwwroot\lib\custom\js\" />
   </ItemGroup>
 
   <ItemGroup>
