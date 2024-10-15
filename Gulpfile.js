@@ -1,89 +1,86 @@
-/// <binding Clean='clean' />
 "use strict";
 
-let gulp = require("gulp"),
-    rimraf = require("rimraf"),
-    concat = require("gulp-concat"),
-    cssmin = require("gulp-cssmin"),
-    uglify = require("gulp-uglify"),
-    rename = require("gulp-rename"),
-    deletefile = require("gulp-delete-file");
+const gulp = require("gulp"),
+      concat = require("gulp-concat"),
+      cssmin = require("gulp-cssmin"),
+      uglify = require("gulp-uglify"),
+      rename = require("gulp-rename"),
+      deletefile = require("gulp-delete-file"),
+      image = require("gulp-imagemin");
 
-let paths = {
-    webroot: "./wwwroot/",
-    bootstrap: "./wwwroot/lib/bootstrap/dist/",
-    jquery: "./wwwroot/lib/jquery/dist/"
+const paths = {
+      webroot: "./wwwroot/",
+      node_modules: "./node_modules/"
 };
 
-let regexp = /\.(css|js)$/;
+const regexp = /\.(css|map|png|js)$/;
 
-paths.js = paths.webroot + "lib/custom/js/**/*.js";
-paths.minJs = paths.webroot + "js/**/*.min.js";
+paths.JsLib = paths.webroot + "lib/custom/js/";
+paths.CssLib = paths.webroot + "lib/custom/css/";
 
-paths.css = paths.webroot + "lib/custom/css/**/*.css";
-paths.minCss = paths.webroot + "css/custom/**/*.min.css";
+paths.JsDest = paths.webroot + "js/";
+paths.CssDest = paths.webroot + "css/";
+paths.CssImagesDest = paths.webroot + "css/images/";
 
-paths.concatJs = paths.webroot + "js/**.js";
-paths.concatCss = paths.webroot + "css/*.min.css";
-
-paths.concatJsDest = paths.webroot + "js/site.min.js";
-paths.concatCssDest = paths.webroot + "css/site.min.css";
-
-paths.bootstrapJs = paths.bootstrap + "js/**/*.js";
-paths.bootstrapCss = paths.bootstrap + "css/**/*.css";
-
-paths.jqueryJs = paths.jquery + "js/**/*.js";
-
-gulp.task("clean", async function (cb) {
-    gulp.src([ paths.concatCss, paths.concatJs ])
+gulp.task("clean", async () => {
+    return await gulp.src([paths.CssDest + '**/*', paths.JsDest + "**/*" ])
         .pipe(deletefile({
             reg: regexp,
             deleteMatch: true
         }));
 });
 
-gulp.task("add", async function () {
-    gulp.src([paths.js, "!" + paths.minJs], { base: "." })
-        .pipe(concat(paths.concatJsDest))
+gulp.task("copy", async () => {
+    gulp.src([ paths.JsLib + "**/*.js" ], { base: "." })
+        .pipe(concat(paths.JsDest + 'site.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest("."));
-    gulp.src([paths.css, "!" + paths.minCss], { base: "." })
-        .pipe(concat(paths.concatCssDest))
+        .pipe(gulp.dest("."))
+    gulp.src([paths.CssLib + '**/*.css' ], { base: "." })
+        .pipe(concat(paths.CssDest + 'site.min.css'))
         .pipe(cssmin())
         .pipe(gulp.dest("."));
     gulp.src([
-        './node_modules/bootstrap/dist/js/bootstrap.min.js',
-        './node_modules/jquery-ui/ui/widgets/datepicker.js',
-        './node_modules/jquery-ui/ui/i18n/datepicker-en-GB.js',
-        './node_modules/jquery-ui/ui/i18n/datepicker-it.js',
-        './node_modules/@popperjs/core/dist/umd/popper.js',
-        './node_modules/jquery/dist/jquery.min.js',
-        './node_modules/jquery-ui/dist/jquery-ui.min.js',
+        paths.node_modules + 'bootstrap/dist/css/bootstrap.min.css',
+        paths.node_modules + 'bootstrap/dist/css/bootstrap.min.css.map',
+        paths.node_modules + 'jquery-ui/dist/themes/base/jquery-ui.min.css',
     ])
-        .pipe(gulp.dest(paths.webroot + 'js'));
+        .pipe(gulp.dest(paths.CssDest));
     gulp.src([
-        './node_modules/bootstrap/dist/css/bootstrap.min.css',
-        './node_modules/jquery-ui/dist/themes/base/jquery-ui.min.css',
+        paths.node_modules + 'jquery-ui/dist/themes/base/images/*.*',
     ])
-        .pipe(gulp.dest(paths.webroot + 'css'));
+        .pipe(image())
+        .pipe(gulp.dest(paths.CssImagesDest));
+    return await gulp.src([
+        paths.node_modules + 'bootstrap/dist/js/bootstrap.min.js',
+        paths.node_modules + 'jquery-ui/ui/widgets/datepicker.js',
+        paths.node_modules + 'jquery-ui/ui/i18n/datepicker-en-GB.js',
+        paths.node_modules + 'jquery-ui/ui/i18n/datepicker-it.js',
+        paths.node_modules + '@popperjs/core/dist/umd/popper.js',
+        paths.node_modules + 'jquery/dist/jquery.min.js',
+        paths.node_modules + 'jquery-ui/dist/jquery-ui.min.js',
+    ])
+        .pipe(gulp.dest(paths.JsDest)).on('end', () => { console.log('fatto'); });
 });
 
-// Rename
-gulp.task('rename:en-GB', async function () {
-    gulp.src(paths.webroot + "js/datepicker-en-GB.js")
+gulp.task('ren:en-GB', async () => {
+    return await gulp.src(paths.JsDest + "datepicker-en-GB.js")
         .pipe(rename(function (path) {
-            // Returns a completely new object, make sure you return all keys needed!
             return {
                 dirname: path.dirname,
                 basename: "datepicker-en",
                 extname: ".js"
             };
         }))
-        .pipe(gulp.dest(paths.webroot + "js"));
-    gulp.src([paths.webroot + "js/datepicker-en-GB.js"])
+        .pipe(gulp.dest(paths.JsDest));
+});
+
+gulp.task('del:en-GB', async () => {
+    return await gulp.src([ paths.JsDest + "datepicker-en-GB.js" ])
         .pipe(deletefile({
             reg: regexp,
             deleteMatch: true
         }));
 });
 
+gulp.task('build', gulp.series('copy', 'ren:en-GB'));
+gulp.task('rebuild', gulp.series('clean', 'copy', 'ren:en-GB', 'del:en-GB'));
