@@ -25,12 +25,17 @@ paths.CssImagesDest = paths.webroot + "css/images/";
 paths.ImageDest = paths.webroot + "images/";
 paths.ImageIconsDest = paths.webroot + "images/favicons";
 
-gulp.task("clean", async () => {
-    return await gulp.src([paths.CssDest + '**/*', paths.CssImagesDest + '**/*', paths.JsDest + "**/*", paths.ImageDest + '**/*', + paths.ImageIconsDest + '**/*'])
+gulp.task("clean", async (cb) => {
+    await gulp.src([paths.CssDest + '**/*', paths.CssImagesDest + '**/*', paths.JsDest + "**/*", paths.ImageDest + '**/*', + paths.ImageIconsDest + '**/*'])
         .pipe(deletefile({
             reg: regexp,
             deleteMatch: true
-        }));
+        }, cb));
+
+    return new Promise(function (resolve) {
+        // Per la cancellazione di file non c'è uno stream. https://stackoverflow.com/questions/29310425/using-del-in-gulp-series
+        setTimeout(resolve, 5000);
+    });
 });
 
 gulp.task("copy", async (callback) => {
@@ -76,6 +81,7 @@ gulp.task("copy", async (callback) => {
 });
 
 function promisifyStream(stream) {
+    // Nel caso sia presente uno stream
     return new Promise(res => stream.on('end', res));
 }
 
@@ -99,5 +105,9 @@ gulp.task('del:en-GB', async () => {
         }));
 });
 
-gulp.task('build', gulp.series('copy', 'ren:en-GB'));
-gulp.task('rebuild', gulp.series('clean', 'copy', 'ren:en-GB', 'del:en-GB'));
+gulp.task('build', gulp.series('copy', 'ren:en-GB', 'del:en-GB'));
+gulp.task('rebuild', gulp.series('clean', 'build'));
+
+gulp.task('prova', gulp.series('clean', 'build'), async () => {
+    console.log('prova\n\n');
+});

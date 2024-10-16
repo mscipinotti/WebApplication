@@ -11,23 +11,19 @@
     <Compile Remove="Resources\Views\Shared\_Culture\**" />
     <Compile Remove="Utilities\**" />
     <Compile Remove="Views\Home\Index\**" />
-    <Compile Remove="wwwroot\lib\bootstrap\**" />
-    <Compile Remove="wwwroot\lib\jquery\dist\ui\node_modules\**" />
+    <Compile Remove="wwwroot\lib\**" />
     <Content Remove="Resources\Views\Shared\_Culture\**" />
     <Content Remove="Utilities\**" />
     <Content Remove="Views\Home\Index\**" />
-    <Content Remove="wwwroot\lib\bootstrap\**" />
-    <Content Remove="wwwroot\lib\jquery\dist\ui\node_modules\**" />
+    <Content Remove="wwwroot\lib\**" />
     <EmbeddedResource Remove="Resources\Views\Shared\_Culture\**" />
     <EmbeddedResource Remove="Utilities\**" />
     <EmbeddedResource Remove="Views\Home\Index\**" />
-    <EmbeddedResource Remove="wwwroot\lib\bootstrap\**" />
-    <EmbeddedResource Remove="wwwroot\lib\jquery\dist\ui\node_modules\**" />
+    <EmbeddedResource Remove="wwwroot\lib\**" />
     <None Remove="Resources\Views\Shared\_Culture\**" />
     <None Remove="Utilities\**" />
     <None Remove="Views\Home\Index\**" />
-    <None Remove="wwwroot\lib\bootstrap\**" />
-    <None Remove="wwwroot\lib\jquery\dist\ui\node_modules\**" />
+    <None Remove="wwwroot\lib\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,11 +32,6 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Prova.cshtml" />
-    <Content Remove="wwwroot\lib\images\leaves.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\lib\images\leaves.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,8 +50,6 @@
     <Folder Include="wwwroot\css\images\" />
     <Folder Include="wwwroot\images\favicons\" />
     <Folder Include="wwwroot\js\" />
-    <Folder Include="wwwroot\lib\custom\css\" />
-    <Folder Include="wwwroot\lib\custom\js\" />
   </ItemGroup>
 
   <ItemGroup>
