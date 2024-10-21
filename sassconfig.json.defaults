@@ -1,0 +1,9 @@
+{
+  "sourceMap": false,
+  "loadPaths": [],
+  "style": "Nested",
+  "precision": 10,
+  "lineFeed": "CrLf",
+  "includeInProject": true,
+  "savePath": "~/../css/"
+}

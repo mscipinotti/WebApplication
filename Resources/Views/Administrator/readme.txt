@@ -8,3 +8,5 @@
 5. Per installare l'ultima versione di npm ho lanciato il comando
 		npm install -g npm
    da Package Manager Console, mentre ho scaricato node.js con il msi pacchetto e installato in c:\\program files\nodejs (folder di default)
+6. Non si possono sistemare i campi senza una <input ...>  o con lo <span ...> perchè non vengono passati al BE generando un errore di Sistem.IO.Memory
+7. Per compilare i sorgenti sass scss fare atsto destro sul file e scegliere Re-compile file (il file scss deve essere incluso nel progetto)

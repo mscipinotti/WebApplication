@@ -23,13 +23,13 @@ namespace WebAPP.Controllers
                 _httpClient.SetTokens(biography);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}Operator/updateBiography", biography);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
-                return await Task.Run(async () => View("Biography",biography));
+                return await Task.Run(() => View("Biography",biography));
             }
             catch (Exception ex)
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
                 biography.Errors = [ex.Message];
-                return View(biography);
+                return View($"Biography", biography);
             }
         }
     }

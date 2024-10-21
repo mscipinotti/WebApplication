@@ -117,8 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArchivedSince" xml:space="preserve">
+    <value>In archivio dal</value>
+  </data>
   <data name="BirthDay" xml:space="preserve">
     <value>Data di Nascita</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descrizione</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Dal</value>
   </data>
   <data name="missingISBN" xml:space="preserve">
     <value>ISBN mancante</value>
@@ -132,11 +141,20 @@
   <data name="Nationality" xml:space="preserve">
     <value>Nazionalità</value>
   </data>
+  <data name="PublishDate" xml:space="preserve">
+    <value>Data di pubblicazione</value>
+  </data>
   <data name="Responsibility" xml:space="preserve">
     <value>Incarichi</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Salva</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Titolo</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Al</value>
   </data>
   <data name="WorkAddress" xml:space="preserve">
     <value>Indirizzo di lavoro</value>

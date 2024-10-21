@@ -8,8 +8,10 @@
 @inject IConfiguration Config
 @model BiographyDto
 
-<article>
+<article class="w-100">
     <input type="hidden" asp-for="@Model.Id" />
+    <input type="hidden" asp-for="@Model.Author.Name" />
+    <input type="hidden" asp-for="@Model.Author.Surname" />
     <div class="d-flex flex-row">
         <div class="p-2 d-flex flex-column">
             <img src="~/Images/leaves.jpg" alt="Immagine dell'autore" />
@@ -23,16 +25,18 @@
                 <div><b>@localizer["Nationality"]</b><br /><input asp-for="@Model.Author.Nationality" class="border-0" /></div>
             </div>
         </div>
-        <div class="d-flex flex-column w-100 form-group">
+        <div class="d-flex flex-column w-100">
             <div class="p-2">
                 <h3>
-                @if (Model.Author.Title is not null)
-                {
-                    <input type="hidden" asp-for="@Model.Author.Title!.Id" />
-                    <input type="text" asp-for="@Model.Author.Title!.Description" class="border-0" readonly />
-                }
-                &nbsp;<input type="text" asp-for="@Model.Author.Name" class="border-0" readonly />
-                &nbsp;<input type="text" asp-for="@Model.Author.Surname" class="border-0" readonly />
+                    <input type="hidden" asp-for="@Model.Author.Id" />
+                    @if (Model.Author.Title is not null)
+                    {
+                        <input type="hidden" asp-for="@Model.Author.Title!.Id" />
+                        <input type="hidden" asp-for="@Model.Author.Title!.Description" />
+                        @Model.Author.Title!.Description
+                    }
+                    &nbsp;@Model.Author.Name
+                    &nbsp;@Model.Author.Surname
                 </h3>
             </div>
             <div class="p-2">
@@ -44,23 +48,32 @@
                     <div class="d-flex flex-row-reverse"><button id="btnTextSave" asp-controller="Operator" asp-action="UpdateBiography" hidden type="submit" class="btn btn-link text-decoration-none">@localizer["Save"]</button></div>
                 }
             </div>
-
             <div class="p-2"><h4>@localizer["Responsibility"]</h4></div>
-            <div class="w-100 p-2">
-                <ol id="oResponsibility" class="nav list-group list-group-numbered input-group date">
+            <div class="p-2">
+                <div class="row w-100 text-center">
+                    <div class="col-md-2"><b>@localizer["From"]</b></div>
+                    <div class="col-md-2"><b>@localizer["To"]</b></div>
+                    <div class="col-md-8"><b>@localizer["Description"]</b></div>
+                </div>
+                <ol id="oResponsibility" class="nav list-group list-group-numbered">
                     @{
                         int index = 0;
                         foreach (var r in Model.Responsibilities)
                         {
-                            <li class="w-100 d-flex flex-row list-group-item">
+                            <li class="row w-100 py-1">
                                 @if (r.From is not null)
                                 {
                                     <input type="hidden" asp-for="@Model.Responsibilities[index].Biography" value="@Model.Id" />
                                     <input type="hidden" asp-for="@Model.Responsibilities[index].Id" value="@r.Id" />
-                                    <p class="px-2"><input asp-for="@Model.Responsibilities[index].From" class="border-0 slimInputText datepicker" readonly value="@r.From" /></p>
-                                    <p>&nbsp;-&nbsp;</p>
-                                    <p class="px-2"><input asp-for="@Model.Responsibilities[index].To" class="border-0 slimInputText datepicker" readonly value="@r.To" /></p>
-                                    <p class="px-2 w-100"><input asp-for="@Model.Responsibilities[index].Description" class="border-0 w-100" readonly value="@r.Description" /></p>
+                                    <div class="col-md-2">
+                                        <input asp-for="@Model.Responsibilities[index].From" class="px-2 slimInputText datepicker" readonly value="@r.From" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input asp-for="@Model.Responsibilities[index].To" class="px-2 slimInputText datepicker" readonly value="@r.To" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input asp-for="@Model.Responsibilities[index].Description" class="px-2 border-0 w-100" readonly value="@r.Description" />
+                                    </div>
                                 }
                             </li>
                             index++;
@@ -74,39 +87,45 @@
                 }
             </div>
             <div class="p-2"><h4>@localizer["Works"]</h4></div>
-            <div class="w-100 p-2">
+            <div class="p-2">
+                <div class="row w-100 text-center">
+                    <div class="col-md-6"><b>@localizer["Title"]</b></div>
+                    <div class="col-md-2"><b>ISBN</b></div>
+                    <div class="col-md-2"><b>@localizer["ArchivedSince"]</b></div>
+                    <div class="col-md-2"><b>@localizer["PublishDate"]</b></div>
+                </div>
                 <ol id="oWorks" class="nav list-group list-group-numbered">
-                    @foreach (var t in Model.Texts)
-                    {
-                        <li class="w-100 d-flex flex-row list-group-item">
-                            <input type="hidden" value="@t.Id" />
-                            <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>.&nbsp;
-                            <p>@(string.IsNullOrEmpty(t.ISBN) ? string.Empty : $"{t.ISBN}")</p>
-                            <p>.&nbsp;Present in database from:&nbsp;</p>
-                            <p>@(t.Present.ToString())</p>
-                            <p>&nbsp;Publish date:&nbsp;</p>
-                            <p>@(t.Published is null ? string.Empty : $"{t.Published.ToString()}.")</p>
-                        </li>
+                    @{
+                        index = 0;
+                        foreach (var t in Model.Texts)
+                        {
+                            <li class="row w-100 py-1">
+                                <input type="hidden" asp-for="@Model.Texts[index].Id" value="@t.Id" />
+                                <div class="col-md-6">
+                                    <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>
+                                    <input type="text" asp-for="@Model.Texts[index].Title" class="px-2 w-100 border-0" hidden value="@t.Title" />
+                                </div>
+                                <div class="col-md-2">
+                                    <input asp-for="@Model.Texts[index].ISBN" class="px-2 slimInputText" readonly value="@(t.ISBN ?? string.Empty)" />
+                                </div>
+                                <div class="col-md-2">
+                                    <input asp-for="@Model.Texts[index].Present" class="px-2 slimInputText datepicker" readonly value="@t.Present" />
+                                </div>
+                                <div class="col-md-2">
+                                    <input asp-for="@Model.Texts[index].Published" class="px-2 slimInputText datepicker" readonly value="@t.Published" />
+                                </div>
+                            </li>
+                            index++;
+                        }
                     }
                 </ol>
                 @if (Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse"><button id="btnWorks" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
+                    <div class="d-flex flex-row-reverse"><button id="btnWorksSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button></div>
                 }
-
-                <div class='col-sm-6'>
-                    <div class="form-group">
-                        <div class='input-group date' id='datetimepicker1'>
-                            <input type='text' class="form-control" />
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
-        <div class="d-flex flex-row"></div>
     </div>
     <p class="warningMessage">@(Model.Errors == null ? string.Empty : Model.Errors[0])</p>
 </article>
@@ -115,46 +134,28 @@
     $(function () {
         waitingDialog.show();
         
+        $('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
+
         $("#btnText").on('click', function () {
             $("#pText > textarea").removeAttr('readonly').toggleClass('selected').focus();
             $("#btnText").hide('slow');
             $("#btnTextSave").removeAttr('hidden', 'slow');
         });
 
-        $("#btnResponsibility").on('click', function (e) {
+        $("#btnResponsibility").on('click', function () {
             $('#oResponsibility li input:visible').toggleClass('selected');
             $('#oResponsibility li input:visible:first').focus();
             $("#btnResponsibility").hide('slow');
             $("#btnResponsibilitySave").removeAttr('hidden', 'slow');
         });
 
-        // if (document.referrer.match("/http://(www.)?index(/)?(.*)?/gi") == false)
-        // {
-            $('#oResponsibility li').each(function (e) {
-                $(this).find('p').on("keypress", ":input", function (e) {
-                    if (e.which == 13) {
-                        updateBiography();
-                        // Il problema insoluto è che return true ricarica non la pagina Biography ma la Index di provenienza, o meglio, la pagina chiamante quella attuale.
-                        // La proprietà che, probabilmente, è usata per il reload è HTMLdocument.referrer ma è readonly.
-                        // E' sempre caricata con l'indirizzo della pagina chiamante della attuale ma se la pagina è richiamata ad esempio con un bookmark essa è null.
-                        // La soluzione consiste nel richiamare la pagina non appena l'utente clicca sul bottone (unico) di richiesta modifiche.  In questo modo il referrer diviene la pagina stessa.
-                        return true;
-                    }
-                });
-            });
-            $('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
-        // }
-
         $("#btnWorks").on('click', function () {
-            $('#oWorks li').each(function (e) {
-                $(this).toggleClass('selected');
-
-                $(this).find('p:first').hide();
-                let text = $(this).find('p:first').text();
-                let html = '<input type="text" class="w-70" placeholder="From" value="' + text + '"></input>';
-                $(this).find('p:first').html(html);
-                $(this).find('p:first').show('slow');
-            });
+            $('#oWorks li input:not(visible)').removeAttr('hidden', 'slow');
+            $('#oWorks li a:visible').hide('slow');
+            $('#oWorks li input:visible:first').focus();
+            $('#oWorks li input').toggleClass('selected');
+            $("#btnWorks").hide('slow');
+            $("#btnWorksSave").removeAttr('hidden', 'slow');
         });
 
         setTimeout(function () { waitingDialog.hide(); }, 2000);

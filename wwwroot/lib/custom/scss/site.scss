@@ -1,0 +1,60 @@
+﻿@import "../../../../node_modules/bootstrap/scss/bootstrap.scss";
+
+tr:nth-child(odd) {
+    background-color: var(--bs-info-bg-subtle);
+}
+
+tr:nth-child(even) {
+    background-color: var(--bs-info-bg-subtle);
+}
+
+.rowSelected {
+    --bs-table-bg: "";
+}
+
+.selected {
+    background-color: var(--bs-info-bg-subtle);
+}
+
+tbody tr:hover {
+    outline: thin solid;
+}
+
+.maxInputText {
+    border-width: 0px;
+    width: 100vw;
+}
+
+.hugeInputText {
+    border-width: 0px;
+    width: 300px;
+}
+
+.inputText {
+    border-width: 0px;
+    width: 250px;
+}
+
+.midInputText {
+    border-width: 0px;
+    width: 200px;
+}
+
+.slimInputText {
+    border-width: 0px;
+    width: 150px;
+}
+
+.superSlimInputText {
+    border-width: 0px;
+    width: 50px;
+}
+
+.ultraSlimInputText {
+    border-width: 0px;
+    width: 15px;
+}
+
+.warningMessage {
+    color: var(--bs-red);
+}
