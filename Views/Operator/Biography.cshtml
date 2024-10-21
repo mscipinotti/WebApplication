@@ -101,6 +101,7 @@
                         {
                             <li class="row w-100 py-1">
                                 <input type="hidden" asp-for="@Model.Texts[index].Id" value="@t.Id" />
+                                <input type="hidden" asp-for="@Model.Texts[index].Archive" value="@t.Archive" />
                                 <div class="col-md-6">
                                     <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>
                                     <input type="text" asp-for="@Model.Texts[index].Title" class="px-2 w-100 border-0" hidden value="@t.Title" />
@@ -161,9 +162,10 @@
         setTimeout(function () { waitingDialog.hide(); }, 2000);
     });
 
-    $("#btnResponsibility").on("click", function () {
-        $("#oResponsibility").find("input").not('.datepicker').prop('readonly', false);
-    })
+    $('.datepicker').on("click", function () {
+        let butt = $(this).closest('ol').closest('div').find('button[type="submit"]');
+        $('#ui-datepicker-div').css('visibility', butt.prop('hidden') ? 'hidden' : 'visible');
+    });
 
     function updateBiography() {
         // Tutta la biografia è caricata anche quelle parti non modificate dall'utente
