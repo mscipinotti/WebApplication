@@ -126,8 +126,14 @@
   <data name="Description" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="English" xml:space="preserve">
+    <value>English</value>
+  </data>
   <data name="From" xml:space="preserve">
     <value>From</value>
+  </data>
+  <data name="Italian" xml:space="preserve">
+    <value>Italian</value>
   </data>
   <data name="missingISBN" xml:space="preserve">
     <value>Missing ISBN</value>

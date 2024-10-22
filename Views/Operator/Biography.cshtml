@@ -15,14 +15,14 @@
     <div class="d-flex flex-row">
         <div class="p-2 d-flex flex-column">
             <img src="~/Images/leaves.jpg" alt="Immagine dell'autore" />
-            <div>
+            <div read>
                 <input type="hidden" asp-for="@Model.Author.Id" />
                 <input type="hidden" asp-for="@Model.Author.FC" />
-                <div><b>@localizer["BirthDay"]</b><br /><input asp-for="@Model.Author.BirthDay" class="border-0" /></div>
-                <div><b>Email</b><br /><input asp-for="@Model.Author.Email" class="border-0" /></div>
-                <div><b>@localizer["WorkPlace"]</b><br /><input asp-for="@Model.Author.WorkPlace" class="border-0" /></div>
-                <div><b>@localizer["WorkAddress"]</b><br /><input asp-for=" @Model.Author.WorkAddress" class="border-0" /></div>
-                <div><b>@localizer["Nationality"]</b><br /><input asp-for="@Model.Author.Nationality" class="border-0" /></div>
+                <div><b>@localizer["BirthDay"]</b><br /><input asp-for="@Model.Author.BirthDay" class="border-0" readonly /></div>
+                <div><b>Email</b><br /><input asp-for="@Model.Author.Email" class="border-0" readonly /></div>
+                <div><b>@localizer["WorkPlace"]</b><br /><input asp-for="@Model.Author.WorkPlace" class="border-0" readonly /></div>
+                <div><b>@localizer["WorkAddress"]</b><br /><input asp-for="@Model.Author.WorkAddress" class="border-0" readonly /></div>
+                <div><b>@localizer["Nationality"]</b><br /><input asp-for="@Model.Author.Nationality" class="border-0" readonly /></div>
             </div>
         </div>
         <div class="d-flex flex-column w-100">

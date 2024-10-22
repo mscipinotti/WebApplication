@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using WebAPP.Infrastructure.Models;
 
 namespace WebAPP.Infrastructure.Infrastructure
 {
