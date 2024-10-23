@@ -45,7 +45,7 @@
                 @if(Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse"><button id="btnText" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
-                    <div class="d-flex flex-row-reverse"><button id="btnTextSave" asp-controller="Operator" asp-action="UpdateBiography" hidden type="submit" class="btn btn-link text-decoration-none">@localizer["Save"]</button></div>
+                    <div class="d-flex flex-row-reverse"><button id="btnTextSave" asp-controller="Operator" asp-action="UpdateBiography" hidden type="submit" class="btn btn-link text-decoration-none" data-toggle="modal" data-target="#modalRequest">@localizer["Save"]</button></div>
                 }
             </div>
             <div class="p-2"><h4>@localizer["Responsibility"]</h4></div>
@@ -133,7 +133,7 @@
 
 <script type="text/javascript">
     $(function () {
-        waitingDialog.show();
+        let modal = waitingDialog.show('waitModal');
         
         $('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
 
@@ -159,88 +159,11 @@
             $("#btnWorksSave").removeAttr('hidden', 'slow');
         });
 
-        setTimeout(function () { waitingDialog.hide(); }, 2000);
+        setTimeout(function () { waitingDialog.hide(modal); }, 2000);
     });
 
     $('.datepicker').on("click", function () {
         let butt = $(this).closest('ol').closest('div').find('button[type="submit"]');
         $('#ui-datepicker-div').css('visibility', butt.prop('hidden') ? 'hidden' : 'visible');
     });
-
-    // function updateBiography() {
-    //     // Tutta la biografia è caricata anche quelle parti non modificate dall'utente
-    //     let updateBiographyReturn = true;
-    //     let titleDto = {
-    //         Id: "@(Model.Author.Title is null ? string.Empty : Model.Author.Title!.Id)",
-    //         Description: "@(Model.Author.Title is null ? string.Empty : Model.Author.Title!.Description)"
-    //     };
-    //     let authorDto = {
-    //         Id: "@Model.Author.Id",
-    //         Name: "@Model.Author.Name",
-    //         Surname: "@Model.Author.Surname",
-    //         Title: titleDto,
-    //         Email: "@Model.Author.Email",
-    //         WorkPlace: "@Model.Author.WorkPlace",
-    //         WorkAddress: "@Model.Author.WorkAddress",
-    //         BirthDay: "@Model.Author.BirthDay",
-    //         FC: "@Model.Author.FC",
-    //         Nationality: "@Model.Author.Nationality"
-    //     };
-    //     let authors = [];
-    //     let responsibilityDto = [];
-    //     let textDto = [];
-    //     let language = Boolean("@(Model.Language == Languages.English)" == "False" ? false : true);
-
-    //     authors.push(authorDto);
-
-    //     $('#oResponsibility li').each(function () {
-    //         let responsibility = {
-    //             Author: "@Model.Author.Id",
-    //             Id: $(this).find("input[type='hidden']").val(),
-    //             From: $(this).find("p:first input").length ? $(this).find("p:first input").val() : "@Model.Text",
-    //             To: $(this).find('p:nth-child(4) input').length ? $(this).find('p:nth-child(4) input').val() : "@Model.Text",
-    //             Description: (language && $(this).find('p:last input').length) ? $(this).find('p:last input').val() : '',
-    //             DescriptionIt: (!language && $(this).find('p:last input').length) ? $(this).find('p:last input').val() : ''
-    //         }
-    //         responsibilityDto.push(responsibility);
-    //     });
-
-    //     $('#oWorks li').each(function (e) {
-    //         let text = {
-    //             Id: $(this).find("input[type='hidden']").val(),
-    //             Title: $(this).find('a').text(),
-    //             ISBN: $(this).find('p:first').text(),
-    //             Archive: 1,                                                 // da sistemare
-    //             Present: $(this).find('p:nth-child(5)').text(),
-    //             Published: $(this).find('p:last').text(),
-    //             Authors: authors                                            // Eventuali altri autori sono volutamente non caricati
-    //         }
-    //         textDto.push(text);
-    //     });
-
-    //     let biographyDto = new token("@Model.Login", "@Model.Password", "@Model.Profile", "@Model.RequestVerificationToken", "@Model.Cookie", "@Model.JwtToken"); 
-    //     biographyDto.Id = "@Model.Id";
-    //     biographyDto.Author = authorDto;
-    //     biographyDto.Responsibilities = responsibilityDto;
-    //     biographyDto.Texts = textDto;
-    //     biographyDto.Text = (language && $("#tText").length) ? $("#tText").val() : "@Model.Text";
-
-    //     $.ajax({
-    //         url: "UpdateBiography",
-    //         type: 'post',
-    //         async: false,
-    //         data: biographyDto
-    //     }).fail(function (jqXHR) {
-    //         let biographyDto = $.parseJSON(jqXHR.responseText);
-    //         let message = "";
-    //         jQuery.each(biographyDto.errors, function (i, val) {
-    //             i = parseInt(i + 1);
-    //             message = message + i + ". " + val + "<br>";
-    //         });
-    //         $(".warningMessage").html(message);
-    //         updateBiographyReturn = false;
-    //     })
-
-    //     return updateBiographyReturn;
-    // }
 </script>

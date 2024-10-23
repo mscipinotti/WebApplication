@@ -1,37 +1,20 @@
-﻿let waitingDialog = (function ($) {
+﻿// https://bootsnipp.com/snippets/rga0j
+// La chiamata alla modale è modificata per essere adattata alla versione 5.3.3 di jquery
+
+let waitingDialog = (function ($) {
 	'use strict';
-
-	let $dialog = $(
-		'<div class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" style="padding-top:15%; overflow-y:visible;">' +
-		'<div class="modal-dialog modal-m">' +
-		'<div class="spinner-border" role="status">' +
-		'<span class="sr-only"></span>' +
-		'</div>' +
-		'</div>' +
-		'</div>');
-
+	
 	return {
-		show: function (options) {
+		show: function (id, options) {
 			if (typeof options === 'undefined') {
 				options = {};
 			}
-			let settings = $.extend({
-				dialogSize: 'm',
-				progressType: '',
-				onHide: null // This callback runs after the dialog was hidden
-			}, options);
-
-			$dialog.find('.modal-dialog').attr('class', 'modal-dialog').addClass('modal-' + settings.dialogSize);
-			// Adding callbacks
-			if (typeof settings.onHide === 'function') {
-				$dialog.off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
-					settings.onHide.call($dialog);
-				});
-			}
-			$dialog.modal();
+			const modal = new bootstrap.Modal('#' + id, options);
+			modal.show();
+			return modal;
 		},
-		hide: function () {
-			$dialog.modal('hide');
+		hide: function (modal) {
+			modal.hide();
 		}
 	};
 

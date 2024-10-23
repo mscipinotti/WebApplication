@@ -22,7 +22,7 @@
             {
                 <tr>
                     <th scope="row">@(Model.Texts.IndexOf(t) + 1)</th>
-                    <td class="hugeInputText" style="cursor:grab">@t.Title</td>
+                    <td class="hugeInputText" style="cursor:grab"><a class="text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a></td>
                     <td class="inputText">@t.ISBN</td>
                     <td class="slimInputText">@t.Published</td>
                     <td class="slimInputText">@t.Present</td>
