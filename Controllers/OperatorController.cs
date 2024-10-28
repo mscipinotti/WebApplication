@@ -15,15 +15,19 @@ namespace WebAPP.Controllers
     public class OperatorController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<UserController> localizer, ILanguage language) : UserController(logger, httpClientFactory, mapper, localizer, language)
     {
         [HttpPost("UpdateBiography")]
-        public async Task<IActionResult> UpdateBiographyAsync(BiographyDto biography)
+        public async Task<IActionResult> UpdateBiographyAsync(BiographyDto biography) => await CallAsync(biography, "UpdateBiography");
+
+        [HttpPost("DeleteResponsibility")]
+        public async Task<IActionResult> DeleteResponsibilityAsync(BiographyDto biography) => await CallAsync(biography, "DeleteResponsibility");
+
+        private async Task<IActionResult> CallAsync(BiographyDto biography, string action)
         {
             try
             {
-                biography.Language = _language.UserLanguage;
                 _httpClient.SetTokens(biography);
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}Operator/updateBiography", biography);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}Operator/{action}", biography);
                 if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
-                return await Task.Run(() => View("Biography", biography));
+                return await Task.Run(async () => View("Biography", await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>()));
             }
             catch (Exception ex)
             {

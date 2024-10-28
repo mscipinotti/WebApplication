@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Add" xml:space="preserve">
+    <value>Aggiungi</value>
+  </data>
   <data name="ArchivedSince" xml:space="preserve">
     <value>In archivio dal</value>
   </data>
   <data name="BirthDay" xml:space="preserve">
     <value>Data di Nascita</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Elimina</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>Descrizione</value>

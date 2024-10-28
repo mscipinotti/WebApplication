@@ -1,4 +1,4 @@
-﻿@import "../../../../node_modules/bootstrap/scss/bootstrap.scss";
+﻿@import url(node_modules/bootstrap/scss/bootstrap.scss);
 
 tr:nth-child(odd) {
     background-color: var(--bs-info-bg-subtle);
