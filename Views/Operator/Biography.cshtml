@@ -63,7 +63,6 @@
                                 <li class="row w-100 py-1">
                                     @if (r.From is not null)
                                     {
-                                        <input type="hidden" asp-for="@Model.Responsibilities[index].Biography" value="@Model.Id" />
                                         <input type="hidden" asp-for="@Model.Responsibilities[index].ToDelete" value="@r.ToDelete" />
                                         <input type="hidden" asp-for="@Model.Responsibilities[index].Id" value="@r.Id" />
                                         <div class="col-md-2">
@@ -88,7 +87,7 @@
                     <div class="d-flex flex-row-reverse">
                         <button id="btnResponsibility" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
                         <button id="btnResponsibilityAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
-                        <button id="btnResponsibilityDelete" type="submit" asp-controller="Operator" asp-action="DeleteResponsibility" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
+                        <button id="btnResponsibilityDelete" name="btnResponsibilityDelete" type="submit" asp-controller="Operator" asp-action="DeleteResponsibility" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
                         <button id="btnResponsibilitySave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
                     </div>
                 }
@@ -110,17 +109,18 @@
                                 <input type="hidden" asp-for="@Model.Texts[index].Id" value="@t.Id" />
                                 <input type="hidden" asp-for="@Model.Texts[index].Archive" value="@t.Archive" />
                                 <div class="col-md-6">
+                                    <input type="hidden" asp-for="@Model.Texts[index].ToDelete" />
+                                    <input type="hidden" asp-for="@Model.Texts[index].Title" class="px-2 w-100 border-0" />
                                     <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>
-                                    <input type="text" asp-for="@Model.Texts[index].Title" class="px-2 w-100 border-0" hidden value="@t.Title" />
                                 </div>
                                 <div class="col-md-2">
-                                    <input asp-for="@Model.Texts[index].ISBN" class="px-2 slimInputText" readonly value="@(t.ISBN ?? string.Empty)" />
+                                    <input asp-for="@Model.Texts[index].ISBN" class="px-2 slimInputText" style="cursor:grab"  readonly value="@(t.ISBN ?? string.Empty)" />
                                 </div>
                                 <div class="col-md-2">
-                                    <input asp-for="@Model.Texts[index].Present" class="px-2 slimInputText datepicker" readonly value="@t.Present" />
+                                    <input asp-for="@Model.Texts[index].Present" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Present" />
                                 </div>
                                 <div class="col-md-2">
-                                    <input asp-for="@Model.Texts[index].Published" class="px-2 slimInputText datepicker" readonly value="@t.Published" />
+                                    <input asp-for="@Model.Texts[index].Published" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Published" />
                                 </div>
                             </li>
                             index++;
@@ -130,15 +130,15 @@
                 @if (Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse">
-                        <button id="btnWorks" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
-                        <button id="btnWorksAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
-                        <button id="btnWorksSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
+                        <button id="btnWork" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
+                        <button id="btnWorkAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
+                        <button id="btnWorkDelete" name="btnWorkDelete" type="submit" asp-controller="Operator" asp-action="DeleteWork" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
+                        <button id="btnWorkSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
                     </div>
                 }
             </div>
         </div>
     </div>
-    <p class="warningMessage">@(Model.Errors == null ? string.Empty : Model.Errors[0])</p>
 </article>
 
 <script type="text/javascript">
@@ -149,7 +149,6 @@
         $("#btnResponsibilityAdd").on('click', function () {
             let index = @Model.Responsibilities.Count();
             let row = '<li class="row w-100 py-1">' +
-                        '<input type="hidden" value="' + @Model.Id + '" id="Responsibilities_' + index + '__Biography" name="Responsibilities[' + index + '].Biography" /> ' +
                         '<div class="col-md-2">' +
                             '<input class="px-2 slimInputText datepicker selected" required readonly type="text" id="Responsibilities_' + index + '__From" name="Responsibilities[' + index + '].From" />' +
                             '<span class="invalid-feedback" name="feedback.Responsibilities[' + index + '].From"></span>' +
@@ -174,6 +173,35 @@
             });
         });
 
+        $("#btnWorkAdd").on('click', function () {
+            let index = @Model.Texts.Count();
+            let row = '<li class="row w-100 py-1">' +
+                '<div class="col-md-6">' +
+                '<input type="text" class="px-2 w-100 border-0 selected" id="Texts_' + index + '__Title" name = "Texts[' + index + '].Title" />' +
+                '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Title"></span>' +
+                '</div>' +
+                '<div class="col-md-2">' +
+                '<input class="px-2 slimInputText selected" readonly type="text" id="Texts_' + index + '__ISBN" name="Texts[' + index + '].ISBN" />' +
+                '<span class="invalid-feedback" name="feedback.Texts[' + index + '].ISBN"></span>' +
+                '</div>' +
+                '<div class="col-md-2">' +
+                '<input class="px-2 slimInputText datepicker selected" readonly type = "text" data-val="true" data-val-required="The Present field is required." id = "Texts_' + index + '__Present" name = "Texts[' + index + '].Present" />' +
+                '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Present"></span>' +
+                '</div>' +
+                '<div class="col-md-2">' +
+                '<input class="px-2 slimInputText datepicker selected" readonly type="text" id="Texts_' + index + '__Published" name = "Texts[' + index + '].Published" />' +
+                '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Description"></span>' +
+                '</div>' +
+                '</li>';
+            $('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
+            $('#oWorks').hide();
+            $('#oWorks').append(row);
+            $('#oWorks').fadeIn('slow');
+            $("#btnWorkAdd").hide('slow');
+            $("#btnWork").hide('slow');
+            $("#btnWorkSave").removeAttr('hidden', 'slow');
+        });
+
         setTimeout(function () { waitingDialog.hide(modal); }, 2000);
     });
 
@@ -193,18 +221,14 @@
         $("#btnResponsibilitySave").removeAttr('hidden', 'slow');
     });
 
-    $("#btnWorks").on('click', function () {
+    $("#btnWork").on('click', function () {
         $('#oWorks li input:not(visible)').removeAttr('hidden', 'slow');
         $('#oWorks li a:visible').hide('slow');
         $('#oWorks li input:visible:first').focus();
         $('#oWorks li input').toggleClass('selected');
-        $("#btnWorks").hide('slow');
-        $("#btnWorksAdd").hide('slow');
-        $("#btnWorksSave").removeAttr('hidden', 'slow');
-    });
-
-    $("#btnWorksAdd").on('click', function () {
-
+        $("#btnWork").hide('slow');
+        $("#btnWorkAdd").hide('slow');
+        $("#btnWorkSave").removeAttr('hidden', 'slow');
     });
 
     $('.datepicker').on("click", function () {
@@ -213,11 +237,10 @@
 
         let $parent = $(this).closest("li");
         $parent.find("input").toggleClass('selected');
-        var prova = $parent.find("input:hidden[name$='ToDelete']");
         $parent.find("input:hidden[name$='ToDelete']").val(Boolean("true"));
         $parent.find("textarea:visible").toggleClass('selected');
-        $("#btnResponsibilityDelete").removeAttr('hidden', 'slow');
-        $("#btnResponsibility").hide('slow');
-        $("#btnResponsibilityAdd").hide('slow');
+        $parent.find("a:visible").toggleClass('selected');
+        $(this).closest('ol').closest('div').find('button').hide('slow');
+        butt.filter($('[name$="Delete"]')).removeAttr('hidden', 'slow');
     });
 </script>

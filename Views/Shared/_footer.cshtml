@@ -8,6 +8,8 @@
 <input type="hidden" asp-for=RequestVerificationToken value="@Model.RequestVerificationToken" />
 <input type="hidden" asp-for=JwtToken value="@Model.JwtToken" />
 
+<p class="warningMessage">@(Model.Errors == null ? string.Empty : Model.Errors[0])</p>
+
 <footer class="border-top footer text-muted fixed-bottom">
     <div class="container border-top-width: 50px;" style="text-align: center">
         &copy; 2023 - Graph Drawing Algorithms Archive - <a asp-area="" asp-page="/Privacy">Privacy</a>

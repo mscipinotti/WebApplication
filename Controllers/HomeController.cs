@@ -17,9 +17,10 @@ namespace WebAPP.Controllers
     // Senza routing. Ciò vuold dire che se non specificato il controller è HomeController.
     public class HomeController : Controller, IActionFilter
     {
+        private readonly string[] tokenArray = ["X-XSRF-TOKEN="];
+        private readonly string[] commaArray = ["; "];
         private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
-        private readonly IMapper _mapper;
         private readonly Dictionary<string, object> _configLogger;
         private readonly IStringLocalizer<HomeController> _localizer;
         private readonly Tokens _initialToken = new()
@@ -30,11 +31,10 @@ namespace WebAPP.Controllers
             Language = GlobalParameters.Config.GetValue<string>("defaultLanguage")!.ToLanguage()
         };
 
-        public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IMapper mapper, IStringLocalizer<HomeController> localizer)
+        public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IStringLocalizer<HomeController> localizer)
         {
             _logger = logger;
             _httpClient = httpClientFactory.Client;
-            _mapper = mapper;
             _configLogger = new()
             {
                 { "OperationId", Guid.NewGuid() }
@@ -68,12 +68,13 @@ namespace WebAPP.Controllers
                             responseAccount = (await httpResponseMessage.Content.ReadFromJsonAsync<AccountDto>())!;
                             if (responseAccount is not null)
                             {
+                                
                                 if (responseAccount.Status == StatusItems.ChangePassword) return View("Views/Home/ChangePassword.cshtml", responseAccount);
                                 var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
-                                responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                                responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(commaArray, StringSplitOptions.None)[0];
                                 responseAccount.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
-                                                                                  .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
-                                                                                  .Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                                                                                  .Split(tokenArray, StringSplitOptions.None)[1]
+                                                                                  .Split(commaArray, StringSplitOptions.None)[0];
                                 _httpClient.SetTokens(responseAccount);
                                 return View("Views/Dashboard/Dashboard.cshtml", responseAccount);
                             }
@@ -90,7 +91,6 @@ namespace WebAPP.Controllers
             {
                 WriteLog.WriteErrorLog(_logger, _configLogger, ex.Message);
                 // json per eliminare gli apici doppi nella stringa ritornata
-                //token.Errors = [ _localizer[JsonSerializer.Deserialize<string>(ex.Message) ?? "UnpredictableError"] ];
                 token.Errors = [ _localizer[ex.Message ?? "UnpredictableError" ] ];
             }
             return View($"Index", token);
@@ -111,10 +111,10 @@ namespace WebAPP.Controllers
                         if (responseAccount is not null)
                         {
                             var cookies = httpResponseMessage.Headers.GetValues("Set-Cookie");
-                            responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                            responseAccount.Cookie = cookies.First(c => c.StartsWith("XSRF-TOKEN")).Split(commaArray, StringSplitOptions.None)[0];
                             responseAccount.RequestVerificationToken = cookies.First(c => c.StartsWith("X-XSRF-TOKEN"))
-                                                                              .Split(new string[] { "X-XSRF-TOKEN=" }, StringSplitOptions.None)[1]
-                                                                              .Split(new string[] { "; " }, StringSplitOptions.None)[0];
+                                                                              .Split(tokenArray, StringSplitOptions.None)[1]
+                                                                              .Split(commaArray, StringSplitOptions.None)[0];
                             _httpClient.SetTokens(responseAccount);
                             if (responseAccount.Status == StatusItems.ChangePassword) return View("Views/Home/ChangePassword.cshtml", responseAccount);
                             return View("Views/Dashboard/Dashboard.cshtml", responseAccount);

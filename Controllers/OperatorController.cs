@@ -20,13 +20,16 @@ namespace WebAPP.Controllers
         [HttpPost("DeleteResponsibility")]
         public async Task<IActionResult> DeleteResponsibilityAsync(BiographyDto biography) => await CallAsync(biography, "DeleteResponsibility");
 
+        [HttpPost("DeleteWork")]
+        public async Task<IActionResult> DeleteWorkAsync(BiographyDto biography) => await CallAsync(biography, "DeleteWork");
+
         private async Task<IActionResult> CallAsync(BiographyDto biography, string action)
         {
             try
             {
                 _httpClient.SetTokens(biography);
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}Operator/{action}", biography);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
+                if (httpResponseMessage.StatusCode != HttpStatusCode.OK) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
                 return await Task.Run(async () => View("Biography", await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>()));
             }
             catch (Exception ex)
