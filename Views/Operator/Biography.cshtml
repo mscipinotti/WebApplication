@@ -60,24 +60,24 @@
                         int index = 0;
                         foreach (var r in Model.Responsibilities)
                         {
-                                <li class="row w-100 py-1">
-                                    @if (r.From is not null)
+                            <li class="row w-100 py-1">
+                                @if (r.From is not null)
                                     {
-                                        <input type="hidden" asp-for="@Model.Responsibilities[index].ToDelete" value="@r.ToDelete" />
-                                        <input type="hidden" asp-for="@Model.Responsibilities[index].Id" value="@r.Id" />
+                                        <input type="hidden" asp-for="@r.ToDelete" value="@r.ToDelete" />
+                                        <input type="hidden" asp-for="@r.Id" value="@r.Id" />
                                         <div class="col-md-2">
-                                            <input asp-for="@Model.Responsibilities[index].From" class="px-2 slimInputText datepicker" style="cursor:grab" required readonly value="@r.From" />
+                                            <input asp-for="@r.From" class="px-2 slimInputText datepicker" style="cursor:grab" required readonly value="@r.From" />
                                             <span class="invalid-feedback" name="feedback.Responsibilities[@index].From"></span>
                                         </div>
                                         <div class="col-md-2">
-                                            <input asp-for="@Model.Responsibilities[index].To" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" />
+                                            <input asp-for="@r.To" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" />
                                         </div>
                                         <div class="col-md-8">
-                                            <textarea class="border-0 w-100" asp-for="@Model.Responsibilities[index].Description" required readonly value="@r.Description" spellcheck="false"></textarea>
+                                            <textarea class="border-0 w-100" asp-for="@r.Description" required readonly value="@r.Description" spellcheck="false"></textarea>
                                             <span class="invalid-feedback" name="feedback.Responsibilities[@index].Description"></span>
                                         </div>
                                     }
-                                    </li>
+                            </li>
                             index++;
                         }
                     }
@@ -85,10 +85,10 @@
                 @if (Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse">
-                        <button id="btnResponsibility" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
-                        <button id="btnResponsibilityAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
+                        <button id="btnResponsibilityModify" name="btnResponsibilityModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
+                        <button id="btnResponsibilityAdd" name="btnResponsibilityAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
                         <button id="btnResponsibilityDelete" name="btnResponsibilityDelete" type="submit" asp-controller="Operator" asp-action="DeleteResponsibility" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
-                        <button id="btnResponsibilitySave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
+                        <button id="btnResponsibilitySave" name="btnResponsibilitySave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
                     </div>
                 }
             </div>
@@ -105,24 +105,24 @@
                         index = 0;
                         foreach (var t in Model.Texts)
                         {
-                            <li class="row w-100 py-1">
-                                <input type="hidden" asp-for="@Model.Texts[index].Id" value="@t.Id" />
-                                <input type="hidden" asp-for="@Model.Texts[index].Archive" value="@t.Archive" />
-                                <div class="col-md-6">
-                                    <input type="hidden" asp-for="@Model.Texts[index].ToDelete" />
-                                    <input type="hidden" asp-for="@Model.Texts[index].Title" class="px-2 w-100 border-0" />
-                                    <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a>
-                                </div>
-                                <div class="col-md-2">
-                                    <input asp-for="@Model.Texts[index].ISBN" class="px-2 slimInputText" style="cursor:grab"  readonly value="@(t.ISBN ?? string.Empty)" />
-                                </div>
-                                <div class="col-md-2">
-                                    <input asp-for="@Model.Texts[index].Present" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Present" />
-                                </div>
-                                <div class="col-md-2">
-                                    <input asp-for="@Model.Texts[index].Published" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Published" />
-                                </div>
-                            </li>
+                                    <li class="row w-100 py-1">
+                                        <input type="hidden" asp-for="@t.Id" value="@t.Id" />
+                                        <input type="hidden" asp-for="@t.Archive" value="@t.Archive" />
+                                        <div class="col-md-6">
+                                            <input type="text" asp-for="@t.ToDelete" hidden />
+                                            <input type="text" asp-for="@t.Title" hidden class="px-2 w-100 border-0" />
+                                            <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@t.Title</a>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input asp-for="@t.ISBN" class="px-2 slimInputText" style="cursor:grab"  readonly value="@(t.ISBN ?? string.Empty)" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input asp-for="@t.Present" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Present" />
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input asp-for="@t.Published" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Published" />
+                                        </div>
+                                    </li>
                             index++;
                         }
                     }
@@ -130,10 +130,10 @@
                 @if (Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse">
-                        <button id="btnWork" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
-                        <button id="btnWorkAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
+                        <button id="btnWorkModify" name="btnWorkModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
+                        <button id="btnWorkAdd" name="btnWorkAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
                         <button id="btnWorkDelete" name="btnWorkDelete" type="submit" asp-controller="Operator" asp-action="DeleteWork" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
-                        <button id="btnWorkSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
+                        <button id="btnWorkSave" name="btnWorkSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
                     </div>
                 }
             </div>
@@ -166,7 +166,7 @@
             $('#oResponsibility').append(row);
             $('#oResponsibility').fadeIn('slow');
             $("#btnResponsibilityAdd").hide('slow');
-            $("#btnResponsibility").hide('slow');
+            $("#btnResponsibilityModify").hide('slow');
             $("#btnResponsibilitySave").removeAttr('hidden', 'slow');
             $('body').on("focus", ".datepicker", function () {
                 $(this).datepicker();
@@ -198,11 +198,12 @@
             $('#oWorks').append(row);
             $('#oWorks').fadeIn('slow');
             $("#btnWorkAdd").hide('slow');
-            $("#btnWork").hide('slow');
+            $("#btnWorkModify").hide('slow');
             $("#btnWorkSave").removeAttr('hidden', 'slow');
         });
 
         setTimeout(function () { waitingDialog.hide(modal); }, 2000);
+        $('#ui-datepicker-div').css('visibility', 'hidden');
     });
 
     $("#btnText").on('click', function () {
@@ -211,36 +212,61 @@
         $("#btnTextSave").removeAttr('hidden', 'slow');
     });
 
-    $("#btnResponsibility").on('click', function () {
-        $('#oResponsibility li input:visible').toggleClass('selected');
-        $('#oResponsibility li input:visible:first').focus();
-        $('#oResponsibility li textarea').toggleClass('selected');
-        $('#oResponsibility li textarea').removeAttr('readonly', 'slow');
-        $("#btnResponsibility").hide('slow');
-        $("#btnResponsibilityAdd").hide('slow');
-        $("#btnResponsibilitySave").removeAttr('hidden', 'slow');
+    $("#btnResponsibilityModify").on('click', function () {
+        let $inputField = $('#oResponsibility li input');
+        let $textareaField = $('#oResponsibility li textarea');
+        let $divButt = $('#oResponsibility').closest('div');
+        let $buttSave = $divButt.find('button[name$="Save"]');
+        let $buttModify = $divButt.find('button[name$="Modify"]');
+        let $buttAdd = $divButt.find('button[name$="Add"]');
+
+        $inputField.toggleClass('selected', 'slow');
+        $textareaField.toggleClass('selected', 'slow');
+        $inputField.find(':visible:first').focus();
+        $textareaField.removeAttr('readonly', 'slow');
+        $buttModify.toggle('slow');
+        $buttAdd.toggle('slow');
+        $buttSave.removeAttr('hidden', 'slow');
+        $buttSave.show('slow');
+        $('#ui-datepicker-div').css('visibility', 'visible');
     });
 
-    $("#btnWork").on('click', function () {
-        $('#oWorks li input:not(visible)').removeAttr('hidden', 'slow');
-        $('#oWorks li a:visible').hide('slow');
-        $('#oWorks li input:visible:first').focus();
-        $('#oWorks li input').toggleClass('selected');
-        $("#btnWork").hide('slow');
-        $("#btnWorkAdd").hide('slow');
-        $("#btnWorkSave").removeAttr('hidden', 'slow');
+    $("#btnWorkModify").on('click', function () {
+        let $field = $('#oWorks li input');
+        let $aField = $('#oWorks li a');
+        let $fieldHidden = $('#oWorks li input[name$="Title"]');
+        let $divButt = $('#oWorks').closest('div');
+        let $buttSave = $divButt.find('button[name$="Save"]');
+        let $buttModify = $divButt.find('button[name$="Modify"]');
+        let $buttAdd = $divButt.find('button[name$="Add"]');
+
+        $aField.hide();
+        $field.toggleClass('selected', 'slow');
+        $fieldHidden.removeAttr('hidden', 'slow');
+        $fieldHidden.first().focus();
+        $buttModify.hide('slow');
+        $buttAdd.hide('slow');
+        $buttSave.removeAttr('hidden', 'slow');
+        $buttSave.show('slow');
+        $('#ui-datepicker-div').css('visibility', 'visible');
     });
 
     $('.datepicker').on("click", function () {
-        let butt = $(this).closest('ol').closest('div').find('button[type="submit"]');
-        $('#ui-datepicker-div').css('visibility', butt.prop('hidden') ? 'hidden' : 'visible');
-
+        let $divButt = $(this).closest('ol').closest('div');
+        let $buttDelete = $divButt.find('button[name$="Delete"]');
+        let $buttDeleteHidden = $buttDelete.is(':hidden');
+        let $buttSaveHidden = $divButt.closest('div').find('button[name$="Save"]').is(':hidden');
         let $parent = $(this).closest("li");
-        $parent.find("input").toggleClass('selected');
-        $parent.find("input:hidden[name$='ToDelete']").val(Boolean("true"));
-        $parent.find("textarea:visible").toggleClass('selected');
-        $parent.find("a:visible").toggleClass('selected');
-        $(this).closest('ol').closest('div').find('button').hide('slow');
-        butt.filter($('[name$="Delete"]')).removeAttr('hidden', 'slow');
+
+        if ($buttSaveHidden) {
+            $parent.find("input").toggleClass('selected', 'slow');
+            $parent.find("input:hidden[name$='ToDelete']").val(Boolean($buttDeleteHidden));
+            $parent.find("textarea:visible").toggleClass('selected', 'slow');
+            $parent.find("a:visible").toggleClass('selected', 'slow');
+            $divButt.find('button').toggle('slow');
+            $buttDelete.removeAttr('hidden', 'slow');
+        }
+        else
+            $('#ui-datepicker-div').css('visibility', 'visible');
     });
 </script>
