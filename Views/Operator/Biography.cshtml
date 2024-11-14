@@ -63,17 +63,17 @@
                             <li class="row w-100 py-1">
                                 @if (r.From is not null)
                                     {
-                                        <input type="hidden" asp-for="@r.ToDelete" value="@r.ToDelete" />
-                                        <input type="hidden" asp-for="@r.Id" value="@r.Id" />
+                                        <input type="hidden" asp-for="@Model.Responsibilities[index].ToDelete" value="@r.ToDelete" />
+                                        <input type="hidden" asp-for="@Model.Responsibilities[index].Id" value="@r.Id" />
                                         <div class="col-md-2">
-                                            <input asp-for="@r.From" class="px-2 slimInputText datepicker" style="cursor:grab" required readonly value="@r.From" />
+                                            <input asp-for="@Model.Responsibilities[index].From" class="px-2 slimInputText datepicker" style="cursor:grab" required readonly value="@r.From" />
                                             <span class="invalid-feedback" name="feedback.Responsibilities[@index].From"></span>
                                         </div>
                                         <div class="col-md-2">
-                                            <input asp-for="@r.To" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" />
+                                            <input asp-for="@Model.Responsibilities[index].To" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" />
                                         </div>
                                         <div class="col-md-8">
-                                            <textarea class="border-0 w-100" asp-for="@r.Description" required readonly value="@r.Description" spellcheck="false"></textarea>
+                                            <textarea class="border-0 w-100" asp-for="@Model.Responsibilities[index].Description" required readonly value="@r.Description" spellcheck="false"></textarea>
                                             <span class="invalid-feedback" name="feedback.Responsibilities[@index].Description"></span>
                                         </div>
                                     }
@@ -100,29 +100,29 @@
                     <div class="col-md-2"><b>@localizer["ArchivedSince"]</b></div>
                     <div class="col-md-2"><b>@localizer["PublishDate"]</b></div>
                 </div>
-                <ol id="oWorks" class="nav list-group list-group-numbered">
+                <ol id="oWork" class="nav list-group list-group-numbered">
                     @{
                         index = 0;
                         foreach (var t in Model.Texts)
                         {
-                                    <li class="row w-100 py-1">
-                                        <input type="hidden" asp-for="@t.Id" value="@t.Id" />
-                                        <input type="hidden" asp-for="@t.Archive" value="@t.Archive" />
-                                        <div class="col-md-6">
-                                            <input type="text" asp-for="@t.ToDelete" hidden />
-                                            <input type="text" asp-for="@t.Title" hidden class="px-2 w-100 border-0" />
-                                            <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@t.Title</a>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input asp-for="@t.ISBN" class="px-2 slimInputText" style="cursor:grab"  readonly value="@(t.ISBN ?? string.Empty)" />
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input asp-for="@t.Present" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Present" />
-                                        </div>
-                                        <div class="col-md-2">
-                                            <input asp-for="@t.Published" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Published" />
-                                        </div>
-                                    </li>
+                            <li class="row w-100 py-1">
+                                <input type="hidden" asp-for="@Model.Texts[index].Id" value="@t.Id" />
+                                <input type="hidden" asp-for="@Model.Texts[index].Archive" value="@t.Archive" />
+                                <div class="col-md-6">
+                                    <input type="text" asp-for="@Model.Texts[index].ToDelete" hidden />
+                                    <input type="text" asp-for="@Model.Texts[index].Title" hidden class="px-2 w-100 border-0" />
+                                    <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@t.Title</a>
+                                </div>
+                                <div class="col-md-2">
+                                    <input asp-for="@Model.Texts[index].ISBN" class="px-2 slimInputText" style="cursor:grab" readonly value="@(t.ISBN ?? string.Empty)" />
+                                </div>
+                                <div class="col-md-2">
+                                    <input asp-for="@Model.Texts[index].Present" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Present" />
+                                </div>
+                                <div class="col-md-2">
+                                    <input asp-for="@Model.Texts[index].Published" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Published" />
+                                </div>
+                            </li>
                             index++;
                         }
                     }
@@ -142,9 +142,11 @@
 </article>
 
 <script type="text/javascript">
+    let $allResponsibilityDatepicker = $('#oResponsibility').find('.datepicker');
+    let $allWorkDatepicker = $('#oWork').find('.datepicker');
+
     $(function () {
         let modal = waitingDialog.show('waitModal');
-        $('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
 
         $("#btnResponsibilityAdd").on('click', function () {
             let index = @Model.Responsibilities.Count();
@@ -168,11 +170,10 @@
             $("#btnResponsibilityAdd").hide('slow');
             $("#btnResponsibilityModify").hide('slow');
             $("#btnResponsibilitySave").removeAttr('hidden', 'slow');
-            $('body').on("focus", ".datepicker", function () {
-                $(this).datepicker();
-            });
+            // $('body').on("focus", ".datepicker", function () {
+            //     $(this).datepicker();
+            // });
         });
-
         $("#btnWorkAdd").on('click', function () {
             let index = @Model.Texts.Count();
             let row = '<li class="row w-100 py-1">' +
@@ -194,16 +195,16 @@
                 '</div>' +
                 '</li>';
             $('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
-            $('#oWorks').hide();
-            $('#oWorks').append(row);
-            $('#oWorks').fadeIn('slow');
+            $('#oWork').hide();
+            $('#oWork').append(row);
+            $('#oWork').fadeIn('slow');
             $("#btnWorkAdd").hide('slow');
             $("#btnWorkModify").hide('slow');
             $("#btnWorkSave").removeAttr('hidden', 'slow');
         });
 
         setTimeout(function () { waitingDialog.hide(modal); }, 2000);
-        $('#ui-datepicker-div').css('visibility', 'hidden');
+        $('.datepicker').datepicker('destroy');
     });
 
     $("#btnText").on('click', function () {
@@ -228,14 +229,17 @@
         $buttAdd.toggle('slow');
         $buttSave.removeAttr('hidden', 'slow');
         $buttSave.show('slow');
-        $('#ui-datepicker-div').css('visibility', 'visible');
+
+        if ($('#btnWorkSave').is(':hidden')) $allWorkDatepicker.datepicker('destroy');
+        $allResponsibilityDatepicker.datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
+        $allResponsibilityDatepicker.datepicker('show');
     });
 
     $("#btnWorkModify").on('click', function () {
-        let $field = $('#oWorks li input');
-        let $aField = $('#oWorks li a');
-        let $fieldHidden = $('#oWorks li input[name$="Title"]');
-        let $divButt = $('#oWorks').closest('div');
+        let $field = $('#oWork li input');
+        let $aField = $('#oWork li a');
+        let $fieldHidden = $('#oWork li input[name$="Title"]');
+        let $divButt = $('#oWork').closest('div');
         let $buttSave = $divButt.find('button[name$="Save"]');
         let $buttModify = $divButt.find('button[name$="Modify"]');
         let $buttAdd = $divButt.find('button[name$="Add"]');
@@ -248,7 +252,10 @@
         $buttAdd.hide('slow');
         $buttSave.removeAttr('hidden', 'slow');
         $buttSave.show('slow');
-        $('#ui-datepicker-div').css('visibility', 'visible');
+
+        if($('#btnResponsibilitySave').is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
+        $allWorkDatepicker.datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
+        $allWorkDatepicker.datepicker('show');
     });
 
     $('.datepicker').on("click", function () {
@@ -266,7 +273,5 @@
             $divButt.find('button').toggle('slow');
             $buttDelete.removeAttr('hidden', 'slow');
         }
-        else
-            $('#ui-datepicker-div').css('visibility', 'visible');
     });
 </script>
