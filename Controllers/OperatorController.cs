@@ -28,6 +28,7 @@ namespace WebAPP.Controllers
             try
             {
                 _httpClient.SetTokens(biography);
+                biography.Language = _language.UserLanguage;
                 var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}Operator/{action}", biography);
                 if (httpResponseMessage.StatusCode != HttpStatusCode.OK) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
                 return await Task.Run(async () => View("Biography", await httpResponseMessage.Content.ReadFromJsonAsync<BiographyDto>()));

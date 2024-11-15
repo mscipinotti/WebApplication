@@ -142,9 +142,6 @@
 </article>
 
 <script type="text/javascript">
-    let $allResponsibilityDatepicker = $('#oResponsibility').find('.datepicker');
-    let $allWorkDatepicker = $('#oWork').find('.datepicker');
-
     $(function () {
         let modal = waitingDialog.show('waitModal');
 
@@ -163,16 +160,15 @@
                             '<span class="invalid-feedback" name="feedback.Responsibilities[' + index + '].Description"></span>' +
                         '</div>' +
                      '</li>';
-            $('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
+
             $('#oResponsibility').hide();
             $('#oResponsibility').append(row);
             $('#oResponsibility').fadeIn('slow');
             $("#btnResponsibilityAdd").hide('slow');
             $("#btnResponsibilityModify").hide('slow');
             $("#btnResponsibilitySave").removeAttr('hidden', 'slow');
-            // $('body').on("focus", ".datepicker", function () {
-            //     $(this).datepicker();
-            // });
+
+            setDatepicker('oResponsibility');
         });
         $("#btnWorkAdd").on('click', function () {
             let index = @Model.Texts.Count();
@@ -231,8 +227,7 @@
         $buttSave.show('slow');
 
         if ($('#btnWorkSave').is(':hidden')) $allWorkDatepicker.datepicker('destroy');
-        $allResponsibilityDatepicker.datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
-        $allResponsibilityDatepicker.datepicker('show');
+        setDatepicker('oResponsibility');
     });
 
     $("#btnWorkModify").on('click', function () {
@@ -254,8 +249,7 @@
         $buttSave.show('slow');
 
         if($('#btnResponsibilitySave').is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
-        $allWorkDatepicker.datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
-        $allWorkDatepicker.datepicker('show');
+        setDatepicker('oWork');
     });
 
     $('.datepicker').on("click", function () {
@@ -274,4 +268,10 @@
             $buttDelete.removeAttr('hidden', 'slow');
         }
     });
+
+    setDatepicker = function(o)
+    {
+        $('#' + o).find('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
+        $('#' + o).find('.datepicker').datepicker('show');
+    }
 </script>

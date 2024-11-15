@@ -11,6 +11,7 @@ using WebAPP.Infrastructure.Utilities;
 using System.Text.Json;
 using WebApp.Infrastructure.Models.dto;
 using WebApp.Infrastructure.Utilities;
+using WebAPP.Services;
 
 namespace WebAPP.Controllers
 {
@@ -23,15 +24,9 @@ namespace WebAPP.Controllers
         private readonly HttpClient _httpClient;
         private readonly Dictionary<string, object> _configLogger;
         private readonly IStringLocalizer<HomeController> _localizer;
-        private readonly Tokens _initialToken = new()
-        {
-            Login = string.Empty,
-            Password = string.Empty,
-            Profile = ProfileItems.User,
-            Language = GlobalParameters.Config.GetValue<string>("defaultLanguage")!.ToLanguage()
-        };
+        private readonly Tokens _initialToken;
 
-        public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IStringLocalizer<HomeController> localizer)
+        public HomeController(ILogger logger, HttpClientFactory httpClientFactory, IStringLocalizer<HomeController> localizer, ILanguage language)
         {
             _logger = logger;
             _httpClient = httpClientFactory.Client;
@@ -40,7 +35,14 @@ namespace WebAPP.Controllers
                 { "OperationId", Guid.NewGuid() }
             };
             _localizer = localizer;
-        }
+            _initialToken = new()
+            {
+                Login = string.Empty,
+                Password = string.Empty,
+                Profile = ProfileItems.User,
+                Language = language.UserLanguage
+            };
+    }
 
         [HttpGet]
         public async Task<IActionResult> IndexAsync() => await Task.Run(() => View(_initialToken));
