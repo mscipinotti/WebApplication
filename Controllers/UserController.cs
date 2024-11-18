@@ -5,7 +5,7 @@ using Microsoft.Extensions.Localization;
 using System.Net;
 using WebApp.Infrastructure.Models.dto;
 using WebAPP.Extensions;
-using WebAPP.Infrastructure.GlobalParameters;
+using WebAPP.Infrastructure;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Services;
 using WebAPP.Infrastructure.Utilities;
@@ -45,8 +45,8 @@ namespace WebAPP.Controllers
             try
             {
                 _httpClient.SetTokens(token);
-                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Index", token);
-                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream().ToString() ?? string.Empty);
+                var httpResponseMessage = await _httpClient.PostAsJsonAsync($"{GlobalParameters.Config.GetValue<string>("apiURL")!}User/Index", token, ct);
+                if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest) throw new BadHttpRequestException(httpResponseMessage.Content.ReadAsStream(ct).ToString() ?? string.Empty);
                 return await Task.Run(async () => View(await httpResponseMessage.Content.ReadFromJsonAsync<LibraryDto>(ct)));
             }
             catch(Exception ex)

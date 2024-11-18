@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using WebApp.Infrastructure.Models.dto;
-using WebAPP.Extensions;
-using WebAPP.Infrastructure.GlobalParameters;
-using WebAPP.MiddlewareFactory;
-using WebAPP.Infrastructure.Utilities;
 using WebApp.Infrastructure.Utilities;
+using WebAPP.Extensions;
+using WebAPP.Infrastructure;
+using WebAPP.MiddlewareFactory;
 
 namespace WebAPP.Controllers;
 

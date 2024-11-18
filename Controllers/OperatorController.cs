@@ -5,7 +5,7 @@ using System.Net;
 using WebApp.Infrastructure.Models.dto;
 using WebApp.Infrastructure.Utilities;
 using WebAPP.Extensions;
-using WebAPP.Infrastructure.GlobalParameters;
+using WebAPP.Infrastructure;
 using WebAPP.MiddlewareFactory;
 using WebAPP.Services;
 

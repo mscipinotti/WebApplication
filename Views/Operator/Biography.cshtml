@@ -173,30 +173,32 @@
         $("#btnWorkAdd").on('click', function () {
             let index = @Model.Texts.Count();
             let row = '<li class="row w-100 py-1">' +
-                '<div class="col-md-6">' +
-                '<input type="text" class="px-2 w-100 border-0 selected" id="Texts_' + index + '__Title" name = "Texts[' + index + '].Title" />' +
-                '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Title"></span>' +
-                '</div>' +
-                '<div class="col-md-2">' +
-                '<input class="px-2 slimInputText selected" readonly type="text" id="Texts_' + index + '__ISBN" name="Texts[' + index + '].ISBN" />' +
-                '<span class="invalid-feedback" name="feedback.Texts[' + index + '].ISBN"></span>' +
-                '</div>' +
-                '<div class="col-md-2">' +
-                '<input class="px-2 slimInputText datepicker selected" readonly type = "text" data-val="true" data-val-required="The Present field is required." id = "Texts_' + index + '__Present" name = "Texts[' + index + '].Present" />' +
-                '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Present"></span>' +
-                '</div>' +
-                '<div class="col-md-2">' +
-                '<input class="px-2 slimInputText datepicker selected" readonly type="text" id="Texts_' + index + '__Published" name = "Texts[' + index + '].Published" />' +
-                '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Description"></span>' +
-                '</div>' +
-                '</li>';
-            $('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
+                        '<div class="col-md-6">' +
+                            '<input type="text" class="px-2 w-100 border-0 selected" id="Texts_' + index + '__Title" name = "Texts[' + index + '].Title" />' +
+                            '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Title"></span>' +
+                        '</div>' +
+                        '<div class="col-md-2">' +
+                            '<input class="px-2 slimInputText selected" type="text" id="Texts_' + index + '__ISBN" name="Texts[' + index + '].ISBN" />' +
+                            '<span class="invalid-feedback" name="feedback.Texts[' + index + '].ISBN"></span>' +
+                        '</div>' +
+                        '<div class="col-md-2">' +
+                            '<input clas,s="px-2 slimInputText datepicker selected" readonly type = "text" data-val="true" data-val-required="The Present field is required." id = "Texts_' + index + '__Present" name = "Texts[' + index + '].Present" />' +
+                            '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Present"></span>' +
+                        '</div>' +
+                        '<div class="col-md-2">' +
+                            '<input class="px-2 slimInputText datepicker selected" readonly type="text" id="Texts_' + index + '__Published" name = "Texts[' + index + '].Published" />' +
+                            '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Description"></span>' +
+                        '</div>' +
+                    '</li>';
+
             $('#oWork').hide();
             $('#oWork').append(row);
             $('#oWork').fadeIn('slow');
             $("#btnWorkAdd").hide('slow');
             $("#btnWorkModify").hide('slow');
             $("#btnWorkSave").removeAttr('hidden', 'slow');
+
+            setDatepicker('oWork');
         });
 
         setTimeout(function () { waitingDialog.hide(modal); }, 2000);

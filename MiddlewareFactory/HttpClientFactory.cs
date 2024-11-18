@@ -1,4 +1,4 @@
-﻿using WebAPP.Infrastructure.GlobalParameters;
+﻿using WebAPP.Infrastructure;
 
 namespace WebAPP.MiddlewareFactory
 {

@@ -89,7 +89,7 @@
                         let itemid = "";
                         if (index == 6) {
                             // Il formato delle date sul browser deve essere italiano
-                            let tmpDate = new Date($(this).text().substr(6, 4), parseInt($(this).text().substr(3, 2)) - 1, $(this).text().substr(0, 2));
+                            let tmpDate = new Date($(this).text().substring(6, 10), parseInt($(this).text().substring(3, 5)) - 1, $(this).text().substring(0, 2));
                             data = tmpDate.getFullYear() + '-' + (tmpDate.getMonth() + 1).toString().padStart(2, '0') + '-' + tmpDate.getDate().toString().padStart(2, '0');
                         }
                         if (e.length == 0) {
@@ -263,7 +263,7 @@
             data: JSON.stringify(accountsDto),
             contentType: 'application/json; charset=utf-8'
         }).fail(function (jqXHR) {
-            let accountsDto = $.parseJSON(jqXHR.responseText);
+            let accountsDto = JSON.parse(jqXHR.responseText);
             let message = "";
             jQuery.each(accountsDto.errors, function (i, val) {
                 i = parseInt(i + 1);
