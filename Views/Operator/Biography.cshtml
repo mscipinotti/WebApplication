@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
-@using WebAPP.Infrastructure.GlobalParameters
 @using WebApp.Infrastructure.Models.dto
 @using WebAPP.Infrastructure.Models.enums
 @using System.Globalization
@@ -182,7 +181,7 @@
                             '<span class="invalid-feedback" name="feedback.Texts[' + index + '].ISBN"></span>' +
                         '</div>' +
                         '<div class="col-md-2">' +
-                            '<input clas,s="px-2 slimInputText datepicker selected" readonly type = "text" data-val="true" data-val-required="The Present field is required." id = "Texts_' + index + '__Present" name = "Texts[' + index + '].Present" />' +
+                            '<input class="px-2 slimInputText datepicker selected" readonly type="text" id = "Texts_' + index + '__Present" name = "Texts[' + index + '].Present" />' +
                             '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Present"></span>' +
                         '</div>' +
                         '<div class="col-md-2">' +

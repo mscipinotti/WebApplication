@@ -1,5 +1,4 @@
-﻿using WebAPP.Infrastructure.GlobalParameters;
-using WebAPP.Infrastructure.Models.enums;
+﻿using WebAPP.Infrastructure.Models.enums;
 
 namespace WebAPP.Services;
 
