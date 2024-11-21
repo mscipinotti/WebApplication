@@ -72,7 +72,7 @@
                                             <input asp-for="@Model.Responsibilities[index].To" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" />
                                         </div>
                                         <div class="col-md-8">
-                                            <textarea class="border-0 w-100" asp-for="@Model.Responsibilities[index].Description" required readonly value="@r.Description" spellcheck="false"></textarea>
+                                        <textarea class="border-0 w-100" asp-for="@Model.Responsibilities[index].Description" style="cursor:grab" required readonly value="@r.Description" spellcheck="false"></textarea>
                                             <span class="invalid-feedback" name="feedback.Responsibilities[@index].Description"></span>
                                         </div>
                                     }
@@ -87,6 +87,7 @@
                         <button id="btnResponsibilityModify" name="btnResponsibilityModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
                         <button id="btnResponsibilityAdd" name="btnResponsibilityAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
                         <button id="btnResponsibilityDelete" name="btnResponsibilityDelete" type="submit" asp-controller="Operator" asp-action="DeleteResponsibility" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
+                        <button id="btnResponsibilityUndo" name="btnResponsibilityUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
                         <button id="btnResponsibilitySave" name="btnResponsibilitySave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
                     </div>
                 }
@@ -132,6 +133,7 @@
                         <button id="btnWorkModify" name="btnWorkModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
                         <button id="btnWorkAdd" name="btnWorkAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
                         <button id="btnWorkDelete" name="btnWorkDelete" type="submit" asp-controller="Operator" asp-action="DeleteWork" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
+                        <button id="btnWorkUndo" name="btnWorkUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
                         <button id="btnWorkSave" name="btnWorkSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
                     </div>
                 }
@@ -141,6 +143,9 @@
 </article>
 
 <script type="text/javascript">
+    let $allResponsibilityDatepicker = $('#oResponsibility').find('.datepicker');
+    let $allWorkDatepicker = $('#oWork').find('.datepicker');
+
     $(function () {
         let modal = waitingDialog.show('waitModal');
 
@@ -148,7 +153,7 @@
             let index = @Model.Responsibilities.Count();
             let row = '<li class="row w-100 py-1">' +
                         '<div class="col-md-2">' +
-                            '<input class="px-2 slimInputText datepicker selected" required readonly type="text" id="Responsibilities_' + index + '__From" name="Responsibilities[' + index + '].From" />' +
+                            '<input class="px-2 slimInputText datepicker selected" required readonly type="text" id="Responsibilities_' + index + '__From" name="Responsibilities[' + index + '].From" autofocus />' +
                             '<span class="invalid-feedback" name="feedback.Responsibilities[' + index + '].From"></span>' +
                         '</div>' +
                         '<div class="col-md-2">' +
@@ -173,7 +178,7 @@
             let index = @Model.Texts.Count();
             let row = '<li class="row w-100 py-1">' +
                         '<div class="col-md-6">' +
-                            '<input type="text" class="px-2 w-100 border-0 selected" id="Texts_' + index + '__Title" name = "Texts[' + index + '].Title" />' +
+                            '<input type="text" class="px-2 w-100 border-0 selected" id="Texts_' + index + '__Title" name = "Texts[' + index + '].Title" autofocus />' +
                             '<span class="invalid-feedback" name="feedback.Texts[' + index + '].Title"></span>' +
                         '</div>' +
                         '<div class="col-md-2">' +
@@ -217,58 +222,136 @@
         let $buttSave = $divButt.find('button[name$="Save"]');
         let $buttModify = $divButt.find('button[name$="Modify"]');
         let $buttAdd = $divButt.find('button[name$="Add"]');
+        let $buttUndo = $divButt.find('button[name$="Undo"]');
 
         $inputField.toggleClass('selected', 'slow');
         $textareaField.toggleClass('selected', 'slow');
-        $inputField.find(':visible:first').focus();
+        $inputField.find(':visible:first').trigger("focus");
         $textareaField.removeAttr('readonly', 'slow');
-        $buttModify.toggle('slow');
-        $buttAdd.toggle('slow');
+
+        $buttModify.attr('hidden', 'slow');
+        $buttAdd.attr('hidden', 'slow');
         $buttSave.removeAttr('hidden', 'slow');
-        $buttSave.show('slow');
+        $buttUndo.removeAttr('hidden', 'slow');
 
         if ($('#btnWorkSave').is(':hidden')) $allWorkDatepicker.datepicker('destroy');
+        setDatepicker('oResponsibility');
+    });
+
+    $("#btnResponsibilityUndo").on('click', function () {
+        let $inputField = $('#oResponsibility li input');
+        let $textareaField = $('#oResponsibility li textarea');
+        let $divButt = $('#oResponsibility').closest('div');
+        let $buttSave = $divButt.find('button[name$="Save"]');
+        let $buttModify = $divButt.find('button[name$="Modify"]');
+        let $buttAdd = $divButt.find('button[name$="Add"]');
+        let $buttUndo = $divButt.find('button[name$="Undo"]');
+
+        $inputField.toggleClass('selected', 'slow');
+        $textareaField.toggleClass('selected', 'slow');
+        $inputField.css({'cursor': "grab"});
+        $inputField.attr("readonly", true);
+
+        $buttModify.removeAttr('hidden', 'slow');
+        $buttAdd.removeAttr('hidden', 'slow');
+        $buttSave.attr('hidden', 'slow');
+        $buttUndo.attr('hidden', 'slow');
+
+        if($('#btnWork').is(':hidden')) $allWorkDatepicker.datepicker('destroy');
         setDatepicker('oResponsibility');
     });
 
     $("#btnWorkModify").on('click', function () {
         let $field = $('#oWork li input');
         let $aField = $('#oWork li a');
-        let $fieldHidden = $('#oWork li input[name$="Title"]');
+        let $TitleHidden = $('#oWork li input[name$="Title"]');
         let $divButt = $('#oWork').closest('div');
         let $buttSave = $divButt.find('button[name$="Save"]');
         let $buttModify = $divButt.find('button[name$="Modify"]');
         let $buttAdd = $divButt.find('button[name$="Add"]');
+        let $buttUndo = $divButt.find('button[name$="Undo"]');
 
         $aField.hide();
         $field.toggleClass('selected', 'slow');
-        $fieldHidden.removeAttr('hidden', 'slow');
-        $fieldHidden.first().focus();
-        $buttModify.hide('slow');
-        $buttAdd.hide('slow');
+        $field.css({'cursor': "default"});
+        $field.attr("readonly", false);
+        $TitleHidden.removeAttr('hidden', 'slow');
+        $TitleHidden.trigger("focus");
+
+        $buttModify.attr('hidden', 'slow');
+        $buttAdd.attr('hidden', 'slow');
         $buttSave.removeAttr('hidden', 'slow');
-        $buttSave.show('slow');
+        $buttUndo.removeAttr('hidden', 'slow');
 
         if($('#btnResponsibilitySave').is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
         setDatepicker('oWork');
     });
 
+    $("#btnWorkUndo").on('click', function ()
+    {
+        let $field = $('#oWork li input');
+        let $fieldTitle = $field.find('[name$="Title"]');
+        let $aField = $('#oWork li a');
+        let $TitleHidden = $('#oWork li input[name$="Title"]');
+        let $divButt = $('#oWork').closest('div');
+        let $buttSave = $divButt.find('button[name$="Save"]');
+        let $buttModify = $divButt.find('button[name$="Modify"]');
+        let $buttAdd = $divButt.find('button[name$="Add"]');
+        let $buttUndo = $divButt.find('button[name$="Undo"]');
+
+        $aField.show();
+        $fieldTitle.hide('slow');
+        $field.toggleClass('selected', 'slow');
+        $field.css({'cursor': "grab"});
+        $field.attr("readonly", true);
+        $TitleHidden.attr('hidden', 'slow');
+
+        $buttModify.removeAttr('hidden', 'slow');
+        $buttAdd.removeAttr('hidden', 'slow');
+        $buttSave.attr('hidden', 'slow');
+        $buttUndo.attr('hidden', 'slow');
+
+        if($('#btnResponsibilitySave').is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
+        setDatepicker('oWork');
+    });
+
+    $('textarea[name$="Description"]').on("click", function () {
+        selectWork($(this));
+    });
+
     $('.datepicker').on("click", function () {
-        let $divButt = $(this).closest('ol').closest('div');
+        selectWork($(this));
+    });
+
+    $('input[name$="ISBN"]').on("click", function () {
+        selectWork($(this));
+    });
+
+    selectWork = function($this)
+    {        
+        let $divButt = $this.closest('ol').closest('div');
+        let $buttSave = $divButt.find('button[name$="Save"]');
+        let $buttModify = $divButt.find('button[name$="Modify"]');
+        let $buttAdd = $divButt.find('button[name$="Add"]');
+        let $buttUndo = $divButt.find('button[name$="Undo"]');
         let $buttDelete = $divButt.find('button[name$="Delete"]');
-        let $buttDeleteHidden = $buttDelete.is(':hidden');
         let $buttSaveHidden = $divButt.closest('div').find('button[name$="Save"]').is(':hidden');
-        let $parent = $(this).closest("li");
+        let $parent = $this.closest("li");
+        let $toDelete = $parent.find("input:hidden[name$='ToDelete']").val().toLowerCase();
 
         if ($buttSaveHidden) {
             $parent.find("input").toggleClass('selected', 'slow');
-            $parent.find("input:hidden[name$='ToDelete']").val(Boolean($buttDeleteHidden));
+            $parent.find("input:hidden[name$='ToDelete']").val(!JSON.parse($toDelete));
             $parent.find("textarea:visible").toggleClass('selected', 'slow');
             $parent.find("a:visible").toggleClass('selected', 'slow');
-            $divButt.find('button').toggle('slow');
+
+            $buttModify.attr('hidden', 'slow');
+            $buttAdd.attr('hidden', 'slow');
+            $buttSave.attr('hidden', 'slow');
+            $buttUndo.attr('hidden', 'slow');
             $buttDelete.removeAttr('hidden', 'slow');
         }
-    });
+    }
 
     setDatepicker = function(o)
     {

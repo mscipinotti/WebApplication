@@ -168,6 +168,9 @@
   <data name="To" xml:space="preserve">
     <value>Al</value>
   </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
   <data name="WorkAddress" xml:space="preserve">
     <value>Indirizzo di lavoro</value>
   </data>
