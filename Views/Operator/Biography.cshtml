@@ -205,8 +205,8 @@
             setDatepicker('oWork');
         });
 
-        setTimeout(function () { waitingDialog.hide(modal); }, 2000);
         $('.datepicker').datepicker('destroy');
+        setTimeout(function () { waitingDialog.hide(modal); }, 2000);
     });
 
     $("#btnText").on('click', function () {
@@ -242,20 +242,13 @@
         let $inputField = $('#oResponsibility li input');
         let $textareaField = $('#oResponsibility li textarea');
         let $divButt = $('#oResponsibility').closest('div');
-        let $buttSave = $divButt.find('button[name$="Save"]');
-        let $buttModify = $divButt.find('button[name$="Modify"]');
-        let $buttAdd = $divButt.find('button[name$="Add"]');
-        let $buttUndo = $divButt.find('button[name$="Undo"]');
 
         $inputField.toggleClass('selected', 'slow');
         $textareaField.toggleClass('selected', 'slow');
         $inputField.css({'cursor': "grab"});
         $inputField.attr("readonly", true);
 
-        $buttModify.removeAttr('hidden', 'slow');
-        $buttAdd.removeAttr('hidden', 'slow');
-        $buttSave.attr('hidden', 'slow');
-        $buttUndo.attr('hidden', 'slow');
+        startButtons($divButt);
 
         if($('#btnWork').is(':hidden')) $allWorkDatepicker.datepicker('destroy');
         setDatepicker('oResponsibility');
@@ -266,10 +259,6 @@
         let $aField = $('#oWork li a');
         let $TitleHidden = $('#oWork li input[name$="Title"]');
         let $divButt = $('#oWork').closest('div');
-        let $buttSave = $divButt.find('button[name$="Save"]');
-        let $buttModify = $divButt.find('button[name$="Modify"]');
-        let $buttAdd = $divButt.find('button[name$="Add"]');
-        let $buttUndo = $divButt.find('button[name$="Undo"]');
 
         $aField.hide();
         $field.toggleClass('selected', 'slow');
@@ -278,10 +267,7 @@
         $TitleHidden.removeAttr('hidden', 'slow');
         $TitleHidden.trigger("focus");
 
-        $buttModify.attr('hidden', 'slow');
-        $buttAdd.attr('hidden', 'slow');
-        $buttSave.removeAttr('hidden', 'slow');
-        $buttUndo.removeAttr('hidden', 'slow');
+        hideButtons($divButt);
 
         if($('#btnResponsibilitySave').is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
         setDatepicker('oWork');
@@ -294,10 +280,6 @@
         let $aField = $('#oWork li a');
         let $TitleHidden = $('#oWork li input[name$="Title"]');
         let $divButt = $('#oWork').closest('div');
-        let $buttSave = $divButt.find('button[name$="Save"]');
-        let $buttModify = $divButt.find('button[name$="Modify"]');
-        let $buttAdd = $divButt.find('button[name$="Add"]');
-        let $buttUndo = $divButt.find('button[name$="Undo"]');
 
         $aField.show();
         $fieldTitle.hide('slow');
@@ -306,10 +288,7 @@
         $field.attr("readonly", true);
         $TitleHidden.attr('hidden', 'slow');
 
-        $buttModify.removeAttr('hidden', 'slow');
-        $buttAdd.removeAttr('hidden', 'slow');
-        $buttSave.attr('hidden', 'slow');
-        $buttUndo.attr('hidden', 'slow');
+        hideButtons($divButt);
 
         if($('#btnResponsibilitySave').is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
         setDatepicker('oWork');
@@ -330,10 +309,6 @@
     selectWork = function($this)
     {        
         let $divButt = $this.closest('ol').closest('div');
-        let $buttSave = $divButt.find('button[name$="Save"]');
-        let $buttModify = $divButt.find('button[name$="Modify"]');
-        let $buttAdd = $divButt.find('button[name$="Add"]');
-        let $buttUndo = $divButt.find('button[name$="Undo"]');
         let $buttDelete = $divButt.find('button[name$="Delete"]');
         let $buttSaveHidden = $divButt.closest('div').find('button[name$="Save"]').is(':hidden');
         let $parent = $this.closest("li");
@@ -345,11 +320,17 @@
             $parent.find("textarea:visible").toggleClass('selected', 'slow');
             $parent.find("a:visible").toggleClass('selected', 'slow');
 
-            $buttModify.attr('hidden', 'slow');
-            $buttAdd.attr('hidden', 'slow');
-            $buttSave.attr('hidden', 'slow');
-            $buttUndo.attr('hidden', 'slow');
-            $buttDelete.removeAttr('hidden', 'slow');
+            let $selected =  $this.closest('ol')
+                                  .find("input[name$='ToDelete']")
+                                  .filter(function() { return this.value == 'true'; });
+                                  // Per determinare quanti hanno la proprietà dinamica value posta a true non è possibile usare il selettore [value=''] perchè funziona solo per casi statici
+            if ($selected.length > 0)
+            {
+                hideButtons($divButt);
+                $buttDelete.removeAttr('hidden', 'slow');
+            }
+            else
+                startButtons($divButt);
         }
     }
 
@@ -357,5 +338,33 @@
     {
         $('#' + o).find('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
         $('#' + o).find('.datepicker').datepicker('show');
+    }
+
+    hideButtons = function($divButt)
+    {
+        let $buttSave = $divButt.find('button[name$="Save"]');
+        let $buttModify = $divButt.find('button[name$="Modify"]');
+        let $buttAdd = $divButt.find('button[name$="Add"]');
+        let $buttUndo = $divButt.find('button[name$="Undo"]');
+
+        $buttModify.attr('hidden', 'slow');
+        $buttAdd.attr('hidden', 'slow');
+        $buttSave.attr('hidden', 'slow');
+        $buttUndo.attr('hidden', 'slow');
+    }
+
+    startButtons = function($divButt)
+    {
+        let $buttSave = $divButt.find('button[name$="Save"]');
+        let $buttModify = $divButt.find('button[name$="Modify"]');
+        let $buttAdd = $divButt.find('button[name$="Add"]');
+        let $buttUndo = $divButt.find('button[name$="Undo"]');
+        let $buttDelete = $divButt.find('button[name$="Delete"]');
+
+        $buttModify.removeAttr('hidden', 'slow');
+        $buttAdd.removeAttr('hidden', 'slow');
+        $buttSave.attr('hidden', 'slow');
+        $buttUndo.attr('hidden', 'slow');
+        $buttDelete.attr('hidden', 'slow');
     }
 </script>
