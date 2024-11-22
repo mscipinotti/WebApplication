@@ -4,47 +4,52 @@
 @inject IViewLocalizer localizer
 @model LibraryDto
 
-<article class="w-100">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col" class="ultraSlimInputText">#</th>
-                <th scope="col" class="hugeInputText">Title</th>
-                <th scope="col"><div data-placement="top">@localizer["ISBN"]</div></th>
-                <th scope="col"><div data-placement="top">@localizer["Published"]</div></th>
-                <th scope="col"><div data-placement="top">@localizer["Present"]</div></th>
-                <th scope="col"><div data-placement="top">@localizer["Archive"]</div></th>
-                <th scope="col"><div data-placement="top">@localizer["Authors"]</div></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var t in Model.Texts)
-            {
+<div style="display: flex">
+    <nav class="nav flex-column">
+        <a class="nav-link active" href="#" onclick="addRow();">@localizer["Add"]</a>
+        <a id="delete" class="nav-link" href="#modalRequest" data-toggle="modal" data-target="#modalRequest">@localizer["Delete"]</a>
+    </nav>
+    <article>
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <th scope="row">@(Model.Texts.IndexOf(t) + 1)</th>
-                    <td class="hugeInputText" style="cursor:grab"><a class="text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a></td>
-                    <td class="inputText">@t.ISBN</td>
-                    <td class="slimInputText">@t.Published</td>
-                    <td class="slimInputText">@t.Present</td>
-                    <td class="inputText">@t.Archive</td>
-                    <td class="inputText">
-                        <ul class="nav flex-column">
-                            @foreach (var a in t.Authors)
-                            {
-                                <li class="nav-item">
-                                    @* 1. Il bottone chiama una action che ha per parametro-oggetto un modello diverso da quello di questa pagina ma le proprietà in comune, quelle di Tokens, sono inviate alla action.
-                                       2. Nel parametro-oggetto è iniettato nella proprietà Author (di BiographyDto) il valore presente in asp-route-Author. *@
-                                    <button class="nav-link" asp-controller="Operator" asp-action="Biography" asp-route-Author="@a.Id">@(string.IsNullOrEmpty(a.Name) ? a.Surname : $"{a.Name!.Substring(0, 1)}. {a.Surname}")</button>
-                                </li>
-                            }
-                        </ul>
-                    </td>
+                    <th scope="col" class="ultraSlimInputText">#</th>
+                    <th scope="col" class="hugeInputText">Title</th>
+                    <th scope="col"><div data-placement="top">@localizer["ISBN"]</div></th>
+                    <th scope="col"><div data-placement="top">@localizer["Published"]</div></th>
+                    <th scope="col"><div data-placement="top">@localizer["Present"]</div></th>
+                    <th scope="col"><div data-placement="top">@localizer["Archive"]</div></th>
+                    <th scope="col"><div data-placement="top">@localizer["Authors"]</div></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-
-</article>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.Texts)
+                {
+                    <tr>
+                        <th scope="row">@(Model.Texts.IndexOf(t) + 1)</th>
+                        <td class="hugeInputText" style="cursor:grab"><a class="text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@(t.Title)</a></td>
+                        <td class="inputText">@t.ISBN</td>
+                        <td class="slimInputText">@t.Published</td>
+                        <td class="slimInputText">@t.Present</td>
+                        <td class="inputText">@t.Archive</td>
+                        <td class="inputText">
+                            <ul class="nav flex-column">
+                                @foreach (var a in t.Authors)
+                                {
+                                    <li class="nav-item">
+                                        @* 1. Il bottone chiama una action che ha per parametro-oggetto un modello diverso da quello di questa pagina ma le proprietà in comune, quelle di Tokens, sono inviate alla action.
+                                           2. Nel parametro-oggetto è iniettato nella proprietà Author (di BiographyDto) il valore presente in asp-route-Author. *@
+                                        <button class="nav-link" asp-controller="Operator" asp-action="Biography" asp-route-Author="@a.Id">@(string.IsNullOrEmpty(a.Name) ? a.Surname : $"{a.Name!.Substring(0, 1)}. {a.Surname}")</button>
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </article>
+</div>
 
 <script type="text/javascript">
     $(function () {
@@ -53,4 +58,19 @@
         $("#User").tab('show');
         setTimeout(function () { waitingDialog.hide(); }, 2000);
     });
+
+    addRow = function() 
+    {
+        let index = Number($('table > tbody:last-child > tr:last-child > th').text()) + 1;
+        $('table > tbody:last-child').append('<tr class="rowSelected">                                  \
+                                                    <th scope="row">' + index + '</th>                      \
+                                                    <td class="hugeInputText">' + 'email' + '</td>            \
+                                                    <td class="inputText">' + 'name' + '</td>                 \
+                                                    <td class="slimInputText">' + 'surname' + '</td>              \
+                                                    <td class="slimInputText">' + 'fiscalCode' + '</td>        \
+                                                    <td class="inputText">' + 'password' + '</td>             \
+                                                    <td class="InputText">' + 'expirationDate' + '</td>   \
+                                                </tr>');
+        $("table").fadeIn("slow");
+    }
 </script>
