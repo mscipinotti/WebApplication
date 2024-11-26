@@ -126,6 +126,9 @@
   <data name="BirthDay" xml:space="preserve">
     <value>Date of birth</value>
   </data>
+  <data name="CompareDateArchived" xml:space="preserve">
+    <value>The archive date cannot be later than the publication date</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Delete</value>
   </data>

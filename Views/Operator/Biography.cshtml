@@ -70,6 +70,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <input asp-for="@Model.Responsibilities[index].To" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" />
+                                            <span name='feedback.Responsibilities[@index].To' style='color: #aa224f'></span>
                                         </div>
                                         <div class="col-md-8">
                                             <textarea class="border-0 w-100" asp-for="@Model.Responsibilities[index].Description" style="cursor:grab" required readonly value="@r.Description" spellcheck="false"></textarea>
@@ -109,7 +110,7 @@
                                 <input type="hidden" asp-for="@Model.Texts[index].Id" value="@t.Id" />
                                 <input type="hidden" asp-for="@Model.Texts[index].Archive" value="@t.Archive" />
                                 <div class="col-md-6">
-                                    <input type="text" asp-for="@Model.Texts[index].ToDelete" hidden />
+                                    <input type="text" asp-for="@Model.Texts[index].ToDelete" hidden value="@t.ToDelete" />
                                     <input type="text" asp-for="@Model.Texts[index].Title" hidden class="px-2 w-100 border-0" />
                                     <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@t.Title</a>
                                 </div>
@@ -118,9 +119,11 @@
                                 </div>
                                 <div class="col-md-2">
                                     <input asp-for="@Model.Texts[index].Present" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Present" />
+                                    <span name='feedback.Work[@index].Present' class="invalid-feedback" style='color: #aa224f'></span>
                                 </div>
                                 <div class="col-md-2">
                                     <input asp-for="@Model.Texts[index].Published" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Published" />
+                                    <span name='feedback.Work[@index].Published' class="invalid-feedback" style='color: #aa224f'></span>
                                 </div>
                             </li>
                             index++;
@@ -134,7 +137,7 @@
                         <button id="btnWorkAdd" name="btnWorkAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
                         <button id="btnWorkDelete" name="btnWorkDelete" type="submit" asp-controller="Operator" asp-action="DeleteWork" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
                         <button id="btnWorkUndo" name="btnWorkUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
-                        <button id="btnWorkSave" name="btnWorkSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
+                        <button id="btnWorkSave" name="btnWorkSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none" data-custom-validation="customValidate()">@localizer["Save"]</button>
                     </div>
                 }
             </div>
@@ -195,6 +198,24 @@
             addRow(index, 'oWork', row);
         });
 
+        // Per gestire il caso in cui il DB sia vuoto
+        if ($allResponsibilityDatepicker.length == 0)
+        {
+            var prova = $('#oResponsibility').closest('div');
+            let $divButt = $('#oResponsibility').closest('div').filter("div:last-child()");
+
+            hideButtons($divButt);
+            $('#btnResponsibilityAdd').removeAttr('hidden', 'slow');
+        }
+        if ($allWorkDatepicker.length == 0)
+        {
+            var prova = $('#oResponsibility').closest('div');
+            let $divButt = $('#oResponsibility').closest('div').filter("div:last-child()");
+
+            hideButtons($divButt);
+            $('#btnResponsibilityAdd').removeAttr('hidden', 'slow');
+        }
+
         $('.datepicker').datepicker('destroy');
         setTimeout(function () { waitingDialog.hide(modal); }, 2000);
     });
@@ -224,10 +245,11 @@
     });
 
     $("#btnResponsibilityUndo").on('click', function () {
+        let index = parseInt('@Model.Responsibilities.Count()');
         let $textareaField = $('#oResponsibility li textarea');
         $textareaField.removeClass('selected', 'slow');
 
-        undo('oResponsibility');
+        undo('oResponsibility', 'btnWorkSave', index);
     });
 
     $("#btnWorkModify").on('click', function () {
@@ -253,6 +275,7 @@
 
     $("#btnWorkUndo").on('click', function ()
     {
+        let index = parseInt('@Model.Texts.Count()');
         let $fieldTitle = $('#oWork li input').find('[name$="Title"]');
         let $aField = $('#oWork li a');
         let $TitleHidden = $('#oWork li input[name$="Title"]');
@@ -261,7 +284,7 @@
         $fieldTitle.hide('slow');
         $TitleHidden.attr('hidden', 'slow');
 
-        undo('oWork');
+        undo('oWork', 'btnResponsibilitySave', index);
     });
 
     $('textarea[name$="Description"]').on("click", function () {
@@ -307,7 +330,6 @@
     setDatepicker = function(o)
     {
         $('#' + o).find('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
-        // $('#' + o).find('.datepicker').datepicker('show');
     }
 
     setFocus = function(index)
@@ -322,11 +344,13 @@
         let $buttModify = $divButt.find('button[name$="Modify"]');
         let $buttAdd = $divButt.find('button[name$="Add"]');
         let $buttUndo = $divButt.find('button[name$="Undo"]');
+        let $buttDelete = $divButt.find('button[name$="Delete"]');
 
         $buttModify.attr('hidden', 'slow');
         $buttAdd.attr('hidden', 'slow');
         $buttSave.attr('hidden', 'slow');
         $buttUndo.attr('hidden', 'slow');
+        $buttDelete.attr('hidden', 'slow');
     }
 
     startButtons = function($divButt)
@@ -370,13 +394,12 @@
         setFocus(index);
     }
 
-    undo = function(o)
+    undo = function(o, buttSave, index)
     {
-        let index = parseInt('@Model.Texts.Count()');
         let index1 = parseInt(index) + 1;
         let idRow = $('ol li:nth-child(' + index1 + ') input:first-child').val();
-        let $inputField = $('#oWork li input');
-        let $divButt = $('#oWork').closest('div');
+        let $inputField = $('#' + o + ' li input');
+        let $divButt = $('#' + o).closest('div');
 
         if (idRow == '') $('ol li:nth-child(' + index1 + ')').remove();
         $inputField.removeClass('selected', 'slow');
@@ -385,7 +408,54 @@
 
         startButtons($divButt);
 
-        if($('#btnResponsibilitySave').is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
-        setDatepicker('oWork');
+        if($('#' + buttSave).is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
+        setDatepicker(o);
     }
+
+    customValidate = function ()
+    {
+        let $rowR = $('#oResponsibility li').toArray();
+        let $rowW = $('#oWork li').toArray();
+        let $check = Boolean(true);
+
+        $rowR.forEach((item) => {
+            check = Boolean(compareDateR($(item)));
+            if (!check) {
+                let $feedback = $(item).find('div:first span');
+
+                $feedback.html('@localizer["CompareDate"]');
+                $check = check;
+            };
+        });
+        $rowW.forEach((item) => {
+            check = Boolean(compareDateW($(item)));
+            if (!check) {
+                let $feedback = $(item).find('div:eq(2) span');
+
+                $feedback.html('@localizer["CompareDateArchived"]');
+                $feedback.show();
+                $check = check;
+            }
+        });
+        return $check;
+    }
+
+    compareDateR = function($item)
+    {
+        let $from = new Date($item.find('div:first input').val());
+        let $to = $item.find('div:eq(1) input').val();
+        
+        if ($to === "") return true;
+        return $from <= new Date ($to);
+    }
+    
+    compareDateW = function($item)
+    {
+        let $archived = new Date($item.find('div:eq(2) input').val());
+        let $published = $item.find('div:eq(3) input').val();
+        
+        if ($published === "") return true;
+        return $archived <= new Date ($published);
+    }
+
 </script>
