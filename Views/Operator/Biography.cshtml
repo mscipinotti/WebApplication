@@ -70,7 +70,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <input asp-for="@Model.Responsibilities[index].To" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" />
-                                            <span name='feedback.Responsibilities[@index].To' style='color: #aa224f'></span>
+                                            <span class="invalid-feedback" name='feedback.Responsibilities[@index].To'></span>
                                         </div>
                                         <div class="col-md-8">
                                             <textarea class="border-0 w-100" asp-for="@Model.Responsibilities[index].Description" style="cursor:grab" required readonly value="@r.Description" spellcheck="false"></textarea>
@@ -241,7 +241,7 @@
         if ($('#btnWorkSave').is(':hidden')) $allWorkDatepicker.datepicker('destroy');
         setDatepicker('oResponsibility');
 
-        $inputField.filter("input:nth-last-child(2)").trigger("focus");        
+        setFocus($('#oResponsibility'));
     });
 
     $("#btnResponsibilityUndo").on('click', function () {
@@ -263,14 +263,13 @@
         $field.css({'cursor': "default"});
         $field.attr("readonly", false);
         $TitleHidden.removeAttr('hidden', 'slow');
-        $TitleHidden.trigger("focus");
 
         endButtons($divButt);
 
         if($('#btnResponsibilitySave').is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
         setDatepicker('oWork');
 
-        $field.filter("input:nth-last-child(2)").trigger("focus");
+        setFocus($('#oWork'));
     });
 
     $("#btnWorkUndo").on('click', function ()
@@ -332,10 +331,13 @@
         $('#' + o).find('.datepicker').datepicker($.datepicker.regional["@Model.Language.ToString(true)"]);
     }
 
-    setFocus = function(index)
+    setFocus = function($ol)
     {
-        let index1 = parseInt(index) + 1;
-        $('ol li:nth-child(' + index1 + ') div:first-child input').trigger("focus");
+        var prova3 = $ol.find('li');
+        var prova2 = $ol.find('li:eq(-1)');
+        var prova = $ol.find('li:eq(-1) div:first');
+        var prova4 = $ol.find('li:eq(-1) div:first input:visible');
+        $ol.find('li:eq(-1) div:first input:visible').trigger("focus")
     }
 
     hideButtons = function($divButt)
@@ -391,7 +393,7 @@
 
         setDatepicker(o);
         endButtons($divButt);
-        setFocus(index);
+        setFocus($('#' + o));
     }
 
     undo = function(o, buttSave, index)
@@ -410,6 +412,7 @@
 
         if($('#' + buttSave).is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
         setDatepicker(o);
+        clearValidate($('#' + o).closest('form'));
     }
 
     customValidate = function ()
@@ -424,6 +427,7 @@
                 let $feedback = $(item).find('div:first span');
 
                 $feedback.html('@localizer["CompareDate"]');
+                $feedback.show('slow');
                 $check = check;
             };
         });
@@ -433,7 +437,7 @@
                 let $feedback = $(item).find('div:eq(2) span');
 
                 $feedback.html('@localizer["CompareDateArchived"]');
-                $feedback.show();
+                $feedback.show('slow');
                 $check = check;
             }
         });
