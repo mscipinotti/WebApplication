@@ -11,6 +11,7 @@
     <input type="hidden" asp-for="@Model.Id" />
     <input type="hidden" asp-for="@Model.Author.Name" />
     <input type="hidden" asp-for="@Model.Author.Surname" />
+    <input type="hidden" name="MandatoryField" value="@localizer["MandatoryField"]" />
     <div class="d-flex flex-row">
         <div class="p-2 d-flex flex-column">
             <img src="~/Images/leaves.jpg" alt="Immagine dell'autore" />
@@ -119,11 +120,11 @@
                                 </div>
                                 <div class="col-md-2">
                                     <input asp-for="@Model.Texts[index].Present" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Present" />
-                                    <span name='feedback.Work[@index].Present' class="invalid-feedback" style='color: #aa224f'></span>
+                                    <span name='feedback.Work[@index].Present' class="invalid-feedback"></span>
                                 </div>
                                 <div class="col-md-2">
                                     <input asp-for="@Model.Texts[index].Published" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Published" />
-                                    <span name='feedback.Work[@index].Published' class="invalid-feedback" style='color: #aa224f'></span>
+                                    <span name='feedback.Work[@index].Published' class="invalid-feedback"></span>
                                 </div>
                             </li>
                             index++;
@@ -422,7 +423,7 @@
         let $check = Boolean(true);
 
         $rowR.forEach((item) => {
-            check = Boolean(compareDateR($(item)));
+            check = compareDateR($(item));
             if (!check) {
                 let $feedback = $(item).find('div:first span');
 
@@ -450,7 +451,9 @@
         let $to = $item.find('div:eq(1) input').val();
         
         if ($to === "") return true;
-        return $from <= new Date ($to);
+        var prova = $from.getTime();
+        var prova2 = (new Date ($to)).getTime();
+        return $from.getTime() <= (new Date ($to)).getTime();
     }
     
     compareDateW = function($item)
@@ -459,7 +462,7 @@
         let $published = $item.find('div:eq(3) input').val();
         
         if ($published === "") return true;
-        return $archived <= new Date ($published);
+        return (new Date ($published)).getTime() <= $archived.getTime();
     }
 
 </script>

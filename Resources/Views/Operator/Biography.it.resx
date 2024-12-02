@@ -126,8 +126,11 @@
   <data name="BirthDay" xml:space="preserve">
     <value>Data di Nascita</value>
   </data>
+  <data name="CompareDate" xml:space="preserve">
+    <value>La data dal non può essere successiva alla data al</value>
+  </data>
   <data name="CompareDateArchived" xml:space="preserve">
-    <value>La data di archivio non può essere antecedente alla data di pubblicazione</value>
+    <value>La data di pubblicazione non può essere successiva alla data di archivio</value>
   </data>
   <data name="Delete" xml:space="preserve">
     <value>Elimina</value>
@@ -143,6 +146,9 @@
   </data>
   <data name="Italian" xml:space="preserve">
     <value>Italiana</value>
+  </data>
+  <data name="MandatoryField" xml:space="preserve">
+    <value>Campo obbligatorio</value>
   </data>
   <data name="missingISBN" xml:space="preserve">
     <value>ISBN mancante</value>
