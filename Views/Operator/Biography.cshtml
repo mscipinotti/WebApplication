@@ -11,6 +11,7 @@
     <input type="hidden" asp-for="@Model.Id" />
     <input type="hidden" asp-for="@Model.Author.Name" />
     <input type="hidden" asp-for="@Model.Author.Surname" />
+    <input type="hidden" id="initialText" value="@Model.Text" />
     <input type="hidden" name="MandatoryField" value="@localizer["MandatoryField"]" />
     <div class="d-flex flex-row">
         <div class="p-2 d-flex flex-column">
@@ -44,8 +45,11 @@
                 <p id="pText"><textarea class="border-0 w-100" asp-for="@Model.Text" readonly value="@Model.Text" spellcheck="false"></textarea></p>
                 @if(Model.Profile != ProfileItems.User)
                 {
-                    <div class="d-flex flex-row-reverse"><button id="btnText" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button></div>
-                    <div class="d-flex flex-row-reverse"><button id="btnTextSave" asp-controller="Operator" asp-action="UpdateBiography" hidden type="submit" class="btn btn-link text-decoration-none" data-toggle="modal" data-target="#modalRequest">@localizer["Save"]</button></div>
+                    <div class="d-flex flex-row-reverse">
+                        <button name="btnTextModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
+                        <button name="btnTextUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
+                        <button name="btnTextSave" asp-controller="Operator" asp-action="UpdateBiography" hidden type="submit" class="btn btn-link text-decoration-none" data-toggle="modal" data-target="#modalRequest">@localizer["Save"]</button>
+                    </div>
                 }
             </div>
             <div class="p-2"><h4>@localizer["Responsibility"]</h4></div>
@@ -90,7 +94,7 @@
                         <button id="btnResponsibilityAdd" name="btnResponsibilityAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
                         <button id="btnResponsibilityDelete" name="btnResponsibilityDelete" type="submit" asp-controller="Operator" asp-action="DeleteResponsibility" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
                         <button id="btnResponsibilityUndo" name="btnResponsibilityUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
-                        <button id="btnResponsibilitySave" name="btnResponsibilitySave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none">@localizer["Save"]</button>
+                        <button id="btnResponsibilitySave" name="btnResponsibilitySave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none" data-custom-validation="customValidate()">@localizer["Save"]</button>
                     </div>
                 }
             </div>
@@ -221,11 +225,25 @@
         setTimeout(function () { waitingDialog.hide(modal); }, 2000);
     });
 
-    $("#btnText").on('click', function () {
-        $("#pText > textarea").removeAttr('readonly').toggleClass('selected').focus();
-        $("#btnText").hide('slow');
-        $("#btnTextSave").removeAttr('hidden', 'slow');
+    $("[name='btnTextModify']").on('click', function () {
+        let $divButt = $(this).closest('div');
+        let $textarea = $("#pText > textarea");
+
+        $textarea.removeAttr('readonly', 'slow');
+        $textarea.toggleClass('selected', 'slow');
+        endButtons($divButt);
+        $textarea.trigger('focus');
     });
+
+    $("[name='btnTextUndo']").on('click', function () {
+        let $divButt = $(this).closest('div');
+        let $textarea = $("#pText > textarea");
+
+        $textarea.attr('readonly', 'slow');
+        $textarea.toggleClass('selected', 'slow');
+        $textarea.val($('#initialText').val(), 'slow');
+        startButtons($divButt);
+    })
 
     $("#btnResponsibilityModify").on('click', function () {
         let $inputField = $('#oResponsibility li input');
@@ -334,11 +352,7 @@
 
     setFocus = function($ol)
     {
-        var prova3 = $ol.find('li');
-        var prova2 = $ol.find('li:eq(-1)');
-        var prova = $ol.find('li:eq(-1) div:first');
-        var prova4 = $ol.find('li:eq(-1) div:first input:visible');
-        $ol.find('li:eq(-1) div:first input:visible').trigger("focus")
+        $ol.find('li:eq(-1) div:first input:visible').trigger("focus");
     }
 
     hideButtons = function($divButt)
@@ -365,7 +379,7 @@
         let $buttDelete = $divButt.find('button[name$="Delete"]');
 
         $buttModify.removeAttr('hidden', 'slow');
-        $buttAdd.removeAttr('hidden', 'slow');
+        if ($buttAdd !== undefined) $buttAdd.removeAttr('hidden', 'slow');
         $buttSave.attr('hidden', 'slow');
         $buttUndo.attr('hidden', 'slow');
         $buttDelete.attr('hidden', 'slow');
@@ -379,7 +393,7 @@
         let $buttUndo = $divButt.find('button[name$="Undo"]');
 
         $buttModify.attr('hidden', 'slow');
-        $buttAdd.attr('hidden', 'slow');
+        if ($buttAdd !== undefined) $buttAdd.attr('hidden', 'slow');
         $buttSave.removeAttr('hidden', 'slow');
         $buttUndo.removeAttr('hidden', 'slow');
     }
