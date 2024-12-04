@@ -48,7 +48,7 @@
                     <div class="d-flex flex-row-reverse">
                         <button name="btnTextModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
                         <button name="btnTextUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
-                        <button name="btnTextSave" asp-controller="Operator" asp-action="UpdateBiography" hidden type="submit" class="btn btn-link text-decoration-none" data-toggle="modal" data-target="#modalRequest">@localizer["Save"]</button>
+                        <button asp-controller="Operator" asp-action="UpdateBiography" hidden type="submit" class="btn btn-link text-decoration-none" data-toggle="modal" data-target="#modalRequest">@localizer["Save"]</button>
                     </div>
                 }
             </div>
@@ -90,10 +90,10 @@
                 @if (Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse">
-                        <button id="btnResponsibilityModify" name="btnResponsibilityModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
-                        <button id="btnResponsibilityAdd" name="btnResponsibilityAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
-                        <button id="btnResponsibilityDelete" name="btnResponsibilityDelete" type="submit" asp-controller="Operator" asp-action="DeleteResponsibility" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
-                        <button id="btnResponsibilityUndo" name="btnResponsibilityUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
+                        <button name="btnResponsibilityModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
+                        <button name="btnResponsibilityAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
+                        <button name="btnResponsibilityDelete" type="submit" asp-controller="Operator" asp-action="DeleteResponsibility" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
+                        <button name="btnResponsibilityUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
                         <button id="btnResponsibilitySave" name="btnResponsibilitySave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none" data-custom-validation="customValidate()">@localizer["Save"]</button>
                     </div>
                 }
@@ -138,10 +138,10 @@
                 @if (Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse">
-                        <button id="btnWorkModify" name="btnWorkModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
-                        <button id="btnWorkAdd" name="btnWorkAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
-                        <button id="btnWorkDelete" name="btnWorkDelete" type="submit" asp-controller="Operator" asp-action="DeleteWork" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
-                        <button id="btnWorkUndo" name="btnWorkUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
+                        <button name="btnWorkModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
+                        <button name="btnWorkAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
+                        <button name="btnWorkDelete" type="submit" asp-controller="Operator" asp-action="DeleteWork" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
+                        <button name="btnWorkUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
                         <button id="btnWorkSave" name="btnWorkSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none" data-custom-validation="customValidate()">@localizer["Save"]</button>
                     </div>
                 }
@@ -157,7 +157,7 @@
     $(function () {
         let modal = waitingDialog.show('waitModal');
 
-        $("#btnResponsibilityAdd").on('click', function () {
+        $("[name='btnResponsibilityAdd']").on('click', function () {
             let index = parseInt('@Model.Responsibilities.Count()');
             let row = '<li class="row w-100 py-1">' +
                         '<input type="hidden" id="Responsibilities_' + index + '__Id" name="Responsibilities[' + index + '].Id" />' +
@@ -177,7 +177,8 @@
 
             addRow(index, 'oResponsibility', row);
         });
-        $("#btnWorkAdd").on('click', function () {
+
+        $("[name='btnWorkAdd']").on('click', function () {
             let index = parseInt('@Model.Texts.Count()');
             let row = '<li class="row w-100 py-1">' +
                         '<input type="hidden" id="Texts_' + index + '__Id" name="Texts[' + index + '].Id" />' +
@@ -245,7 +246,7 @@
         startButtons($divButt);
     })
 
-    $("#btnResponsibilityModify").on('click', function () {
+    $("[name='btnResponsibilityModify']").on('click', function () {
         let $inputField = $('#oResponsibility li input');
         let $textareaField = $('#oResponsibility li textarea');
         let $divButt = $('#oResponsibility').closest('div');
@@ -263,7 +264,7 @@
         setFocus($('#oResponsibility'));
     });
 
-    $("#btnResponsibilityUndo").on('click', function () {
+    $("[name='btnResponsibilityUndo']").on('click', function () {
         let index = parseInt('@Model.Responsibilities.Count()');
         let $textareaField = $('#oResponsibility li textarea');
         $textareaField.removeClass('selected', 'slow');
@@ -271,7 +272,7 @@
         undo('oResponsibility', 'btnWorkSave', index);
     });
 
-    $("#btnWorkModify").on('click', function () {
+    $("[name='btnWorkModify']").on('click', function () {
         let $field = $('#oWork li input');
         let $aField = $('#oWork li a');
         let $TitleHidden = $('#oWork li input[name$="Title"]');
@@ -291,7 +292,7 @@
         setFocus($('#oWork'));
     });
 
-    $("#btnWorkUndo").on('click', function ()
+    $("[name='btnWorkUndo']").on('click', function ()
     {
         let index = parseInt('@Model.Texts.Count()');
         let $fieldTitle = $('#oWork li input').find('[name$="Title"]');
