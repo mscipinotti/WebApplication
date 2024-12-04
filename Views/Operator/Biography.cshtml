@@ -48,7 +48,7 @@
                     <div class="d-flex flex-row-reverse">
                         <button name="btnTextModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
                         <button name="btnTextUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
-                        <button asp-controller="Operator" asp-action="UpdateBiography" hidden type="submit" class="btn btn-link text-decoration-none" data-toggle="modal" data-target="#modalRequest">@localizer["Save"]</button>
+                        <button name="btnTextSave" asp-controller="Operator" asp-action="UpdateBiography" hidden type="submit" class="btn btn-link text-decoration-none" data-toggle="modal" data-target="#modalRequest">@localizer["Save"]</button>
                     </div>
                 }
             </div>
@@ -432,12 +432,14 @@
                 $("[name='" + o1 + "[" + index + "].From']").val($("[id='" + o + "[" + index + "].From']").val());
                 $("[name='" + o1 + "[" + index + "].To']").val($("[id='" + o + "[" + index + "].To']").val());
                 $("[name='" + o1 + "[" + index + "].Description']").val($("[id='" + o + "[" + index + "].Description']").val());
+                $allResponsibilityDatepicker.datepicker('destroy');
             }
             if (o1 == 'Texts')
             {
                 $("[name='" + o1 + "[" + index + "].ISBN']").val($("[id='" + o + "[" + index + "].ISBN']").val());
                 $("[name='" + o1 + "[" + index + "].Present']").val($("[id='" + o + "[" + index + "].Present']").val());
                 $("[name='" + o1 + "[" + index + "].Published']").val($("[id='" + o + "[" + index + "].Published']").val());
+                $allWorkDatepicker.datepicker('destroy');
             }
         })
 
@@ -447,9 +449,6 @@
         $inputField.attr("readonly", true);
 
         startButtons($divButt);
-
-        if($('#' + buttSave).is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
-        setDatepicker(o);
         clearValidate($('#' + o).closest('form'));
     }
 
