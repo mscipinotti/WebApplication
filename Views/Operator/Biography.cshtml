@@ -11,7 +11,6 @@
     <input type="hidden" asp-for="@Model.Id" />
     <input type="hidden" asp-for="@Model.Author.Name" />
     <input type="hidden" asp-for="@Model.Author.Surname" />
-    <input type="hidden" id="initialText" value="@Model.Text" />
     <input type="hidden" name="MandatoryField" value="@localizer["MandatoryField"]" />
     <div class="d-flex flex-row">
         <div class="p-2 d-flex flex-column">
@@ -42,7 +41,8 @@
             </div>
             <div class="p-2">
                 @* .AspNetCore.Culture è il nome di default assegnato al cookie del locale scelto *@
-                <p id="pText"><textarea class="border-0 w-100" asp-for="@Model.Text" readonly value="@Model.Text" spellcheck="false"></textarea></p>
+                <p id="pText"><textarea class="border-0 w-100" asp-for="@Model.Text" readonly value="@Model.Text" spellcheck="false"></textarea>
+                              <input type="hidden" id="initialText" value="@Model.Text" /></p>
                 @if(Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse">
@@ -59,7 +59,7 @@
                     <div class="col-md-2"><b>@localizer["To"]</b></div>
                     <div class="col-md-8"><b>@localizer["Description"]</b></div>
                 </div>
-                <ol id="oResponsibility" class="nav list-group list-group-numbered">
+                <ol id="oResponsibilities" class="nav list-group list-group-numbered">
                     @{
                         int index = 0;
                         foreach (var r in Model.Responsibilities)
@@ -72,14 +72,17 @@
                                         <div class="col-md-2">
                                             <input asp-for="@Model.Responsibilities[index].From" class="px-2 slimInputText datepicker" style="cursor:grab" required readonly value="@r.From" />
                                             <span class="invalid-feedback" name="feedback.Responsibilities[@index].From"></span>
+                                            <input type="hidden" id="oResponsibilities[@index].From" value="@r.From" />
                                         </div>
                                         <div class="col-md-2">
                                             <input asp-for="@Model.Responsibilities[index].To" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" />
                                             <span class="invalid-feedback" name='feedback.Responsibilities[@index].To'></span>
+                                            <input type="hidden" id="oResponsibilities[@index].To" value="@r.To" />
                                         </div>
                                         <div class="col-md-8">
                                             <textarea class="border-0 w-100" asp-for="@Model.Responsibilities[index].Description" style="cursor:grab" required readonly value="@r.Description" spellcheck="false"></textarea>
                                             <span class="invalid-feedback" name="feedback.Responsibilities[@index].Description"></span>
+                                            <input type="hidden" id="oResponsibilities[@index].Description" value="@r.Description" />
                                         </div>
                                     }
                             </li>
@@ -106,7 +109,7 @@
                     <div class="col-md-2"><b>@localizer["ArchivedSince"]</b></div>
                     <div class="col-md-2"><b>@localizer["PublishDate"]</b></div>
                 </div>
-                <ol id="oWork" class="nav list-group list-group-numbered">
+                <ol id="oTexts" class="nav list-group list-group-numbered">
                     @{
                         index = 0;
                         foreach (var t in Model.Texts)
@@ -121,14 +124,17 @@
                                 </div>
                                 <div class="col-md-2">
                                     <input asp-for="@Model.Texts[index].ISBN" class="px-2 slimInputText" style="cursor:grab" readonly value="@(t.ISBN ?? string.Empty)" />
+                                    <input type="hidden" id="oTexts[@index].ISBN" value="@t.ISBN" />
                                 </div>
                                 <div class="col-md-2">
                                     <input asp-for="@Model.Texts[index].Present" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Present" />
                                     <span name='feedback.Work[@index].Present' class="invalid-feedback"></span>
+                                    <input type="hidden" id="oTexts[@index].Present" value="@t.Present" />
                                 </div>
                                 <div class="col-md-2">
                                     <input asp-for="@Model.Texts[index].Published" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Published" />
                                     <span name='feedback.Work[@index].Published' class="invalid-feedback"></span>
+                                    <input type="hidden" id="oTexts[@index].Published" value="@t.Published" />
                                 </div>
                             </li>
                             index++;
@@ -151,8 +157,8 @@
 </article>
 
 <script type="text/javascript">
-    let $allResponsibilityDatepicker = $('#oResponsibility').find('.datepicker');
-    let $allWorkDatepicker = $('#oWork').find('.datepicker');
+    let $allResponsibilityDatepicker = $('#oResponsibilities').find('.datepicker');
+    let $allWorkDatepicker = $('#oTexts').find('.datepicker');
 
     $(function () {
         let modal = waitingDialog.show('waitModal');
@@ -175,7 +181,7 @@
                         '</div>' +
                      '</li>';
 
-            addRow(index, 'oResponsibility', row);
+            addRow(index, 'oResponsibilities', row);
         });
 
         $("[name='btnWorkAdd']").on('click', function () {
@@ -201,25 +207,23 @@
                         '</div>' +
                     '</li>';
 
-            addRow(index, 'oWork', row);
+            addRow(index, 'oTexts', row);
         });
 
         // Per gestire il caso in cui il DB sia vuoto
         if ($allResponsibilityDatepicker.length == 0)
         {
-            var prova = $('#oResponsibility').closest('div');
-            let $divButt = $('#oResponsibility').closest('div').filter("div:last-child()");
+            let $divButt = $('#btnResponsibilitySave').closest('div');
 
             hideButtons($divButt);
-            $('#btnResponsibilityAdd').removeAttr('hidden', 'slow');
+            $("[name='btnResponsibilityAdd']").removeAttr('hidden', 'slow');
         }
         if ($allWorkDatepicker.length == 0)
         {
-            var prova = $('#oResponsibility').closest('div');
-            let $divButt = $('#oResponsibility').closest('div').filter("div:last-child()");
+            let $divButt = $('#btnWorkSave').closest('div');
 
             hideButtons($divButt);
-            $('#btnResponsibilityAdd').removeAttr('hidden', 'slow');
+            $("[name='btnWorkAdd']").removeAttr('hidden', 'slow');
         }
 
         $('.datepicker').datepicker('destroy');
@@ -247,9 +251,9 @@
     })
 
     $("[name='btnResponsibilityModify']").on('click', function () {
-        let $inputField = $('#oResponsibility li input');
-        let $textareaField = $('#oResponsibility li textarea');
-        let $divButt = $('#oResponsibility').closest('div');
+        let $inputField = $('#oResponsibilities li input');
+        let $textareaField = $('#oResponsibilities li textarea');
+        let $divButt = $('#oResponsibilities').closest('div');
 
         $inputField.toggleClass('selected', 'slow');
         $textareaField.toggleClass('selected', 'slow');
@@ -259,24 +263,24 @@
         endButtons($divButt);
 
         if ($('#btnWorkSave').is(':hidden')) $allWorkDatepicker.datepicker('destroy');
-        setDatepicker('oResponsibility');
+        setDatepicker('oResponsibilities');
 
-        setFocus($('#oResponsibility'));
+        setFocus($('#oResponsibilities'));
     });
 
     $("[name='btnResponsibilityUndo']").on('click', function () {
         let index = parseInt('@Model.Responsibilities.Count()');
-        let $textareaField = $('#oResponsibility li textarea');
+        let $textareaField = $('#oResponsibilities li textarea');
         $textareaField.removeClass('selected', 'slow');
 
-        undo('oResponsibility', 'btnWorkSave', index);
+        undo('oResponsibilities', 'btnWorkSave', index);
     });
 
     $("[name='btnWorkModify']").on('click', function () {
-        let $field = $('#oWork li input');
-        let $aField = $('#oWork li a');
-        let $TitleHidden = $('#oWork li input[name$="Title"]');
-        let $divButt = $('#oWork').closest('div');
+        let $field = $('#oTexts li input');
+        let $aField = $('#oTexts li a');
+        let $TitleHidden = $('#oTexts li input[name$="Title"]');
+        let $divButt = $('#oTexts').closest('div');
 
         $aField.hide();
         $field.toggleClass('selected', 'slow');
@@ -287,23 +291,23 @@
         endButtons($divButt);
 
         if($('#btnResponsibilitySave').is(':hidden')) $allResponsibilityDatepicker.datepicker('destroy');
-        setDatepicker('oWork');
+        setDatepicker('oTexts');
 
-        setFocus($('#oWork'));
+        setFocus($('#oTexts'));
     });
 
     $("[name='btnWorkUndo']").on('click', function ()
     {
         let index = parseInt('@Model.Texts.Count()');
-        let $fieldTitle = $('#oWork li input').find('[name$="Title"]');
-        let $aField = $('#oWork li a');
-        let $TitleHidden = $('#oWork li input[name$="Title"]');
+        let $fieldTitle = $('#oTexts li input').find('[name$="Title"]');
+        let $aField = $('#oTexts li a');
+        let $TitleHidden = $('#oTexts li input[name$="Title"]');
 
         $aField.show();
         $fieldTitle.hide('slow');
         $TitleHidden.attr('hidden', 'slow');
 
-        undo('oWork', 'btnResponsibilitySave', index);
+        undo('oTexts', 'btnResponsibilitySave', index);
     });
 
     $('textarea[name$="Description"]').on("click", function () {
@@ -415,9 +419,27 @@
     undo = function(o, buttSave, index)
     {
         let index1 = parseInt(index) + 1;
+        let o1 = o.substring(1);
         let idRow = $('ol li:nth-child(' + index1 + ') input:first-child').val();
         let $inputField = $('#' + o + ' li input');
         let $divButt = $('#' + o).closest('div');
+        let rows = $('#' + o + ' li');
+
+        rows.each(function(index)
+        {
+            if (o1 == 'Responsibilities')
+            {
+                $("[name='" + o1 + "[" + index + "].From']").val($("[id='" + o + "[" + index + "].From']").val());
+                $("[name='" + o1 + "[" + index + "].To']").val($("[id='" + o + "[" + index + "].To']").val());
+                $("[name='" + o1 + "[" + index + "].Description']").val($("[id='" + o + "[" + index + "].Description']").val());
+            }
+            if (o1 == 'Texts')
+            {
+                $("[name='" + o1 + "[" + index + "].ISBN']").val($("[id='" + o + "[" + index + "].ISBN']").val());
+                $("[name='" + o1 + "[" + index + "].Present']").val($("[id='" + o + "[" + index + "].Present']").val());
+                $("[name='" + o1 + "[" + index + "].Published']").val($("[id='" + o + "[" + index + "].Published']").val());
+            }
+        })
 
         if (idRow == '') $('ol li:nth-child(' + index1 + ')').remove();
         $inputField.removeClass('selected', 'slow');
@@ -433,8 +455,8 @@
 
     customValidate = function ()
     {
-        let $rowR = $('#oResponsibility li').toArray();
-        let $rowW = $('#oWork li').toArray();
+        let $rowR = $('#oResponsibilities li').toArray();
+        let $rowW = $('#oTexts li').toArray();
         let $check = Boolean(true);
 
         $rowR.forEach((item) => {
@@ -466,8 +488,6 @@
         let $to = $item.find('div:eq(1) input').val();
         
         if ($to === "") return true;
-        var prova = $from.getTime();
-        var prova2 = (new Date ($to)).getTime();
         return $from.getTime() <= (new Date ($to)).getTime();
     }
     
