@@ -3,6 +3,7 @@
 @using WebAPP.Infrastructure.Models.enums
 @using System.Globalization
 @using WebAPP.Infrastructure.Utilities;
+@using WebApp.Infrastructure.TagHelpers;
 @inject IViewLocalizer localizer
 @inject IConfiguration Config
 @model BiographyDto
@@ -70,19 +71,15 @@
                                         <input type="hidden" asp-for="@Model.Responsibilities[index].ToDelete" value="@r.ToDelete" />
                                         <input type="hidden" asp-for="@Model.Responsibilities[index].Id" value="@r.Id" />
                                         <div class="col-md-2">
-                                            <input asp-for="@Model.Responsibilities[index].From" class="px-2 slimInputText datepicker" style="cursor:grab" required readonly value="@r.From" />
-                                            <span class="invalid-feedback" name="feedback.Responsibilities[@index].From"></span>
-                                            <input type="hidden" id="oResponsibilities[@index].From" value="@r.From" />
+                                            <input-taghelper asp-for="@Model.Responsibilities[index].From" readonly class="px-2 slimInputText datepicker" style="cursor:grab" value="@r.From"></input-taghelper>
                                         </div>
                                         <div class="col-md-2">
-                                            <input asp-for="@Model.Responsibilities[index].To" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@r.To" />
-                                            <span class="invalid-feedback" name='feedback.Responsibilities[@index].To'></span>
-                                            <input type="hidden" id="oResponsibilities[@index].To" value="@r.To" />
+                                            <input-taghelper asp-for="@Model.Responsibilities[index].To" readonly class="px-2 slimInputText datepicker" style="cursor:grab" value="@r.To"></input-taghelper>
                                         </div>
                                         <div class="col-md-8">
                                             <textarea class="border-0 w-100" asp-for="@Model.Responsibilities[index].Description" style="cursor:grab" required readonly value="@r.Description" spellcheck="false"></textarea>
                                             <span class="invalid-feedback" name="feedback.Responsibilities[@index].Description"></span>
-                                            <input type="hidden" id="oResponsibilities[@index].Description" value="@r.Description" />
+                                            <input type="hidden" id="hResponsibilities[@index].Description" value="@r.Description" />
                                         </div>
                                     }
                             </li>
@@ -123,18 +120,13 @@
                                     <a class="px-2 text-decoration-none" href="~/StaticFiles/@(t.Id).pdf" target="_blank">@t.Title</a>
                                 </div>
                                 <div class="col-md-2">
-                                    <input asp-for="@Model.Texts[index].ISBN" class="px-2 slimInputText" style="cursor:grab" readonly value="@(t.ISBN ?? string.Empty)" />
-                                    <input type="hidden" id="oTexts[@index].ISBN" value="@t.ISBN" />
+                                    <input-taghelper asp-for="@Model.Texts[index].ISBN" readonly class="px-2 slimInputText" style="cursor:grab" value="@t.ISBN"></input-taghelper>
                                 </div>
                                 <div class="col-md-2">
-                                    <input asp-for="@Model.Texts[index].Present" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Present" />
-                                    <span name='feedback.Work[@index].Present' class="invalid-feedback"></span>
-                                    <input type="hidden" id="oTexts[@index].Present" value="@t.Present" />
+                                    <input-taghelper asp-for="@Model.Texts[index].Present" readonly class="px-2 slimInputText datepicker" style="cursor:grab" value="@t.Present"></input-taghelper>
                                 </div>
                                 <div class="col-md-2">
-                                    <input asp-for="@Model.Texts[index].Published" class="px-2 slimInputText datepicker" style="cursor:grab" readonly value="@t.Published" />
-                                    <span name='feedback.Work[@index].Published' class="invalid-feedback"></span>
-                                    <input type="hidden" id="oTexts[@index].Published" value="@t.Published" />
+                                    <input-taghelper asp-for="@Model.Texts[index].Published" readonly class="px-2 slimInputText datepicker" style="cursor:grab" value="@t.Published"></input-taghelper>
                                 </div>
                             </li>
                             index++;
@@ -144,11 +136,11 @@
                 @if (Model.Profile != ProfileItems.User)
                 {
                     <div class="d-flex flex-row-reverse">
-                        <button name="btnWorkModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
-                        <button name="btnWorkAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
-                        <button name="btnWorkDelete" type="submit" asp-controller="Operator" asp-action="DeleteWork" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
-                        <button name="btnWorkUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
-                        <button id="btnWorkSave" name="btnWorkSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none" data-custom-validation="customValidate()">@localizer["Save"]</button>
+                        <button name="btnTextsModify" type="button" class="btn btn-link text-decoration-none">@localizer["Modify"]</button>
+                        <button name="btnTextsAdd" type="button" class="btn btn-link text-decoration-none">@localizer["Add"]</button>
+                        <button name="btnTextsDelete" type="submit" asp-controller="Operator" asp-action="DeleteWork" hidden class="btn btn-link text-decoration-none">@localizer["Delete"]</button>
+                        <button name="btnTextsUndo" type="button" hidden class="btn btn-link text-decoration-none">@localizer["Undo"]</button>
+                        <button id="btnTextsSave" name="btnTextsSave" type="submit" asp-controller="Operator" asp-action="UpdateBiography" hidden class="btn btn-link text-decoration-none" data-custom-validation="customValidate()">@localizer["Save"]</button>
                     </div>
                 }
             </div>
@@ -184,7 +176,7 @@
             addRow(index, 'oResponsibilities', row);
         });
 
-        $("[name='btnWorkAdd']").on('click', function () {
+        $("[name='btnTextsAdd']").on('click', function () {
             let index = parseInt('@Model.Texts.Count()');
             let row = '<li class="row w-100 py-1">' +
                         '<input type="hidden" id="Texts_' + index + '__Id" name="Texts[' + index + '].Id" />' +
@@ -220,10 +212,10 @@
         }
         if ($allWorkDatepicker.length == 0)
         {
-            let $divButt = $('#btnWorkSave').closest('div');
+            let $divButt = $('#btnTextsSave').closest('div');
 
             hideButtons($divButt);
-            $("[name='btnWorkAdd']").removeAttr('hidden', 'slow');
+            $("[name='btnTextsAdd']").removeAttr('hidden', 'slow');
         }
 
         $('.datepicker').datepicker('destroy');
@@ -262,7 +254,7 @@
 
         endButtons($divButt);
 
-        if ($('#btnWorkSave').is(':hidden')) $allWorkDatepicker.datepicker('destroy');
+        if ($('#btnTextsSave').is(':hidden')) $allWorkDatepicker.datepicker('destroy');
         setDatepicker('oResponsibilities');
 
         setFocus($('#oResponsibilities'));
@@ -273,10 +265,10 @@
         let $textareaField = $('#oResponsibilities li textarea');
         $textareaField.removeClass('selected', 'slow');
 
-        undo('oResponsibilities', 'btnWorkSave', index);
+        undo('hResponsibilities', index);
     });
 
-    $("[name='btnWorkModify']").on('click', function () {
+    $("[name='btnTextsModify']").on('click', function () {
         let $field = $('#oTexts li input');
         let $aField = $('#oTexts li a');
         let $TitleHidden = $('#oTexts li input[name$="Title"]');
@@ -296,7 +288,7 @@
         setFocus($('#oTexts'));
     });
 
-    $("[name='btnWorkUndo']").on('click', function ()
+    $("[name='btnTextsUndo']").on('click', function ()
     {
         let index = parseInt('@Model.Texts.Count()');
         let $fieldTitle = $('#oTexts li input').find('[name$="Title"]');
@@ -307,7 +299,7 @@
         $fieldTitle.hide('slow');
         $TitleHidden.attr('hidden', 'slow');
 
-        undo('oTexts', 'btnResponsibilitySave', index);
+        undo('hTexts', index);
     });
 
     $('textarea[name$="Description"]').on("click", function () {
@@ -416,14 +408,14 @@
         setFocus($('#' + o));
     }
 
-    undo = function(o, buttSave, index)
+    undo = function(o, index)
     {
         let index1 = parseInt(index) + 1;
         let o1 = o.substring(1);
         let idRow = $('ol li:nth-child(' + index1 + ') input:first-child').val();
-        let $inputField = $('#' + o + ' li input');
-        let $divButt = $('#' + o).closest('div');
-        let rows = $('#' + o + ' li');
+        let $inputField = $('#o' + o1 + ' li input');
+        let $divButt = $('#o' + o1).closest('div');
+        let rows = $('#o' + o1 + ' li');
 
         rows.each(function(index)
         {

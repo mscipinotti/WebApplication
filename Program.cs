@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
@@ -53,6 +54,7 @@ public class Program
                             .AddScoped<Microsoft.Extensions.Logging.ILogger>(s => s.GetRequiredService<ILogger<NewsController>>())
                             .AddScoped<ILanguage, Language>()
                             .AddScoped<HttpClientFactory>()
+                            .AddSingleton<IHtmlGenerator, DefaultHtmlGenerator>()
                             .AddDbContext<GDAContext>(options => options.UseSqlServer(GlobalParameters.Config.GetConnectionString("GDA")))
                             .AddLocalization(options => options.ResourcesPath = "Resources")
                             .Configure<RequestLocalizationOptions>(options =>
